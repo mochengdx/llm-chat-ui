@@ -1,6 +1,5 @@
 packages:
   - "packages/*"
   - "apps/*"
-  - "apps"
 
 link-workspace-packages: true # Automatically link workspace packages (optional)

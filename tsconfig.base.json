@@ -7,7 +7,6 @@
     // Library type definitions to include (DOM + latest ECMAScript features).
     "lib": ["esnext", "dom"],
     "jsx": "react-jsx",
-    "declarationDir": "types",
     // Module resolution strategy (Node-style resolution).
     "moduleResolution": "node",
     // Allow importing JSON modules.
@@ -47,7 +46,10 @@
     "baseUrl": ".",
     // Path aliases useful for monorepo local imports.
     "paths": {
-      "@origami/*": ["packages/*/src", "apps/*/src"]
+      "@llm/core": ["packages/llm-core/src/index.ts"],
+      "@llm/store": ["packages/llm-store/src/index.ts"],
+      "@llm/ui": ["packages/llm-ui/src/index.ts"],
+      "@llm/utils": ["packages/llm-utils/src/index.ts"]
     },
     // Where to look for ambient type definitions (default: node_modules/@types).
     "typeRoots": ["node_modules/@types"],
@@ -57,24 +59,11 @@
     "esModuleInterop": true
   },
   // Files/directories to include in compilation (root: include all packages).
-  "include": ["packages/**/*"],
+  "include": [],
   // Files/directories to exclude from compilation.
-  "exclude": ["node_modules", "dist", ".rollup.cache", "packages/*/tests", "packages/*/test"],
+  "exclude": ["node_modules", "dist", ".rollup.cache"],
   "ts-node": {
     "transpileOnly": true
   },
-  "references": [
-    {
-      "path": "packages/core"
-    },
-    {
-      "path": "packages/plugins"
-    },
-    {
-      "path": "packages/adapters"
-    },
-    {
-      "path": "packages/utils"
-    }
-  ]
+  "references": []
 }
