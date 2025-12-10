@@ -1,0 +1,604 @@
+import React, { useState, useEffect, useRef, memo } from 'react';
+import { 
+  Menu, Plus, MessageSquare, Settings, Mic, Image as ImageIcon, 
+  Send, X, Moon, Sun, MoreVertical, Sparkles, User, Cpu, 
+  ChevronRight, Info, History, Share, ThumbsUp, ThumbsDown, Copy, 
+  Layout, FileCode, HardDrive, Zap, ChevronDown, Check, Loader2, Maximize2, Brain
+} from 'lucide-react';
+
+// --- 类型定义 ---
+type Role = 'user' | 'model';
+
+interface Message {
+  id: string;
+  role: Role;
+  content: string;
+  timestamp: number;
+  isStreaming?: boolean;     // 是否正在流式输出内容
+  isThinking?: boolean;      // 是否正在生成思维链
+  modelUsed?: string;
+  thoughtProcess?: string;   // 思维链内容
+}
+
+interface ChatSession {
+  id: string;
+  title: string;
+  messages: Message[];
+  date: string;
+}
+
+// 模型定义
+const MODELS = [
+  { id: 'fast', name: 'Fast', description: 'Answers quickly', icon: <Zap size={16} className="text-yellow-400"/> },
+  { id: 'thinking', name: 'Thinking with 3 Pro', description: 'Deep reasoning capabilities', icon: <Sparkles size={16} className="text-blue-400"/> },
+];
+
+// --- 模拟数据 ---
+const MOCK_SESSIONS: ChatSession[] = [
+  { id: '1', title: 'React Hooks 最佳实践', date: '今天', messages: [] },
+  { id: '2', title: '科幻小说大纲构思', date: '昨天', messages: [] },
+];
+
+// --- 工具函数：简易 Markdown ---
+const SimpleMarkdown = memo(({ content }: { content: string }) => {
+  const parts = content.split(/(```[\s\S]*?```)/g);
+  return (
+    <div className="markdown-body text-[16px] leading-7 font-light">
+      {parts.map((part, index) => {
+        if (part.startsWith('```')) {
+          const lines = part.split('\n');
+          const lang = lines[0].replace('```', '').trim();
+          const code = lines.slice(1, -1).join('\n');
+          return (
+            <div key={index} className="my-4 rounded-xl overflow-hidden bg-[#1e1f20] border border-[#3c4043]">
+              <div className="flex justify-between items-center px-4 py-2 bg-[#2d2e30] text-xs text-gray-400">
+                <span className="font-mono">{lang || 'code'}</span>
+                <div className="flex items-center gap-2 cursor-pointer hover:text-white transition-colors">
+                    <Copy size={12} />
+                    <span>Copy</span>
+                </div>
+              </div>
+              <div className="p-4 overflow-x-auto">
+                <pre className="font-mono text-sm text-[#a8c7fa]">
+                  <code>{code}</code>
+                </pre>
+              </div>
+            </div>
+          );
+        }
+        const textParts = part.split(/(\*\*.*?\*\*)/g);
+        return (
+          <span key={index}>
+            {textParts.map((t, i) => {
+              if (t.startsWith('**') && t.endsWith('**')) {
+                return <strong key={i} className="font-medium text-gray-100">{t.slice(2, -2)}</strong>;
+              }
+              return t.split('\n').map((line, j) => (
+                 <React.Fragment key={`${i}-${j}`}>
+                    {line}
+                    {j < t.split('\n').length - 1 && <br />}
+                 </React.Fragment>
+              ));
+            })}
+          </span>
+        );
+      })}
+    </div>
+  );
+});
+
+// --- 组件提取：MessageItem ---
+const MessageItem = memo(({ msg }: { msg: Message }) => {
+  // 思考过程的折叠状态
+  const [isThoughtOpen, setThoughtOpen] = useState(false);
+  
+  // 当正在思考时，自动展开
+  useEffect(() => {
+    if (msg.isThinking) {
+      setThoughtOpen(true);
+    }
+  }, [msg.isThinking]);
+
+  return (
+    <div className="group flex gap-4 animate-fade-in w-full max-w-3xl mx-auto">
+      <div className="shrink-0 mt-1">
+        {msg.role === 'model' ? (
+          <div className="w-8 h-8 rounded-full flex items-center justify-center">
+             <Sparkles className={`animate-pulse ${msg.modelUsed?.includes('Thinking') ? 'text-blue-400' : 'text-red-400'}`} size={20} />
+          </div>
+        ) : (
+          <div className="w-8 h-8 rounded-full bg-[#3c4043] flex items-center justify-center">
+             <User size={16} className="text-gray-300" />
+          </div>
+        )}
+      </div>
+      <div className="flex-1 min-w-0 space-y-2">
+        <div className="flex items-center gap-2">
+          <span className="font-medium text-sm text-gray-300">
+            {msg.role === 'model' ? 'Gemini' : 'You'}
+          </span>
+          {msg.role === 'model' && msg.modelUsed && (
+            <span className="text-[10px] px-1.5 py-0.5 rounded border border-gray-700 text-gray-500">
+              {msg.modelUsed}
+            </span>
+          )}
+        </div>
+        
+        {/* Thinking Process Block (类似 DeepSeek/Gemini 的思维链展示) */}
+        {msg.role === 'model' && msg.thoughtProcess && (
+          <div className="mb-3 rounded-xl bg-[#1e1f20] border border-[#3c4043]/60 overflow-hidden">
+             <button
+               onClick={() => setThoughtOpen(!isThoughtOpen)}
+               className="w-full flex items-center gap-2 px-3 py-2 bg-[#252627] hover:bg-[#2d2e30] transition-colors text-left"
+             >
+                {isThoughtOpen ? <ChevronDown size={14} className="text-gray-500"/> : <ChevronRight size={14} className="text-gray-500"/>}
+                <div className="flex items-center gap-1.5 text-xs font-medium text-gray-400">
+                   <Brain size={12} className={msg.isThinking ? "text-blue-400 animate-pulse" : "text-gray-500"}/>
+                   <span>Thinking Process</span>
+                </div>
+                {msg.isThinking && (
+                   <span className="ml-auto flex items-center gap-1 text-[10px] text-blue-400/80 font-mono">
+                      Thinking <Loader2 size={10} className="animate-spin"/>
+                   </span>
+                )}
+                {!msg.isThinking && !isThoughtOpen && (
+                   <span className="ml-auto text-[10px] text-gray-600">Click to expand</span>
+                )}
+             </button>
+             
+             {isThoughtOpen && (
+               <div className="px-4 py-3 text-xs text-gray-400 font-mono leading-relaxed border-t border-[#3c4043]/30 bg-[#1a1b1c] animate-slide-down">
+                  {msg.thoughtProcess}
+                  {msg.isThinking && <span className="inline-block w-1.5 h-3 bg-blue-500/50 ml-1 animate-pulse align-middle"></span>}
+               </div>
+             )}
+          </div>
+        )}
+
+        {/* Main Content */}
+        <div className={`prose max-w-none prose-invert prose-p:leading-relaxed prose-pre:bg-[#1e1f20]`}>
+           {msg.role === 'user' ? (
+             <div className="whitespace-pre-wrap text-[#e3e3e3] text-[16px]">{msg.content}</div>
+           ) : (
+             <SimpleMarkdown content={msg.content} />
+           )}
+           {msg.isStreaming && !msg.isThinking && <span className="inline-block w-2 h-4 bg-gray-400 ml-1 animate-blink align-middle"></span>}
+        </div>
+
+        {msg.role === 'model' && !msg.isStreaming && !msg.isThinking && (
+          <div className="flex items-center gap-2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+             <button className="p-1.5 rounded-full hover:bg-[#3c4043] text-gray-400 transition-colors"><Copy size={14}/></button>
+             <button className="p-1.5 rounded-full hover:bg-[#3c4043] text-gray-400 transition-colors"><ThumbsUp size={14}/></button>
+             <button className="p-1.5 rounded-full hover:bg-[#3c4043] text-gray-400 transition-colors"><Share size={14}/></button>
+             <button className="p-1.5 rounded-full hover:bg-[#3c4043] text-gray-400 transition-colors"><MoreVertical size={14}/></button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+});
+
+// --- 主组件 ---
+export default function GeminiClone() {
+  // UI States
+  const [isSidebarOpen, setSidebarOpen] = useState(true);
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark'); 
+  
+  // Chat States
+  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+  const [sessions, setSessions] = useState<ChatSession[]>(MOCK_SESSIONS);
+  const [input, setInput] = useState('');
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [isGenerating, setIsGenerating] = useState(false);
+  
+  // New Gemini UI States
+  const [selectedModel, setSelectedModel] = useState(MODELS[1]);
+  const [isModelDropdownOpen, setModelDropdownOpen] = useState(false);
+  const [isPlusMenuOpen, setPlusMenuOpen] = useState(false);
+  const [showCanvasBadge, setShowCanvasBadge] = useState(true);
+
+  const chatEndRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const plusMenuRef = useRef<HTMLDivElement>(null);
+
+  // --- Effects ---
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+  }, [theme]);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+        chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages.length, isGenerating]); 
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setModelDropdownOpen(false);
+      }
+      if (plusMenuRef.current && !plusMenuRef.current.contains(event.target as Node)) {
+        setPlusMenuOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // --- Handlers ---
+  const handleNewChat = () => {
+    setCurrentSessionId(null);
+    setMessages([]);
+    setInput('');
+    if (window.innerWidth < 768) setSidebarOpen(false);
+  };
+
+  // 生成模拟的思维链内容
+  const generateMockThoughts = (query: string) => {
+    const q = query.toLowerCase();
+    if (q.includes('react') || q.includes('代码')) {
+        return `1. Identify User Intent: User is asking for React code/explanation.
+2. Context Analysis: The query mentions "${query}". Need to provide a concise, modern example.
+3. Code Selection: Using functional components with hooks (useState/useEffect) is standard.
+4. Formatting: Ensure code is wrapped in markdown blocks for syntax highlighting.
+5. Tone Check: Maintain a helpful, developer-focused tone.`;
+    }
+    return `1. Analysis: User query is "${query}".
+2. Knowledge Retrieval: Searching internal knowledge base for relevant concepts...
+3. Fact Check: Verifying latest information on this topic.
+4. Structure Planning:
+   - Start with a direct answer.
+   - Provide supporting details.
+   - Conclude with actionable advice.
+5. Final Polish: adjusting for clarity and conciseness.`;
+  };
+
+  const handleSend = async () => {
+    if (!input.trim() || isGenerating) return;
+
+    const userMsg: Message = {
+      id: Date.now().toString(),
+      role: 'user',
+      content: input,
+      timestamp: Date.now()
+    };
+
+    setMessages(prev => [...prev, userMsg]);
+    setInput('');
+    setIsGenerating(true);
+
+    const aiMsgId = (Date.now() + 1).toString();
+    const isThinkingModel = selectedModel.id === 'thinking';
+
+    // 初始化 AI 消息
+    setMessages(prev => [...prev, {
+      id: aiMsgId,
+      role: 'model',
+      content: '',
+      timestamp: Date.now(),
+      isStreaming: true,
+      isThinking: isThinkingModel, // 如果是 Thinking 模型，初始状态为思考中
+      modelUsed: selectedModel.name,
+      thoughtProcess: isThinkingModel ? '' : undefined
+    }]);
+
+    // Phase 1: Deep Thinking Simulation (如果选择了 Thinking 模型)
+    if (isThinkingModel) {
+        const thoughts = generateMockThoughts(userMsg.content);
+        const thoughtChars = thoughts.split("");
+        let currentThought = "";
+
+        for (let i = 0; i < thoughtChars.length; i++) {
+            await new Promise(r => setTimeout(r, 15 + Math.random() * 10)); // 思考速度较快
+            currentThought += thoughtChars[i];
+            setMessages(prev => prev.map(m => 
+                m.id === aiMsgId ? { ...m, thoughtProcess: currentThought } : m
+            ));
+        }
+
+        // 思考结束，稍作停顿
+        await new Promise(r => setTimeout(r, 400));
+        
+        // 标记思考完成，开始生成正文
+        setMessages(prev => prev.map(m => 
+            m.id === aiMsgId ? { ...m, isThinking: false } : m
+        ));
+    } else {
+        // 如果是快速模型，简单延迟模拟网络请求
+        await new Promise(r => setTimeout(r, 600));
+    }
+
+    // Phase 2: Content Generation
+    const responseText = mockResponse(userMsg.content);
+    let currentText = "";
+    const chars = responseText.split("");
+    
+    for (let i = 0; i < chars.length; i++) {
+      await new Promise(r => setTimeout(r, 10 + Math.random() * 15));
+      currentText += chars[i];
+      setMessages(prev => prev.map(m => 
+        m.id === aiMsgId ? { ...m, content: currentText } : m
+      ));
+    }
+
+    // Finalize
+    setMessages(prev => prev.map(m => 
+      m.id === aiMsgId ? { ...m, isStreaming: false } : m
+    ));
+    setIsGenerating(false);
+
+    // Update History
+    if (!currentSessionId) {
+      const newId = Date.now().toString();
+      setCurrentSessionId(newId);
+      setSessions(prev => [{
+        id: newId,
+        title: userMsg.content.slice(0, 20) + '...',
+        date: '刚刚',
+        messages: [userMsg, { id: aiMsgId, role: 'model', content: responseText, timestamp: Date.now() }] 
+      }, ...prev]);
+    }
+  };
+
+  const mockResponse = (query: string) => {
+    if (query.includes('代码') || query.includes('code')) {
+      return `Here's a quick React component example:
+\`\`\`tsx
+const GeminiCard = () => (
+  <div className="p-4 bg-gray-900 rounded-xl border border-gray-700">
+    <h2 className="text-white font-bold">Gemini 2.0</h2>
+  </div>
+);
+\`\`\`
+This matches the dark mode aesthetic.`;
+    }
+    return `Based on your request "${query}", I've analyzed the context using the **${selectedModel.name}** model. \n\nThe new Gemini interface focuses on reducing friction. Notice how the input bar now integrates the model selector directly, keeping your focus on the content creation flow.`;
+  };
+
+  return (
+    <div className={`flex h-screen w-full font-sans overflow-hidden bg-[#131314] text-gray-100 selection:bg-blue-500/30`}>
+      
+      {/* 1. Sidebar */}
+      <aside 
+        className={`
+          flex flex-col h-full bg-[#1e1f20] transition-all duration-300 ease-in-out z-30 border-r border-[#3c4043]/50
+          ${isSidebarOpen ? 'w-[260px] translate-x-0' : 'w-0 -translate-x-full opacity-0 overflow-hidden'}
+        `}
+      >
+        <div className="p-4 pt-6">
+            {/* Mobile Close Button */}
+          <button onClick={() => setSidebarOpen(false)} className="md:hidden mb-4 p-2 text-gray-400 hover:text-white">
+            <X size={20} />
+          </button>
+
+          <button 
+            onClick={handleNewChat}
+            className="flex items-center gap-3 w-full py-3 px-4 rounded-full bg-[#28292a] hover:bg-[#37393b] text-[#e3e3e3] text-sm font-medium transition-colors mb-6"
+          >
+            <Plus size={18} className="text-gray-400" />
+            <span>新对话</span>
+          </button>
+
+          <div className="space-y-1">
+             <div className="px-4 py-2 text-[11px] font-medium text-gray-500 uppercase tracking-wider">Recent</div>
+             {sessions.map(s => (
+               <button
+                 key={s.id}
+                 onClick={() => { setCurrentSessionId(s.id); setMessages(s.messages.length ? s.messages : []); if(window.innerWidth < 768) setSidebarOpen(false); }}
+                 className={`
+                   group flex items-center gap-3 w-full p-2 px-3 rounded-full text-sm text-left transition-colors relative
+                   ${currentSessionId === s.id ? 'bg-[#004a77] text-[#c2e7ff]' : 'hover:bg-[#28292a] text-[#e3e3e3]'}
+                 `}
+               >
+                 <MessageSquare size={14} className="shrink-0 opacity-70" />
+                 <span className="truncate flex-1">{s.title}</span>
+               </button>
+             ))}
+          </div>
+        </div>
+
+        <div className="mt-auto p-4 border-t border-[#3c4043]/50">
+            <div className="flex items-center gap-3 px-2 py-2 text-sm text-[#e3e3e3] hover:bg-[#28292a] rounded-lg cursor-pointer transition-colors">
+                <Settings size={16} className="text-gray-400"/>
+                <span>设置</span>
+            </div>
+             <div className="flex items-center gap-2 px-2 mt-4 text-[10px] text-gray-500">
+                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div>
+                <span>Shanghai, CN</span>
+            </div>
+        </div>
+      </aside>
+
+      {/* 2. Main Content */}
+      <main className="flex-1 flex flex-col relative h-full w-full bg-[#131314]">
+        
+        {/* Top Header (Minimal) */}
+        <header className="absolute top-0 left-0 w-full p-4 z-20 flex justify-between items-center bg-gradient-to-b from-[#131314] to-transparent pointer-events-none">
+          <div className="pointer-events-auto">
+             {!isSidebarOpen && (
+              <button onClick={() => setSidebarOpen(true)} className="p-2 rounded-full hover:bg-[#28292a] text-gray-400 transition-colors">
+                <Menu size={20} />
+              </button>
+            )}
+            <span className={`text-lg font-medium text-gray-200 ml-2 ${isSidebarOpen ? 'opacity-0' : 'opacity-100 transition-opacity'}`}>Gemini</span>
+          </div>
+          
+          <div className="pointer-events-auto flex items-center gap-2">
+             <button className="p-2 rounded-full hover:bg-[#28292a] text-gray-400">
+                 <Layout size={18} />
+             </button>
+             <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-red-500 p-[2px] cursor-pointer">
+                <div className="w-full h-full rounded-full bg-[#1e1f20] flex items-center justify-center">
+                    <span className="text-xs font-bold text-white">L</span>
+                </div>
+             </div>
+          </div>
+        </header>
+
+        {/* Scrollable Area */}
+        <div className="flex-1 overflow-y-auto custom-scrollbar pt-20 pb-40">
+           {messages.length === 0 ? (
+             <div className="h-full flex flex-col items-center justify-center p-4 animate-fade-in text-center">
+                <div className="mb-8">
+                   <h1 className="text-4xl md:text-5xl font-medium text-transparent bg-clip-text bg-gradient-to-br from-blue-400 via-purple-400 to-red-400 mb-4">
+                     Hello, Developer
+                   </h1>
+                   <h2 className="text-4xl md:text-5xl font-medium text-[#444746] dark:text-[#5e5f61]">
+                     Let's write or build together
+                   </h2>
+                </div>
+             </div>
+           ) : (
+             <div className="flex flex-col gap-6 px-4">
+                {messages.map(msg => <MessageItem key={msg.id} msg={msg} />)}
+                <div ref={chatEndRef} />
+             </div>
+           )}
+        </div>
+
+        {/* 3. New Floating Input Console */}
+        <div className="absolute bottom-0 left-0 w-full pb-6 pt-10 px-4 bg-gradient-to-t from-[#131314] via-[#131314] to-transparent z-20">
+           <div className="max-w-3xl mx-auto relative group">
+              
+              {/* Input Container (Pill Shape) */}
+              <div className="bg-[#1e1f20] rounded-[28px] border border-[#3c4043] shadow-lg flex flex-col transition-colors focus-within:bg-[#252627] focus-within:border-[#5e5f61]">
+                 
+                 {/* Text Area */}
+                 <div className="flex items-start w-full min-h-[56px] px-2 py-3">
+                    {/* Plus Menu Button */}
+                    <div className="relative shrink-0 mt-1" ref={plusMenuRef}>
+                        <button 
+                            onClick={() => setPlusMenuOpen(!isPlusMenuOpen)}
+                            className="p-2 text-gray-400 hover:text-white bg-[#28292a] hover:bg-[#3c4043] rounded-full transition-all mx-2"
+                        >
+                            <Plus size={18} />
+                        </button>
+                        {/* Plus Menu Dropdown */}
+                        {isPlusMenuOpen && (
+                            <div className="absolute bottom-14 left-0 w-60 bg-[#252627] border border-[#3c4043] rounded-2xl shadow-2xl p-2 z-50 flex flex-col gap-1 animate-scale-up">
+                                {[
+                                    { icon: <HardDrive size={18} />, label: "Upload files" },
+                                    { icon: <Layout size={18} />, label: "Add from Drive" },
+                                    { icon: <ImageIcon size={18} />, label: "Photos" },
+                                    { icon: <FileCode size={18} />, label: "Import code" },
+                                ].map((item, idx) => (
+                                    <button key={idx} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[#3c4043] text-gray-300 text-sm transition-colors text-left">
+                                        <span className="text-gray-400">{item.icon}</span>
+                                        <span>{item.label}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Canvas Pill (Mock) */}
+                    {showCanvasBadge && (
+                        <div className="shrink-0 flex items-center gap-1 bg-[#28292a] border border-[#3c4043] rounded-lg px-2 py-1 mr-2 mt-1.5 cursor-pointer hover:bg-[#333]">
+                           <Maximize2 size={12} className="text-gray-400" />
+                           <span className="text-xs text-gray-300">Canvas</span>
+                           <button onClick={() => setShowCanvasBadge(false)} className="ml-1 hover:text-white text-gray-500"><X size={10}/></button>
+                        </div>
+                    )}
+
+                    <textarea 
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        onKeyDown={(e) => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }}}
+                        placeholder="Ask Gemini..."
+                        className="flex-1 bg-transparent border-none outline-none text-[#e3e3e3] placeholder-gray-500 text-base resize-none py-2 max-h-[200px] custom-scrollbar"
+                        rows={1}
+                        style={{ minHeight: '24px' }}
+                    />
+                 </div>
+
+                 {/* Bottom Actions Row */}
+                 <div className="flex items-center justify-between px-4 pb-3 pt-1">
+                    
+                    {/* Model Selector (Thinking) */}
+                    <div className="relative" ref={dropdownRef}>
+                        <button 
+                           onClick={() => setModelDropdownOpen(!isModelDropdownOpen)}
+                           className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-colors border ${
+                             selectedModel.id === 'thinking' 
+                               ? 'bg-[#18232c] border-[#294254] text-[#a8c7fa]' 
+                               : 'bg-[#28292a] border-transparent text-gray-400 hover:bg-[#3c4043]'
+                           }`}
+                        >
+                           {selectedModel.id === 'thinking' && <Sparkles size={12} className="text-[#a8c7fa]"/>}
+                           {selectedModel.id === 'fast' && <Zap size={12} className="text-yellow-400"/>}
+                           <span>{selectedModel.name}</span>
+                           <ChevronDown size={12} className="opacity-70" />
+                        </button>
+
+                        {/* Model Dropdown */}
+                        {isModelDropdownOpen && (
+                            <div className="absolute bottom-12 left-0 w-72 bg-[#252627] border border-[#3c4043] rounded-2xl shadow-2xl p-2 z-50 flex flex-col gap-1 animate-scale-up origin-bottom-left">
+                                <div className="px-3 py-2 text-xs font-medium text-gray-500">Choose your model</div>
+                                {MODELS.map(model => (
+                                    <button 
+                                        key={model.id}
+                                        onClick={() => { setSelectedModel(model); setModelDropdownOpen(false); }}
+                                        className="flex items-start gap-3 px-3 py-3 rounded-xl hover:bg-[#3c4043] transition-colors text-left group/item"
+                                    >
+                                        <div className="mt-1">{model.icon}</div>
+                                        <div className="flex-1">
+                                            <div className="flex items-center justify-between">
+                                                <span className={`text-sm font-medium ${selectedModel.id === model.id ? 'text-white' : 'text-gray-300'}`}>{model.name}</span>
+                                                {selectedModel.id === model.id && <Check size={14} className="text-blue-400"/>}
+                                            </div>
+                                            <div className="text-xs text-gray-500 mt-0.5">{model.description}</div>
+                                        </div>
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Right Actions */}
+                    <div className="flex items-center gap-3">
+                        <button className="p-2 text-gray-400 hover:text-white hover:bg-[#3c4043] rounded-full transition-colors">
+                            <Mic size={20} />
+                        </button>
+                        {input.trim() ? (
+                             <button 
+                                onClick={handleSend}
+                                className="p-2 bg-[#a8c7fa] text-[#0b1219] rounded-full hover:bg-white transition-colors"
+                             >
+                                <Send size={18} className="ml-0.5" />
+                             </button>
+                        ) : (
+                             <button className="p-2 bg-[#3c4043] text-gray-500 rounded-full cursor-not-allowed">
+                                <Send size={18} className="ml-0.5" />
+                             </button>
+                        )}
+                    </div>
+                 </div>
+
+              </div>
+              <div className="text-center mt-3 text-[10px] text-gray-500">
+                  Gemini may display inaccurate info, including about people, so double-check its responses.
+              </div>
+           </div>
+        </div>
+
+      </main>
+
+      {/* --- Global Styles --- */}
+      <style>{`
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #3c4043; border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #555; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        
+        @keyframes slideDown { from { opacity: 0; height: 0; } to { opacity: 1; height: auto; } }
+        .animate-slide-down { animation: slideDown 0.3s ease-out forwards; }
+
+        @keyframes scaleUp { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .animate-scale-up { animation: scaleUp 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+      `}</style>
+    </div>
+  );
+}

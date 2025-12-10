@@ -1,0 +1,32 @@
+{
+  "name": "@llm/core",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "rimraf dist",
+    "lint": "echo linting..."
+  },
+  "keywords": [
+    "llm",
+    "core",
+    "chat",
+    "ai",
+    "stream"
+  ],
+  "readme": "# @llm/core\n\n核心类型、协议与流式服务适配器。"
+}

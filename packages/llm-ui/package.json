@@ -1,0 +1,37 @@
+{
+  "name": "@llm/ui",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "dependencies": {
+    "@llm/core": "workspace:*",
+    "@llm/store": "workspace:*",
+    "lucide-react": "^0.559.0"
+  },
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "rimraf dist",
+    "lint": "echo linting..."
+  },
+  "keywords": [
+    "llm",
+    "ui",
+    "chat",
+    "react",
+    "component"
+  ],
+  "readme": "# @llm/ui\n\n通用 LLM 聊天 UI 组件库。"
+}

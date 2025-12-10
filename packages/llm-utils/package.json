@@ -1,0 +1,30 @@
+{
+  "name": "@llm/utils",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "rimraf dist",
+    "lint": "echo linting..."
+  },
+  "keywords": [
+    "llm",
+    "utils",
+    "chat",
+    "tool",
+    "helper"
+  ],
+  "readme": "# @llm/utils\n\n通用工具函数与类型辅助。"
+}
