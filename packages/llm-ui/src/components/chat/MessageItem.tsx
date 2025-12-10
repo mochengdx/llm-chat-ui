@@ -13,7 +13,7 @@ import {
   Volume2
 } from "lucide-react";
 import { memo, useEffect, useState } from "react";
-import SimpleMarkdown from "./SimpleMarkdown";
+import MarkdownRenderer from "./MarkdownRenderer";
 
 const MessageItem = memo(
   ({
@@ -49,7 +49,9 @@ const MessageItem = memo(
             <div className="w-8 h-8 rounded-full flex items-center justify-center">
               <Sparkles
                 className={`animate-pulse ${
-                  msg.modelUsed?.includes("Thinking") ? "text-blue-500 dark:text-blue-400" : "text-red-500 dark:text-red-400"
+                  msg.modelUsed?.includes("Thinking")
+                    ? "text-blue-500 dark:text-blue-400"
+                    : "text-red-500 dark:text-red-400"
                 }`}
                 size={20}
               />
@@ -63,7 +65,7 @@ const MessageItem = memo(
         <div className="flex-1 min-w-0 space-y-2">
           <div className="flex items-center gap-2">
             <span className="font-medium text-sm text-gray-700 dark:text-gray-300">
-              {msg.role === "model" ? "Gemini" : "You"}
+              {msg.role === "model" ? "Simple LLM Chat" : "You"}
             </span>
             {msg.role === "model" && msg.modelUsed && (
               <span className="text-[10px] px-1.5 py-0.5 rounded border border-gray-300 dark:border-gray-700 text-gray-500">
@@ -169,7 +171,7 @@ const MessageItem = memo(
               {msg.role === "user" ? (
                 <div className="whitespace-pre-wrap text-gray-800 dark:text-[#e3e3e3] text-[16px]">{msg.content}</div>
               ) : (
-                <SimpleMarkdown content={msg.content} onCodeBlockFound={onOpenCanvas} />
+                <MarkdownRenderer content={msg.content} onCodeBlockFound={onOpenCanvas} />
               )}
               {msg.isStreaming && !msg.isThinking && (
                 <span className="inline-block w-2 h-4 bg-gray-800 dark:bg-gray-400 ml-1 animate-blink align-middle"></span>

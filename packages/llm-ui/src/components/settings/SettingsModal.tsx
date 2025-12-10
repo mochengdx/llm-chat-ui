@@ -1,18 +1,6 @@
 import { UserSettings } from "@llm/core";
-import {
-  Brain,
-  Layers,
-  Monitor,
-  Moon,
-  Palette,
-  Settings,
-  Sun,
-  ToggleLeft,
-  ToggleRight,
-  Wrench,
-  X
-} from "lucide-react";
-import React, { useState } from "react";
+import { Brain, Layers, Monitor, Moon, Palette, Settings, Sun, ToggleLeft, ToggleRight, Wrench, X } from "lucide-react";
+import { useState } from "react";
 
 const SettingsModal = ({
   isOpen,
@@ -116,7 +104,9 @@ const SettingsModal = ({
                     <button
                       onClick={() => updateSettings("enableThinking", !settings.enableThinking)}
                       className={`text-2xl ${
-                        settings.enableThinking ? "text-blue-500 dark:text-blue-400" : "text-gray-400 dark:text-gray-600"
+                        settings.enableThinking
+                          ? "text-blue-500 dark:text-blue-400"
+                          : "text-gray-400 dark:text-gray-600"
                       }`}
                     >
                       {settings.enableThinking ? <ToggleRight size={32} /> : <ToggleLeft size={32} />}
@@ -165,7 +155,9 @@ const SettingsModal = ({
                     <button
                       onClick={() => updateSettings("theme", settings.theme === "dark" ? "light" : "dark")}
                       className={`text-2xl ${
-                        settings.theme === "dark" ? "text-purple-500 dark:text-purple-400" : "text-gray-400 dark:text-gray-600"
+                        settings.theme === "dark"
+                          ? "text-purple-500 dark:text-purple-400"
+                          : "text-gray-400 dark:text-gray-600"
                       }`}
                     >
                       {settings.theme === "dark" ? <ToggleRight size={32} /> : <ToggleLeft size={32} />}

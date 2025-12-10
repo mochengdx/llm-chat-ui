@@ -1,32 +1,20 @@
-import React from "react";
-
-const ChatMobile: React.FC = () => {
-  // 响应式适配，底部输入区固定，内容区滚动，适合手持
-  return (
-    <div
-      className="w-full h-screen max-w-[480px] mx-auto bg-white flex flex-col"
-      style={{ boxShadow: "0 0 8px 0 #e5e7eb" }}
-    >
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <ChatMainMobileLayout />
-      </div>
-    </div>
-  );
-};
-
-// 移动端专用布局，底部输入区固定
+import { StreamClient } from "@llm/core";
 import { useLLMStore } from "@llm/store";
+import React from "react";
 import ReactDOM from "react-dom";
-import MessageItem from "./MessageItem";
-import SettingsModal from "./SettingsModal";
+import ArtifactPanel from "./components/artifact/ArtifactPanel";
+import MessageItem from "./components/chat/MessageItem";
+import SettingsModal from "./components/settings/SettingsModal";
 
 const ChatMainMobileLayout: React.FC = () => {
   const { messages, setMessages, settings, setSettings } = useLLMStore();
   const [input, setInput] = React.useState("");
   const [isGenerating, setIsGenerating] = React.useState(false);
   const [isSettingsOpen, setSettingsOpen] = React.useState(false);
+  const [artifactOpen, setArtifactOpen] = React.useState(false);
+  const [artifactContent, setArtifactContent] = React.useState("");
   const chatEndRef = React.useRef<HTMLDivElement>(null);
-  const streamClientRef = React.useRef<any>(null);
+  const streamClientRef = React.useRef<StreamClient | null>(null);
 
   React.useEffect(() => {
     if (messages.length > 0) chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -36,8 +24,7 @@ const ChatMainMobileLayout: React.FC = () => {
     const textToSend = txt || input;
     if (!textToSend.trim() || isGenerating) return;
     if (!streamClientRef.current) {
-      // @ts-ignore
-      streamClientRef.current = new (require("@llm/core").StreamClient)(settings.protocol);
+      streamClientRef.current = new StreamClient(settings.protocol);
     }
     setIsGenerating(true);
     const userMsg = {
@@ -83,7 +70,7 @@ const ChatMainMobileLayout: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-full w-full">
+    <div className="flex flex-col h-full w-full relative">
       <header className="p-3 flex justify-between items-center border-b bg-white sticky top-0 z-10">
         <h1 className="text-lg font-bold">LLM Chat</h1>
         <button onClick={() => setSettingsOpen(true)} className="px-3 py-1 rounded bg-gray-200 text-base">
@@ -97,7 +84,10 @@ const ChatMainMobileLayout: React.FC = () => {
               msg={msg}
               onEdit={handleEditMessage}
               onRegenerate={() => handleSend(messages[messages.length - 2]?.content)}
-              onOpenCanvas={() => {}}
+              onOpenCanvas={(code) => {
+                setArtifactContent(code);
+                setArtifactOpen(true);
+              }}
             />
           </div>
         ))}
@@ -132,6 +122,21 @@ const ChatMainMobileLayout: React.FC = () => {
           />,
           document.body
         )}
+      <ArtifactPanel isOpen={artifactOpen} onClose={() => setArtifactOpen(false)} content={artifactContent} />
+    </div>
+  );
+};
+
+const ChatMobile: React.FC = () => {
+  // 响应式适配，底部输入区固定，内容区滚动，适合手持
+  return (
+    <div
+      className="w-full h-screen max-w-[480px] mx-auto bg-white flex flex-col"
+      style={{ boxShadow: "0 0 8px 0 #e5e7eb" }}
+    >
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <ChatMainMobileLayout />
+      </div>
     </div>
   );
 };
