@@ -1,0 +1,23 @@
+{
+  "name": "@origami/form-ui",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "lucide-react": "^0.263.1"
+  },
+  "devDependencies": {
+    "@origami/ts-config": "workspace:*",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0",
+    "clsx": "^2.0.0",
+    "tailwind-merge": "^1.14.0"
+  }
+}

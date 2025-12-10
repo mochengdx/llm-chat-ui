@@ -1,0 +1,12 @@
+{
+  "name": "@origami/ts-config",
+  "version": "1.0.0",
+  "private": true,
+  "license": "MIT",
+  "main": "base.json",
+  "files": [
+    "base.json",
+    "react.json",
+    "next.json"
+  ]
+}
