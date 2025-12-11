@@ -46,7 +46,7 @@ export const useLLMStore = create<StoreState>()(
     }),
     {
       name: "llm-chat-store",
-      getStorage: () => localStorage // 可替换为 indexdb 封装
+      getStorage: () => localStorage // 可替换为 indexdb 封装 或是 服务端存储
     }
   )
 );

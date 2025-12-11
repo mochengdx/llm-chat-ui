@@ -4,7 +4,7 @@ const App = () => {
   // AOP Hook: Before sending message
   const handleBeforeSend = async (message: string) => {
     console.log("[AOP] Intercepted send:", message);
-    
+
     // Example 1: Filter specific keywords
     if (message.includes("forbidden")) {
       alert("Message contains forbidden words!");
@@ -26,6 +26,8 @@ const App = () => {
     return chunk;
   };
 
+  //   自己实现的适配器实例
+  //   const myAdapter = new MyCustomAdapter();
   return <ChatMain onBeforeSend={handleBeforeSend} onStreamTransform={handleStreamTransform} />;
 };
 

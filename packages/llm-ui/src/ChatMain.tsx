@@ -1,4 +1,4 @@
-import type { Attachment, Message, StreamCallbacks, StreamRequest, TriggerItem } from "@llm/core";
+import type { Attachment, Message, StreamAdapter, StreamCallbacks, StreamRequest, TriggerItem } from "@llm/core";
 import { StreamClient } from "@llm/core";
 import { useLLMStore } from "@llm/store";
 import {
@@ -31,12 +31,18 @@ export interface ChatHooks {
    * Supports async operations.
    */
   onBeforeSend?: (message: string) => Promise<string> | string;
-  
+
   /**
    * Hook called when receiving a stream chunk.
    * Can be used to transform the incoming text chunk.
    */
   onStreamTransform?: (chunk: string) => string;
+
+  /**
+   * Custom StreamAdapter implementation.
+   * If provided, it will be used instead of the internal adapters.
+   */
+  customAdapter?: StreamAdapter;
 }
 
 interface ChatMainProps extends ChatHooks {}
@@ -98,7 +104,7 @@ const SUGGESTION_CHIPS = [
   { label: "Learn", icon: <BookOpen size={16} className="text-orange-500" />, action: "learn" }
 ];
 
-const ChatMain: React.FC<ChatMainProps> = ({ onBeforeSend, onStreamTransform }) => {
+const ChatMain: React.FC<ChatMainProps> = ({ onBeforeSend, onStreamTransform, customAdapter }) => {
   const {
     messages: rawMessages,
     setMessages,
@@ -267,7 +273,9 @@ const ChatMain: React.FC<ChatMainProps> = ({ onBeforeSend, onStreamTransform }) 
 
     if (!textToSend.trim() && attachments.length === 0) return;
 
-    if (!streamClientRef.current) streamClientRef.current = new StreamClient(settings.protocol);
+    if (!streamClientRef.current) {
+      streamClientRef.current = new StreamClient(customAdapter || settings.protocol);
+    }
 
     setTriggerType(null);
     setIsInputExpanded(false);

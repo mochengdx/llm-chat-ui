@@ -1,13 +1,18 @@
+import type { StreamAdapter } from "@llm/core";
 import { StreamClient } from "@llm/core";
 import { useLLMStore } from "@llm/store";
 import React from "react";
 import ReactDOM from "react-dom";
-import ArtifactPanel from "./components/artifact/ArtifactPanel";
 import { ChatHooks } from "./ChatMain";
+import ArtifactPanel from "./components/artifact/ArtifactPanel";
 import MessageItem from "./components/chat/MessageItem";
 import SettingsModal from "./components/settings/SettingsModal";
 
-const ChatMainMobileLayout: React.FC<ChatHooks> = ({ onBeforeSend, onStreamTransform }) => {
+interface ChatMobileProps extends ChatHooks {
+  customAdapter?: StreamAdapter;
+}
+
+const ChatMainMobileLayout: React.FC<ChatMobileProps> = ({ onBeforeSend, onStreamTransform, customAdapter }) => {
   const { messages, setMessages, settings, setSettings } = useLLMStore();
   const [input, setInput] = React.useState("");
   const [isGenerating, setIsGenerating] = React.useState(false);
@@ -39,7 +44,7 @@ const ChatMainMobileLayout: React.FC<ChatHooks> = ({ onBeforeSend, onStreamTrans
     if (!textToSend.trim()) return;
 
     if (!streamClientRef.current) {
-      streamClientRef.current = new StreamClient(settings.protocol);
+      streamClientRef.current = new StreamClient(customAdapter || settings.protocol);
     }
     setIsGenerating(true);
     const userMsg = {
@@ -144,7 +149,7 @@ const ChatMainMobileLayout: React.FC<ChatHooks> = ({ onBeforeSend, onStreamTrans
   );
 };
 
-const ChatMobile: React.FC<ChatHooks> = (props) => {
+const ChatMobile: React.FC<ChatMobileProps> = (props) => {
   // 响应式适配，底部输入区固定，内容区滚动，适合手持
   return (
     <div
