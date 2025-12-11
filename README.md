@@ -48,6 +48,7 @@ This project is organized as a monorepo:
 ### Installation
 
 1. Clone the repository:
+
    ```bash
    git clone <repository-url>
    cd llm-chat-ui
@@ -63,6 +64,7 @@ This project is organized as a monorepo:
 To start the development servers:
 
 - **PC App**:
+
   ```bash
   pnpm dev:pc
   ```

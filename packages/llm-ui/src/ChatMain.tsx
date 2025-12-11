@@ -261,15 +261,33 @@ const ChatMain: React.FC<ChatMainProps> = ({ onBeforeSend, onStreamTransform, cu
   const handleEditMessage = (msgId: string, newContent: string) => {
     const msgIndex = messages.findIndex((m) => m.id === msgId);
     if (msgIndex === -1) return;
+
+    // Get the original message to preserve attachments
+    const originalMsg = messages[msgIndex];
+
+    // Keep messages up to the edited one (exclusive)
     const updatedMessages = messages.slice(0, msgIndex);
     setMessages(updatedMessages);
+
+    // Restore attachments from the original message if any
+    if (originalMsg.attachments && originalMsg.attachments.length > 0) {
+      setAttachments(originalMsg.attachments);
+    }
+
     setInput(newContent);
-    handleSend(newContent);
+    // We need to defer the send slightly to ensure state updates or pass attachments directly
+    // But handleSend uses the 'attachments' state.
+    // Since setState is async, we should pass attachments explicitly to handleSend if possible,
+    // OR modify handleSend to accept attachments as an argument.
+    // For now, let's modify handleSend to accept optional attachments override.
+    handleSend(newContent, originalMsg.attachments);
   };
 
-  const handleSend = async (txt?: string) => {
+  const handleSend = async (txt?: string, overrideAttachments?: Attachment[]) => {
     let textToSend = txt || input;
-    if ((!textToSend.trim() && attachments.length === 0) || isGenerating) return;
+    const currentAttachments = overrideAttachments || attachments;
+
+    if ((!textToSend.trim() && currentAttachments.length === 0) || isGenerating) return;
 
     if (onBeforeSend) {
       try {
@@ -282,7 +300,7 @@ const ChatMain: React.FC<ChatMainProps> = ({ onBeforeSend, onStreamTransform, cu
       }
     }
 
-    if (!textToSend.trim() && attachments.length === 0) return;
+    if (!textToSend.trim() && currentAttachments.length === 0) return;
 
     if (!streamClientRef.current) {
       streamClientRef.current = new StreamClient(customAdapter || settings.protocol);
@@ -296,8 +314,11 @@ const ChatMain: React.FC<ChatMainProps> = ({ onBeforeSend, onStreamTransform, cu
       role: "user",
       content: textToSend,
       timestamp: Date.now(),
-      attachments: [...attachments]
+      attachments: [...currentAttachments]
     };
+
+    // Clear attachments state only if we didn't use override (which implies a re-send/edit)
+    // Actually we should always clear the input attachments state after sending
     setAttachments([]);
     const newMessages = [...messages, userMsg];
     setMessages(newMessages);

@@ -169,7 +169,7 @@ const InputConsole: React.FC<InputConsoleProps> = ({
           <div
             className={`flex items-start w-full px-4 ${isInputExpanded ? "flex-1 py-4" : settings.denseMode ? "py-2 min-h-[48px]" : "py-3 min-h-[56px]"}`}
           >
-            {settings.denseMode && showCanvasBadge && !isInputExpanded && (
+            {/* {settings.denseMode && showCanvasBadge && !isInputExpanded && (
               <div className="shrink-0 flex items-center gap-1 bg-[#dde3ea] dark:bg-[#28292a] border border-gray-300 dark:border-[#3c4043] rounded-lg px-2 py-1 mr-2 mt-1 cursor-pointer hover:bg-gray-200 dark:hover:bg-[#333]">
                 <Maximize2 size={12} className="text-gray-500 dark:text-gray-400" />
                 <span className="text-xs text-gray-600 dark:text-gray-300">Canvas</span>
@@ -180,7 +180,7 @@ const InputConsole: React.FC<InputConsoleProps> = ({
                   <X size={10} />
                 </button>
               </div>
-            )}
+            )} */}
             <textarea
               ref={inputRef}
               value={input}
