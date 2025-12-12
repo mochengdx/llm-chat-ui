@@ -44,8 +44,8 @@ export const MessageContent = memo(
 
     if (isUser) {
       return (
-        <div className="bg-blue-50 dark:bg-blue-500/10 px-4 py-3 rounded-2xl rounded-tr-sm whitespace-pre-wrap text-gray-800 dark:text-gray-100 text-[16px]">
-          {msg.content}
+        <div className="bg-blue-50 dark:bg-blue-500/10 px-4 py-3 rounded-2xl rounded-tr-sm text-gray-800 dark:text-gray-100 text-[16px]">
+          <MarkdownRenderer content={msg.content} />
         </div>
       );
     }

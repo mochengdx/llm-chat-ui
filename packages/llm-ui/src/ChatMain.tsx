@@ -13,6 +13,7 @@ import {
   Menu,
   PenTool,
   Sparkles,
+  User,
   Video,
   Wrench,
   Zap
@@ -92,6 +93,12 @@ const MENTIONS_LIST: TriggerItem[] = [
     label: "Drive",
     icon: <HardDrive size={14} className="text-green-600 dark:text-green-500" />,
     description: "Access files"
+  },
+  {
+    id: "user-info",
+    label: "User Info",
+    icon: <User size={14} className="text-purple-600 dark:text-purple-500" />,
+    description: "Query User Profile"
   }
 ];
 

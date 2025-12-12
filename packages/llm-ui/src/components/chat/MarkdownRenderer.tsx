@@ -3,7 +3,11 @@ import { memo } from "react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import remarkDirective from "remark-directive";
 import remarkGfm from "remark-gfm";
+import remarkDirectiveRehype from "./plugins/remarkDirectiveRehype";
+import { RENDERER_REGISTRY } from "./renderers";
+import { UserProfile } from "./renderers/UserProfile";
 
 /**
  * MarkdownRenderer Component
@@ -18,12 +22,23 @@ const MarkdownRenderer = memo(
     return (
       <div className="markdown-body text-[15px] md:text-[16px] leading-7 font-light text-gray-800 dark:text-gray-200">
         <ReactMarkdown
-          remarkPlugins={[remarkGfm]}
+          remarkPlugins={[remarkGfm, remarkDirective, remarkDirectiveRehype]}
           components={{
+            // @ts-ignore - Custom directive component
+            "user-profile": ({ node, ...props }: any) => {
+              return <UserProfile {...props} />;
+            },
             code({ node, inline, className, children, ...props }: any) {
               const match = /language-(\w+)/.exec(className || "");
               const codeContent = String(children).replace(/\n$/, "");
               const isMultiLine = !inline && match;
+              const language = match?.[1]?.toLowerCase();
+
+              // Check for custom renderer
+              if (isMultiLine && language && RENDERER_REGISTRY[language]) {
+                const Renderer = RENDERER_REGISTRY[language];
+                return <Renderer content={codeContent} language={language} />;
+              }
 
               if (!isMultiLine) {
                 return (
