@@ -1,4 +1,7 @@
 import ChatMain from "@llm/ui/src/ChatMain";
+import { DataList } from "./components/DataList";
+import { ImagePlus } from "./components/ImagePlus";
+import { UserProfile } from "./components/UserProfile";
 
 const App = () => {
   // AOP Hook: Before sending message
@@ -26,9 +29,18 @@ const App = () => {
     return chunk;
   };
 
+  // Define custom extensions
+  const extensions = {
+    directiveComponents: {
+      "user-profile": UserProfile as any,
+      "image-plus": ImagePlus as any,
+      "data-list": DataList as any
+    }
+  };
+
   //   自己实现的适配器实例
   //   const myAdapter = new MyCustomAdapter();
-  return <ChatMain onBeforeSend={handleBeforeSend} onStreamTransform={handleStreamTransform} />;
+  return <ChatMain onBeforeSend={handleBeforeSend} onStreamTransform={handleStreamTransform} extensions={extensions} />;
 };
 
 export default App;

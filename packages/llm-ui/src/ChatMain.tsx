@@ -21,6 +21,7 @@ import {
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import ArtifactPanel from "./components/artifact/ArtifactPanel";
 import MessageItem from "./components/chat/MessageItem";
+import { ChatExtensions } from "./components/chat/renderers/types";
 import InputConsole from "./components/input/InputConsole";
 import SidebarMain from "./components/layout/Sidebar";
 import SettingsModal from "./components/settings/SettingsModal";
@@ -65,6 +66,15 @@ export interface ChatHooks {
    * 如果提供，将用于处理文件上传。
    */
   onFileUpload?: (file: File) => Promise<Attachment>;
+
+  /**
+   * Custom extensions for the chat interface.
+   * 聊天界面的自定义扩展。
+   *
+   * Allows injecting custom renderers for code blocks and markdown directives.
+   * 允许注入用于代码块和 Markdown 指令的自定义渲染器。
+   */
+  extensions?: ChatExtensions;
 }
 
 interface ChatMainProps extends ChatHooks {}
@@ -132,7 +142,13 @@ const SUGGESTION_CHIPS = [
   { label: "Learn", icon: <BookOpen size={16} className="text-orange-500" />, action: "learn" }
 ];
 
-const ChatMain: React.FC<ChatMainProps> = ({ onBeforeSend, onStreamTransform, customAdapter, onFileUpload }) => {
+const ChatMain: React.FC<ChatMainProps> = ({
+  onBeforeSend,
+  onStreamTransform,
+  customAdapter,
+  onFileUpload,
+  extensions
+}) => {
   const {
     messages: rawMessages,
     setMessages,
@@ -489,6 +505,7 @@ const ChatMain: React.FC<ChatMainProps> = ({ onBeforeSend, onStreamTransform, cu
                         setArtifactContent(code);
                         setArtifactOpen(true);
                       }}
+                      extensions={extensions}
                     />
                   </div>
                 ))}

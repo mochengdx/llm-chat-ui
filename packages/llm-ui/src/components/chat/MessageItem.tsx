@@ -6,18 +6,21 @@ import { MessageAvatar } from "./message/MessageAvatar";
 import { MessageContent } from "./message/MessageContent";
 import { MessageHeader } from "./message/MessageHeader";
 import { ThinkingProcess } from "./message/ThinkingProcess";
+import { ChatExtensions } from "./renderers/types";
 
 const MessageItem = memo(
   ({
     msg,
     onEdit,
     onRegenerate,
-    onOpenCanvas
+    onOpenCanvas,
+    extensions
   }: {
     msg: Message;
     onEdit: (id: string, newContent: string) => void;
     onRegenerate: () => void;
     onOpenCanvas: (code: string) => void;
+    extensions?: ChatExtensions;
   }) => {
     const [isEditing, setIsEditing] = useState(false);
 
@@ -55,6 +58,7 @@ const MessageItem = memo(
             onCancelEdit={() => setIsEditing(false)}
             onOpenCanvas={onOpenCanvas}
             isUser={isUser}
+            extensions={extensions}
           />
 
           <MessageActions

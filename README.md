@@ -25,6 +25,33 @@ A modern, responsive, and feature-rich LLM chat interface built with React, Tail
   - **Typed**: Built with TypeScript for type safety.
   - **Modern Stack**: React, Vite, Tailwind CSS, Zustand.
 
+## Extension Capabilities
+
+The chat interface is highly extensible, allowing developers to inject custom React components directly into the chat stream using Markdown Directives.
+
+### Custom Component Injection
+
+You can register custom components in your application and trigger them via specific Markdown syntax `::component-name[content]{prop="value"}`.
+
+#### Built-in Examples
+
+1.  **User Profile Card** (`::user-profile`) Displays a rich user profile card.
+
+    ```markdown
+    ::user-profile[User Bio Content]{name="John Doe" role="Developer" avatar="https://example.com/avatar.png" bio="Full stack developer"}
+    ```
+
+2.  **Enhanced Image** (`::image-plus`) Renders an image with title, description, and link.
+
+    ```markdown
+    ::image-plus[Description inside]{src="https://example.com/image.png" name="Image Name" info="Some info" link="https://example.com"}
+    ```
+
+3.  **Data List** (`::data-list`) Renders a structured list from JSON data.
+    ```markdown
+    ::data-list[Project Status Overview]{title="Q4 Deliverables" data='[{"title": "Frontend Migration", "status": "Done", "desc": "Migrated to React 18"}, {"title": "Backend API", "status": "In Progress", "desc": "Implementing GraphQL endpoints"}]'}
+    ```
+
 ## Project Structure
 
 This project is organized as a monorepo:

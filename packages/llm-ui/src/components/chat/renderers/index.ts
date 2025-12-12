@@ -13,4 +13,5 @@ export const RENDERER_REGISTRY: RendererRegistry = {
   // map: MapRenderer,
 };
 
+export * from "./BoothViewer";
 export * from "./types";

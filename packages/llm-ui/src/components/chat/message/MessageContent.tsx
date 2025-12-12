@@ -1,6 +1,7 @@
 import type { Message } from "@llm/core";
 import { memo, useState } from "react";
 import MarkdownRenderer from "../MarkdownRenderer";
+import { ChatExtensions } from "../renderers/types";
 
 interface MessageContentProps {
   msg: Message;
@@ -9,10 +10,11 @@ interface MessageContentProps {
   onCancelEdit: () => void;
   onOpenCanvas: (code: string) => void;
   isUser: boolean;
+  extensions?: ChatExtensions;
 }
 
 export const MessageContent = memo(
-  ({ msg, isEditing, onSaveEdit, onCancelEdit, onOpenCanvas, isUser }: MessageContentProps) => {
+  ({ msg, isEditing, onSaveEdit, onCancelEdit, onOpenCanvas, isUser, extensions }: MessageContentProps) => {
     const [editContent, setEditContent] = useState(msg.content);
 
     if (isEditing) {
@@ -45,7 +47,7 @@ export const MessageContent = memo(
     if (isUser) {
       return (
         <div className="bg-blue-50 dark:bg-blue-500/10 px-4 py-3 rounded-2xl rounded-tr-sm text-gray-800 dark:text-gray-100 text-[16px]">
-          <MarkdownRenderer content={msg.content} />
+          <MarkdownRenderer content={msg.content} extensions={extensions} />
         </div>
       );
     }
@@ -54,7 +56,7 @@ export const MessageContent = memo(
       <div
         className={`prose max-w-none dark:prose-invert prose-p:leading-relaxed prose-pre:bg-gray-100 dark:prose-pre:bg-[#1e1f20]`}
       >
-        <MarkdownRenderer content={msg.content} onCodeBlockFound={onOpenCanvas} />
+        <MarkdownRenderer content={msg.content} onCodeBlockFound={onOpenCanvas} extensions={extensions} />
         {msg.isStreaming && !msg.isThinking && (
           <span className="inline-block w-2 h-4 bg-gray-800 dark:bg-gray-400 ml-1 animate-blink align-middle"></span>
         )}

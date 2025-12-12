@@ -7,7 +7,7 @@ import remarkDirective from "remark-directive";
 import remarkGfm from "remark-gfm";
 import remarkDirectiveRehype from "./plugins/remarkDirectiveRehype";
 import { RENDERER_REGISTRY } from "./renderers";
-import { UserProfile } from "./renderers/UserProfile";
+import { ChatExtensions } from "./renderers/types";
 
 /**
  * MarkdownRenderer Component
@@ -18,23 +18,46 @@ import { UserProfile } from "./renderers/UserProfile";
  * 使用 react-markdown 渲染 Markdown 内容，支持 GFM（GitHub 风格 Markdown）和代码块语法高亮。
  */
 const MarkdownRenderer = memo(
-  ({ content, onCodeBlockFound }: { content: string; onCodeBlockFound?: (code: string) => void }) => {
+  ({
+    content,
+    onCodeBlockFound,
+    extensions
+  }: {
+    content: string;
+    onCodeBlockFound?: (code: string) => void;
+    extensions?: ChatExtensions;
+  }) => {
     return (
       <div className="markdown-body text-[15px] md:text-[16px] leading-7 font-light text-gray-800 dark:text-gray-200">
         <ReactMarkdown
           remarkPlugins={[remarkGfm, remarkDirective, remarkDirectiveRehype]}
           components={{
-            // @ts-ignore - Custom directive component
-            "user-profile": ({ node, ...props }: any) => {
-              return <UserProfile {...props} />;
-            },
+            // Generic handler for custom directives from extensions
+            // @ts-ignore
+            ...Object.keys(extensions?.directiveComponents || {}).reduce(
+              (acc, key) => {
+                // @ts-ignore
+                acc[key] = ({ node, ...props }: any) => {
+                  const Component = extensions!.directiveComponents![key];
+                  return <Component node={node} {...props} />;
+                };
+                return acc;
+              },
+              {} as Record<string, any>
+            ),
             code({ node, inline, className, children, ...props }: any) {
               const match = /language-(\w+)/.exec(className || "");
               const codeContent = String(children).replace(/\n$/, "");
               const isMultiLine = !inline && match;
               const language = match?.[1]?.toLowerCase();
 
-              // Check for custom renderer
+              // Check for custom renderer from extensions first
+              if (isMultiLine && language && extensions?.codeBlockRenderers?.[language]) {
+                const Renderer = extensions.codeBlockRenderers[language];
+                return <Renderer content={codeContent} language={language} />;
+              }
+
+              // Check for built-in custom renderer
               if (isMultiLine && language && RENDERER_REGISTRY[language]) {
                 const Renderer = RENDERER_REGISTRY[language];
                 return <Renderer content={codeContent} language={language} />;

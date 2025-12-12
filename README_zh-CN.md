@@ -25,6 +25,33 @@
   - **类型安全**: 使用 TypeScript 构建。
   - **现代技术栈**: React, Vite, Tailwind CSS, Zustand.
 
+## 扩展能力
+
+聊天界面具有高度的可扩展性，允许开发者通过 Markdown 指令（Markdown Directives）将自定义 React 组件直接注入到聊天流中。
+
+### 自定义组件注入
+
+您可以在应用程序中注册自定义组件，并通过特定的 Markdown 语法 `::component-name[content]{prop="value"}` 触发它们。
+
+#### 内置示例
+
+1.  **用户资料卡片** (`::user-profile`) 显示丰富的用户资料卡片。
+
+    ```markdown
+    ::user-profile[用户简介内容]{name="张三" role="开发工程师" avatar="https://example.com/avatar.png" bio="全栈开发者"}
+    ```
+
+2.  **增强图片组件** (`::image-plus`) 渲染带有标题、描述和链接的图片。
+
+    ```markdown
+    ::image-plus[图片描述]{src="https://example.com/image.png" name="图片名称" info="详细信息" link="https://example.com"}
+    ```
+
+3.  **数据列表** (`::data-list`) 根据 JSON 数据渲染结构化列表。
+    ```markdown
+    ::data-list[项目状态概览]{title="Q4 交付物" data='[{"title": "前端迁移", "status": "已完成", "desc": "迁移至 React 18"}, {"title": "后端 API", "status": "进行中", "desc": "实现 GraphQL 端点"}]'}
+    ```
+
 ## 项目结构
 
 本项目采用 Monorepo 结构组织：
