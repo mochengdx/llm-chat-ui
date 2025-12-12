@@ -40,6 +40,8 @@ interface InputConsoleProps {
   isHome: boolean;
   showCanvasBadge: boolean;
   setShowCanvasBadge: (val: boolean) => void;
+  isStreaming?: boolean;
+  onStop?: () => void;
 }
 
 const InputConsole: React.FC<InputConsoleProps> = ({
@@ -75,7 +77,9 @@ const InputConsole: React.FC<InputConsoleProps> = ({
   dropdownRef,
   isHome,
   showCanvasBadge,
-  setShowCanvasBadge
+  setShowCanvasBadge,
+  isStreaming,
+  onStop
 }) => {
   return (
     <div
@@ -136,6 +140,8 @@ const InputConsole: React.FC<InputConsoleProps> = ({
             input={input}
             hasAttachments={attachments.length > 0}
             onSend={() => handleSend()}
+            isStreaming={isStreaming}
+            onStop={onStop}
           />
         </div>
       </div>

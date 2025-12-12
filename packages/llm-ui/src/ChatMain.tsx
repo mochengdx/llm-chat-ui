@@ -1,4 +1,4 @@
-import type { Attachment, Message, StreamAdapter, StreamCallbacks, StreamRequest, TriggerItem } from "@llm/core";
+import type { Attachment, Message, StreamAdapter, StreamRequest, TriggerItem } from "@llm/core";
 import { StreamClient } from "@llm/core";
 import { useLLMStore } from "@llm/store";
 import {
@@ -23,6 +23,7 @@ import MessageItem from "./components/chat/MessageItem";
 import InputConsole from "./components/input/InputConsole";
 import SidebarMain from "./components/layout/Sidebar";
 import SettingsModal from "./components/settings/SettingsModal";
+import { useLLMStream } from "./hooks/useLLMStream";
 
 export interface ChatHooks {
   /**
@@ -140,7 +141,7 @@ const ChatMain: React.FC<ChatMainProps> = ({ onBeforeSend, onStreamTransform, cu
   const sessions = useMemo(() => (Array.isArray(rawSessions) ? rawSessions : []), [rawSessions]);
 
   const [input, setInput] = useState("");
-  const [isGenerating, setIsGenerating] = useState(false);
+  // const [isGenerating, setIsGenerating] = useState(false); // Replaced by useLLMStream
   const [isSettingsOpen, setSettingsOpen] = useState(false);
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [attachments, setAttachments] = useState<Attachment[]>([]);
@@ -156,7 +157,13 @@ const ChatMain: React.FC<ChatMainProps> = ({ onBeforeSend, onStreamTransform, cu
   const [artifactContent, setArtifactContent] = useState<string>("");
 
   const chatEndRef = useRef<HTMLDivElement>(null);
-  const streamClientRef = useRef<StreamClient | null>(null);
+  // const streamClientRef = useRef<StreamClient | null>(null); // Replaced by useLLMStream
+  const streamClient = useMemo(
+    () => new StreamClient(customAdapter || settings.protocol),
+    [customAdapter, settings.protocol]
+  );
+  const { isStreaming, trigger, stop } = useLLMStream({ streamClient });
+
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -199,7 +206,7 @@ const ChatMain: React.FC<ChatMainProps> = ({ onBeforeSend, onStreamTransform, cu
 
   useEffect(() => {
     if (messages.length > 0) chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages.length, isGenerating]);
+  }, [messages.length, isStreaming]);
 
   // Handle outside clicks
   useEffect(() => {
@@ -306,7 +313,7 @@ const ChatMain: React.FC<ChatMainProps> = ({ onBeforeSend, onStreamTransform, cu
     let textToSend = txt || input;
     const currentAttachments = overrideAttachments || attachments;
 
-    if ((!textToSend.trim() && currentAttachments.length === 0) || isGenerating) return;
+    if ((!textToSend.trim() && currentAttachments.length === 0) || isStreaming) return;
 
     if (onBeforeSend) {
       try {
@@ -320,10 +327,6 @@ const ChatMain: React.FC<ChatMainProps> = ({ onBeforeSend, onStreamTransform, cu
     }
 
     if (!textToSend.trim() && currentAttachments.length === 0) return;
-
-    if (!streamClientRef.current) {
-      streamClientRef.current = new StreamClient(customAdapter || settings.protocol);
-    }
 
     setTriggerType(null);
     setIsInputExpanded(false);
@@ -342,7 +345,6 @@ const ChatMain: React.FC<ChatMainProps> = ({ onBeforeSend, onStreamTransform, cu
     const newMessages = [...messages, userMsg];
     setMessages(newMessages);
     setInput("");
-    setIsGenerating(true);
 
     // Update sessions
     if (!currentSessionId) {
@@ -377,7 +379,7 @@ const ChatMain: React.FC<ChatMainProps> = ({ onBeforeSend, onStreamTransform, cu
       config: { useThinking: isThinkingModel }
     };
 
-    const callbacks: StreamCallbacks = {
+    trigger(request, {
       onThinking: (token: string) => {
         setMessages((prev) =>
           prev.map((m) => (m.id === aiMsgId ? { ...m, thoughtProcess: (m.thoughtProcess || "") + token } : m))
@@ -391,7 +393,6 @@ const ChatMain: React.FC<ChatMainProps> = ({ onBeforeSend, onStreamTransform, cu
       },
       onEnd: () => {
         setMessages((prev) => prev.map((m) => (m.id === aiMsgId ? { ...m, isStreaming: false } : m)));
-        setIsGenerating(false);
       },
       onError: (err: Error) => {
         setMessages((prev) =>
@@ -399,11 +400,8 @@ const ChatMain: React.FC<ChatMainProps> = ({ onBeforeSend, onStreamTransform, cu
             m.id === aiMsgId ? { ...m, content: m.content + `\n[Error: ${err.message}]`, isStreaming: false } : m
           )
         );
-        setIsGenerating(false);
       }
-    };
-
-    streamClientRef.current.stream(request, callbacks);
+    });
   };
 
   return (
@@ -526,6 +524,8 @@ const ChatMain: React.FC<ChatMainProps> = ({ onBeforeSend, onStreamTransform, cu
             isHome={isHome}
             showCanvasBadge={showCanvasBadge}
             setShowCanvasBadge={setShowCanvasBadge}
+            isStreaming={isStreaming}
+            onStop={stop}
           />
         </main>
 

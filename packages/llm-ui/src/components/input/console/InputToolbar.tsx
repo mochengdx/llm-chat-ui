@@ -9,6 +9,7 @@ import {
   Mic,
   Plus,
   Send,
+  Square,
   Video,
   Wrench
 } from "lucide-react";
@@ -39,6 +40,8 @@ interface InputToolbarProps {
   input: string;
   hasAttachments: boolean;
   onSend: () => void;
+  isStreaming?: boolean;
+  onStop?: () => void;
 }
 
 export const InputToolbar = memo(
@@ -62,7 +65,9 @@ export const InputToolbar = memo(
     setIsListening,
     input,
     hasAttachments,
-    onSend
+    onSend,
+    isStreaming,
+    onStop
   }: InputToolbarProps) => {
     return (
       <div className="flex items-center justify-between px-4 pb-3 pt-1">
@@ -188,10 +193,22 @@ export const InputToolbar = memo(
             )}
           </button>
           <button
-            onClick={() => onSend()}
-            className={`p-2 rounded-full transition-colors ${input.trim() || hasAttachments ? "bg-blue-600 dark:bg-[#a8c7fa] text-white dark:text-[#0b1219] hover:bg-blue-700 dark:hover:bg-white" : "bg-[#dde3ea] dark:bg-[#3c4043] text-gray-400 dark:text-gray-500 cursor-not-allowed"}`}
+            onClick={() => {
+              if (isStreaming && onStop) {
+                onStop();
+              } else {
+                onSend();
+              }
+            }}
+            className={`p-2 rounded-full transition-colors ${
+              isStreaming
+                ? "bg-gray-200 dark:bg-[#3c4043] text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-[#4a4d50]"
+                : input.trim() || hasAttachments
+                  ? "bg-blue-600 dark:bg-[#a8c7fa] text-white dark:text-[#0b1219] hover:bg-blue-700 dark:hover:bg-white"
+                  : "bg-[#dde3ea] dark:bg-[#3c4043] text-gray-400 dark:text-gray-500 cursor-not-allowed"
+            }`}
           >
-            <Send size={18} className="ml-0.5" />
+            {isStreaming ? <Square size={18} className="fill-current" /> : <Send size={18} className="ml-0.5" />}
           </button>
         </div>
       </div>
