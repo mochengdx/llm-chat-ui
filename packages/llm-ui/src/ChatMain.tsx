@@ -54,6 +54,15 @@ export interface ChatHooks {
    * 如果提供，将代替内部适配器使用。
    */
   customAdapter?: StreamAdapter;
+
+  /**
+   * Custom file upload handler.
+   * 自定义文件上传处理程序。
+   *
+   * If provided, it will be used to handle file uploads.
+   * 如果提供，将用于处理文件上传。
+   */
+  onFileUpload?: (file: File) => Promise<Attachment>;
 }
 
 interface ChatMainProps extends ChatHooks {}
@@ -115,7 +124,7 @@ const SUGGESTION_CHIPS = [
   { label: "Learn", icon: <BookOpen size={16} className="text-orange-500" />, action: "learn" }
 ];
 
-const ChatMain: React.FC<ChatMainProps> = ({ onBeforeSend, onStreamTransform, customAdapter }) => {
+const ChatMain: React.FC<ChatMainProps> = ({ onBeforeSend, onStreamTransform, customAdapter, onFileUpload }) => {
   const {
     messages: rawMessages,
     setMessages,
@@ -244,12 +253,22 @@ const ChatMain: React.FC<ChatMainProps> = ({ onBeforeSend, onStreamTransform, cu
     if (window.innerWidth < 768) setSidebarOpen(false);
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      const type = file.type.startsWith("image/") ? "image" : "file";
-      const previewUrl = URL.createObjectURL(file);
-      setAttachments((prev) => [...prev, { id: Date.now().toString(), file, previewUrl, type }]);
+
+      if (onFileUpload) {
+        try {
+          const attachment = await onFileUpload(file);
+          setAttachments((prev) => [...prev, attachment]);
+        } catch (error) {
+          console.error("File upload failed:", error);
+        }
+      } else {
+        const type = file.type.startsWith("image/") ? "image" : "file";
+        const previewUrl = URL.createObjectURL(file);
+        setAttachments((prev) => [...prev, { id: Date.now().toString(), file, previewUrl, type }]);
+      }
       setPlusMenuOpen(false);
     }
   };
