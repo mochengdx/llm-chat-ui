@@ -24,6 +24,7 @@ import InputConsole from "./components/input/InputConsole";
 import SidebarMain from "./components/layout/Sidebar";
 import SettingsModal from "./components/settings/SettingsModal";
 import { useLLMStream } from "./hooks/useLLMStream";
+import { useTranslation } from "./hooks/useTranslation";
 
 export interface ChatHooks {
   /**
@@ -137,15 +138,6 @@ const DEFAULT_TAGS_LIST: TriggerItem[] = [
   }
 ];
 
-const SUGGESTION_CHIPS = [
-  { label: "Create Image", icon: <ImageIcon size={16} className="text-yellow-500" />, action: "image" },
-  { label: "Write", icon: <PenTool size={16} className="text-purple-500" />, action: "write" },
-  { label: "Build", icon: <Hammer size={16} className="text-blue-500" />, action: "code" },
-  { label: "Deep Research", icon: <Globe size={16} className="text-green-500" />, action: "research" },
-  { label: "Create Video", icon: <Video size={16} className="text-red-500" />, action: "video" },
-  { label: "Learn", icon: <BookOpen size={16} className="text-orange-500" />, action: "learn" }
-];
-
 const ChatMain: React.FC<ChatMainProps> = ({
   onBeforeSend,
   onStreamTransform,
@@ -167,6 +159,29 @@ const ChatMain: React.FC<ChatMainProps> = ({
 
   const messages = useMemo(() => (Array.isArray(rawMessages) ? rawMessages : []), [rawMessages]);
   const sessions = useMemo(() => (Array.isArray(rawSessions) ? rawSessions : []), [rawSessions]);
+
+  const { t } = useTranslation(settings);
+
+  const SUGGESTION_CHIPS = [
+    {
+      label: t.chat.chips?.createImage || "Create Image",
+      icon: <ImageIcon size={16} className="text-yellow-500" />,
+      action: "image"
+    },
+    { label: t.chat.chips?.write || "Write", icon: <PenTool size={16} className="text-purple-500" />, action: "write" },
+    { label: t.chat.chips?.build || "Build", icon: <Hammer size={16} className="text-blue-500" />, action: "code" },
+    {
+      label: t.chat.chips?.deepResearch || "Deep Research",
+      icon: <Globe size={16} className="text-green-500" />,
+      action: "research"
+    },
+    {
+      label: t.chat.chips?.createVideo || "Create Video",
+      icon: <Video size={16} className="text-red-500" />,
+      action: "video"
+    },
+    { label: t.chat.chips?.learn || "Learn", icon: <BookOpen size={16} className="text-orange-500" />, action: "learn" }
+  ];
 
   const mentionsList = useMemo(() => [...DEFAULT_MENTIONS_LIST, ...(triggers?.mentions || [])], [triggers?.mentions]);
   const tagsList = useMemo(() => [...DEFAULT_TAGS_LIST, ...(triggers?.tags || [])], [triggers?.tags]);
@@ -555,6 +570,7 @@ const ChatMain: React.FC<ChatMainProps> = ({
         }}
         onToggle={() => setSidebarOpen(!isSidebarOpen)}
         onOpenSettings={() => setSettingsOpen(true)}
+        settings={settings}
       />
 
       <div className="flex-1 flex h-full relative overflow-hidden transition-all duration-300">
@@ -584,10 +600,10 @@ const ChatMain: React.FC<ChatMainProps> = ({
               <div className="flex flex-col items-center justify-center h-full px-4 pb-32 animate-fade-in">
                 <div className="mb-10 text-center">
                   <h1 className="text-5xl md:text-6xl font-medium text-transparent bg-clip-text bg-gradient-to-br from-blue-500 via-purple-500 to-red-500 mb-4 tracking-tight">
-                    Hello, Human
+                    {t.chat.hello}
                   </h1>
                   <h2 className="text-4xl md:text-5xl font-medium text-[#444746] dark:text-[#5e5f61]">
-                    How can I help you today?
+                    {t.chat.howCanIHelp}
                   </h2>
                 </div>
                 <div className="w-full h-32 md:h-40 pointer-events-none"></div>
@@ -617,6 +633,7 @@ const ChatMain: React.FC<ChatMainProps> = ({
                         setArtifactOpen(true);
                       }}
                       extensions={extensions}
+                      t={t}
                     />
                   </div>
                 ))}
@@ -666,7 +683,7 @@ const ChatMain: React.FC<ChatMainProps> = ({
           />
         </main>
 
-        <ArtifactPanel isOpen={artifactOpen} onClose={() => setArtifactOpen(false)} content={artifactContent} />
+        <ArtifactPanel isOpen={artifactOpen} onClose={() => setArtifactOpen(false)} content={artifactContent} t={t} />
       </div>
 
       <SettingsModal

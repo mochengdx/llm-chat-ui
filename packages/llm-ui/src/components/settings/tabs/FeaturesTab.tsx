@@ -1,6 +1,7 @@
 import { UserSettings } from "@llm/core";
 import { Brain, ToggleLeft, ToggleRight, Wrench } from "lucide-react";
 import { memo } from "react";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 interface FeaturesTabProps {
   settings: UserSettings;
@@ -8,11 +9,13 @@ interface FeaturesTabProps {
 }
 
 export const FeaturesTab = memo(({ settings, updateSettings }: FeaturesTabProps) => {
+  const { t } = useTranslation(settings);
+
   return (
     <div className="space-y-6">
       <div className="space-y-4">
         <label className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-          Capabilities
+          {t.settings.featuresTab.title}
         </label>
 
         {/* Thinking Process Toggle */}
@@ -20,8 +23,10 @@ export const FeaturesTab = memo(({ settings, updateSettings }: FeaturesTabProps)
           <div className="flex items-center gap-3">
             <Brain size={20} className="text-blue-500 dark:text-blue-400" />
             <div>
-              <div className="text-sm font-medium text-gray-800 dark:text-gray-200">Thinking Process</div>
-              <div className="text-xs text-gray-500">Show internal reasoning steps</div>
+              <div className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                {t.settings.featuresTab.thinking.title}
+              </div>
+              <div className="text-xs text-gray-500">{t.settings.featuresTab.thinking.desc}</div>
             </div>
           </div>
           <button
@@ -39,8 +44,10 @@ export const FeaturesTab = memo(({ settings, updateSettings }: FeaturesTabProps)
           <div className="flex items-center gap-3">
             <Wrench size={20} className="text-green-500 dark:text-green-400" />
             <div>
-              <div className="text-sm font-medium text-gray-800 dark:text-gray-200">Advanced Tools</div>
-              <div className="text-xs text-gray-500">Enable Deep Research, Python exec, etc</div>
+              <div className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                {t.settings.featuresTab.tools.title}
+              </div>
+              <div className="text-xs text-gray-500">{t.settings.featuresTab.tools.desc}</div>
             </div>
           </div>
           <button

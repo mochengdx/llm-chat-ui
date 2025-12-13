@@ -1,13 +1,16 @@
 import type { Message, StreamAdapter, UserSettings } from "@llm/core";
 import { StreamClient } from "@llm/core";
 import { useLLMStore } from "@llm/store";
-import { ChevronLeft, Image as ImageIcon, Mic, MoreHorizontal, Plus, Send, Sparkles, User } from "lucide-react";
+import { ChevronLeft, Image as ImageIcon, Mic, Plus, Send, Settings, Sparkles, User } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { ChatHooks } from "./ChatMain";
 import ArtifactPanel from "./components/artifact/ArtifactPanel";
 import MarkdownRenderer from "./components/chat/MarkdownRenderer";
 import SettingsModal from "./components/settings/SettingsModal";
+
+import { useTranslation } from "./hooks/useTranslation";
+import { Translations } from "./locales/en";
 
 interface ChatMobileProps extends ChatHooks {
   /** Custom stream adapter for handling different transport protocols */
@@ -23,7 +26,15 @@ interface ChatMobileProps extends ChatHooks {
  * - Thinking process display
  * - Artifact/Canvas triggers
  */
-const MobileMessageItem = ({ msg, onOpenCanvas }: { msg: Message; onOpenCanvas: (code: string) => void }) => {
+const MobileMessageItem = ({
+  msg,
+  onOpenCanvas,
+  t
+}: {
+  msg: Message;
+  onOpenCanvas: (code: string) => void;
+  t: Translations;
+}) => {
   const isUser = msg.role === "user";
   const [showThought, setShowThought] = useState(false);
 
@@ -43,7 +54,7 @@ const MobileMessageItem = ({ msg, onOpenCanvas }: { msg: Message; onOpenCanvas: 
               onClick={() => setShowThought(!showThought)}
               className="text-xs text-gray-500 flex items-center gap-1 bg-gray-100 px-2 py-1 rounded mb-1"
             >
-              {showThought ? "隐藏思考过程" : "查看思考过程"}
+              {showThought ? t.chat.hideThought : t.chat.showThought}
             </button>
             {showThought && (
               <div className="bg-gray-50 p-2 rounded text-xs text-gray-600 border border-gray-100 mb-1 break-words whitespace-pre-wrap">
@@ -76,12 +87,9 @@ const MobileMessageItem = ({ msg, onOpenCanvas }: { msg: Message; onOpenCanvas: 
   );
 };
 
-/**
- * Main Mobile Chat Layout
- * Handles the core chat logic, state management, and UI layout for mobile devices.
- */
 const ChatMainMobileLayout: React.FC<ChatMobileProps> = ({ onBeforeSend, onStreamTransform, customAdapter }) => {
   const { messages, setMessages, settings, setSettings } = useLLMStore();
+  const { t } = useTranslation(settings);
   const [input, setInput] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSettingsOpen, setSettingsOpen] = useState(false);
@@ -207,7 +215,7 @@ const ChatMainMobileLayout: React.FC<ChatMobileProps> = ({ onBeforeSend, onStrea
         </div>
         <h1 className="text-[17px] font-medium text-black">Simple LLM Chat</h1>
         <button onClick={() => setSettingsOpen(true)} className="w-8 flex items-center justify-end">
-          <MoreHorizontal size={24} className="text-black" />
+          <Settings size={20} className="text-black" />
         </button>
       </header>
 
@@ -221,6 +229,7 @@ const ChatMainMobileLayout: React.FC<ChatMobileProps> = ({ onBeforeSend, onStrea
               setArtifactContent(code);
               setArtifactOpen(true);
             }}
+            t={t}
           />
         ))}
         <div ref={chatEndRef} className="h-2" />
@@ -239,7 +248,7 @@ const ChatMainMobileLayout: React.FC<ChatMobileProps> = ({ onBeforeSend, onStrea
             rows={1}
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask Simple LLM Chat..."
+            placeholder={t.input.placeholder}
             style={{ height: "auto" }}
           />
 
@@ -280,7 +289,7 @@ const ChatMainMobileLayout: React.FC<ChatMobileProps> = ({ onBeforeSend, onStrea
           document.body
         )}
 
-      <ArtifactPanel isOpen={artifactOpen} onClose={() => setArtifactOpen(false)} content={artifactContent} />
+      <ArtifactPanel isOpen={artifactOpen} onClose={() => setArtifactOpen(false)} content={artifactContent} t={t} />
     </div>
   );
 };

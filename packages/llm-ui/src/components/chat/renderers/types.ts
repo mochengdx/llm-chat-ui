@@ -1,8 +1,10 @@
 import React from "react";
+import { Translations } from "../../../locales/en";
 
 export interface CodeBlockRendererProps {
   content: string;
   language: string;
+  t?: Translations;
 }
 
 export type CodeBlockRenderer = React.FC<CodeBlockRendererProps>;

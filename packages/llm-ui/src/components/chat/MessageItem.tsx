@@ -1,5 +1,6 @@
 import type { Message } from "@llm/core";
 import { memo, useState } from "react";
+import { Translations } from "../../locales/en";
 import { MessageActions } from "./message/MessageActions";
 import { MessageAttachments } from "./message/MessageAttachments";
 import { MessageAvatar } from "./message/MessageAvatar";
@@ -14,13 +15,15 @@ const MessageItem = memo(
     onEdit,
     onRegenerate,
     onOpenCanvas,
-    extensions
+    extensions,
+    t
   }: {
     msg: Message;
     onEdit: (id: string, newContent: string) => void;
     onRegenerate: () => void;
     onOpenCanvas: (code: string) => void;
     extensions?: ChatExtensions;
+    t: Translations;
   }) => {
     const [isEditing, setIsEditing] = useState(false);
 
@@ -45,11 +48,13 @@ const MessageItem = memo(
             childrenIds={msg.childrenIds}
             currentChildIndex={msg.currentChildIndex}
             isUser={isUser}
+            t={t}
           />
-
           <MessageAttachments attachments={msg.attachments} />
 
-          {msg.role === "model" && <ThinkingProcess thoughtProcess={msg.thoughtProcess} isThinking={msg.isThinking} />}
+          {msg.role === "model" && (
+            <ThinkingProcess thoughtProcess={msg.thoughtProcess} isThinking={msg.isThinking} t={t} />
+          )}
 
           <MessageContent
             msg={msg}
@@ -59,6 +64,7 @@ const MessageItem = memo(
             onOpenCanvas={onOpenCanvas}
             isUser={isUser}
             extensions={extensions}
+            t={t}
           />
 
           <MessageActions
@@ -66,6 +72,7 @@ const MessageItem = memo(
             isEditing={isEditing}
             onEditStart={() => setIsEditing(true)}
             onRegenerate={onRegenerate}
+            t={t}
           />
         </div>
       </div>

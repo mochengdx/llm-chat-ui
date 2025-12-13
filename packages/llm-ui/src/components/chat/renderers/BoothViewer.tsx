@@ -2,7 +2,7 @@ import { Box, Cuboid, Maximize, RotateCw, ZoomIn } from "lucide-react";
 import React, { useState } from "react";
 import { CodeBlockRendererProps } from "./types";
 
-export const BoothViewer: React.FC<CodeBlockRendererProps> = ({ content }) => {
+export const BoothViewer: React.FC<CodeBlockRendererProps> = ({ content, t }) => {
   // Assume content is a URL or a JSON config. For simplicity, let's treat it as a URL if it starts with http
   // otherwise treat it as a description.
   const isUrl = content.trim().startsWith("http");
@@ -20,7 +20,7 @@ export const BoothViewer: React.FC<CodeBlockRendererProps> = ({ content }) => {
       <div className="absolute top-0 left-0 w-full p-3 flex justify-between items-center z-10 bg-gradient-to-b from-black/60 to-transparent">
         <div className="flex items-center gap-2 text-white/90">
           <Cuboid size={16} className="text-blue-400" />
-          <span className="text-xs font-medium tracking-wide uppercase">3D Viewer</span>
+          <span className="text-xs font-medium tracking-wide uppercase">{t?.chat.booth.title || "3D Viewer"}</span>
         </div>
         <div className="flex items-center gap-2">
           <button className="p-1.5 rounded-lg bg-black/40 hover:bg-black/60 text-white/80 transition-colors">
@@ -51,7 +51,7 @@ export const BoothViewer: React.FC<CodeBlockRendererProps> = ({ content }) => {
         {isLoading ? (
           <div className="flex flex-col items-center gap-3 text-blue-400">
             <div className="w-8 h-8 border-2 border-current border-t-transparent rounded-full animate-spin" />
-            <span className="text-xs font-mono">LOADING MODEL...</span>
+            <span className="text-xs font-mono">{t?.chat.booth.loading || "LOADING MODEL..."}</span>
           </div>
         ) : (
           <div className="relative z-0 flex flex-col items-center animate-fade-in">
@@ -65,9 +65,9 @@ export const BoothViewer: React.FC<CodeBlockRendererProps> = ({ content }) => {
             </div>
 
             <div className="mt-6 text-center px-4">
-              <p className="text-sm font-medium text-gray-200">Exhibition Booth Model</p>
+              <p className="text-sm font-medium text-gray-200">{t?.chat.booth.modelName || "Exhibition Booth Model"}</p>
               <p className="text-xs text-gray-500 mt-1 font-mono max-w-xs truncate">
-                {isUrl ? content.trim() : "Model Source: Generated"}
+                {isUrl ? content.trim() : t?.chat.booth.source || "Model Source: Generated"}
               </p>
             </div>
           </div>
@@ -76,8 +76,8 @@ export const BoothViewer: React.FC<CodeBlockRendererProps> = ({ content }) => {
 
       {/* Footer Info */}
       <div className="bg-gray-800/50 px-4 py-2 border-t border-gray-700 flex justify-between items-center text-xs text-gray-400">
-        <span>WebGL 2.0 Enabled</span>
-        <span>1.2MB • GLB</span>
+        <span>{t?.chat.booth.webgl || "WebGL 2.0 Enabled"}</span>
+        <span>{t?.chat.booth.size || "1.2MB • GLB"}</span>
       </div>
     </div>
   );

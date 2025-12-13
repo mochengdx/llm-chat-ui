@@ -1,5 +1,6 @@
 import { Maximize2 } from "lucide-react";
 import { RefObject, memo } from "react";
+import { Translations } from "../../../locales/en";
 
 interface InputTextAreaProps {
   input: string;
@@ -10,10 +11,11 @@ interface InputTextAreaProps {
   onExpand: () => void;
   denseMode?: boolean;
   triggerType: string | null;
+  t: Translations;
 }
 
 export const InputTextArea = memo(
-  ({ input, onChange, onSend, inputRef, isExpanded, onExpand, denseMode, triggerType }: InputTextAreaProps) => {
+  ({ input, onChange, onSend, inputRef, isExpanded, onExpand, denseMode, triggerType, t }: InputTextAreaProps) => {
     return (
       <div
         className={`flex items-start w-full px-4 ${isExpanded ? "flex-1 py-4" : denseMode ? "py-2 min-h-[48px]" : "py-3 min-h-[56px]"}`}
@@ -28,7 +30,7 @@ export const InputTextArea = memo(
               onSend();
             }
           }}
-          placeholder="Ask Simple LLM Chat..."
+          placeholder={t.input.placeholder}
           className="flex-1 bg-transparent border-none outline-none text-gray-800 dark:text-[#e3e3e3] placeholder-gray-500 text-base resize-none custom-scrollbar h-full w-full"
           style={{
             minHeight: isExpanded ? "100%" : "24px",
@@ -39,7 +41,7 @@ export const InputTextArea = memo(
           <button
             onClick={onExpand}
             className="ml-2 mt-1 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
-            title="Full screen edit"
+            title={t.input.fullScreen}
           >
             <Maximize2 size={14} />
           </button>

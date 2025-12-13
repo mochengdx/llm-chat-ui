@@ -15,6 +15,7 @@ interface StoreState {
 
 const DEFAULT_SETTINGS: UserSettings = {
   theme: "dark",
+  language: "en",
   mode: "developer",
   enableThinking: true,
   enableTools: true,

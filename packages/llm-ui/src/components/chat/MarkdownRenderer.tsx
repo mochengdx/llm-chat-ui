@@ -5,6 +5,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import remarkDirective from "remark-directive";
 import remarkGfm from "remark-gfm";
+import { Translations } from "../../locales/en";
 import remarkDirectiveRehype from "./plugins/remarkDirectiveRehype";
 import { RENDERER_REGISTRY } from "./renderers";
 import { ChatExtensions } from "./renderers/types";
@@ -21,11 +22,13 @@ const MarkdownRenderer = memo(
   ({
     content,
     onCodeBlockFound,
-    extensions
+    extensions,
+    t
   }: {
     content: string;
     onCodeBlockFound?: (code: string) => void;
     extensions?: ChatExtensions;
+    t?: Translations;
   }) => {
     return (
       <div className="markdown-body text-[15px] md:text-[16px] leading-7 font-light text-gray-800 dark:text-gray-200">
@@ -63,13 +66,13 @@ const MarkdownRenderer = memo(
               // Check for custom renderer from extensions first
               if (isMultiLine && language && extensions?.codeBlockRenderers?.[language]) {
                 const Renderer = extensions.codeBlockRenderers[language];
-                return <Renderer content={codeContent} language={language} />;
+                return <Renderer content={codeContent} language={language} t={t} />;
               }
 
               // Check for built-in custom renderer
               if (isMultiLine && language && RENDERER_REGISTRY[language]) {
                 const Renderer = RENDERER_REGISTRY[language];
-                return <Renderer content={codeContent} language={language} />;
+                return <Renderer content={codeContent} language={language} t={t} />;
               }
 
               if (!isMultiLine) {
@@ -92,19 +95,19 @@ const MarkdownRenderer = memo(
                         <button
                           onClick={() => onCodeBlockFound(codeContent)}
                           className="flex items-center gap-1 hover:text-blue-500 transition-colors"
-                          title="Open in Canvas / 在画布中打开"
+                          title={t?.common.openCanvas || "Open Canvas"}
                         >
                           <Maximize2 size={12} />
-                          <span className="hidden sm:inline">Open Canvas</span>
+                          <span className="hidden sm:inline">{t?.common.openCanvas || "Open Canvas"}</span>
                         </button>
                       )}
                       <button
                         onClick={() => navigator.clipboard.writeText(codeContent)}
-                        className="flex items-center gap-2 cursor-pointer hover:text-gray-900 dark:hover:text-white transition-colors"
-                        title="Copy Code / 复制代码"
+                        className="flex items-center gap-1 hover:text-blue-500 transition-colors"
+                        title={t?.common.copyCode || "Copy Code"}
                       >
                         <Copy size={12} />
-                        <span className="hidden sm:inline">Copy</span>
+                        <span className="hidden sm:inline">{t?.common.copy || "Copy"}</span>
                       </button>
                     </div>
                   </div>

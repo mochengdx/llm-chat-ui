@@ -1,12 +1,7 @@
-import {
-  Activity,
-  HelpCircle,
-  Menu,
-  MessageSquare,
-  Plus,
-  Settings
-} from "lucide-react";
+import { UserSettings } from "@llm/core";
+import { HelpCircle, Menu, MessageSquare, Plus, Settings } from "lucide-react";
 import React from "react";
+import { useTranslation } from "../../hooks/useTranslation";
 
 const SidebarMain: React.FC<{
   isOpen: boolean;
@@ -16,7 +11,10 @@ const SidebarMain: React.FC<{
   onSelect: (id: string) => void;
   onToggle: () => void;
   onOpenSettings: () => void;
-}> = ({ isOpen, sessions, currentSessionId, onNewChat, onSelect, onToggle, onOpenSettings }) => {
+  settings: UserSettings;
+}> = ({ isOpen, sessions, currentSessionId, onNewChat, onSelect, onToggle, onOpenSettings, settings }) => {
+  const { t } = useTranslation(settings);
+
   return (
     <div
       className={`${
@@ -37,12 +35,12 @@ const SidebarMain: React.FC<{
           className="flex items-center gap-3 px-4 py-3 bg-gray-200 dark:bg-[#2d2e30] hover:bg-gray-300 dark:hover:bg-[#3c4043] rounded-full text-sm font-medium text-gray-600 dark:text-gray-200 transition-colors w-full"
         >
           <Plus size={18} />
-          <span>New Chat</span>
+          <span>{t.sidebar.newChat}</span>
         </button>
       </div>
 
       <div className="flex-1 overflow-y-auto px-2 custom-scrollbar">
-        <div className="px-4 py-2 text-xs font-medium text-gray-500 dark:text-gray-400">Recent</div>
+        <div className="px-4 py-2 text-xs font-medium text-gray-500 dark:text-gray-400">{t.sidebar.recent}</div>
         {sessions.map((session) => (
           <button
             key={session.id}
@@ -65,22 +63,22 @@ const SidebarMain: React.FC<{
       <div className="p-2 border-t border-gray-200 dark:border-[#3c4043]">
         <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-full text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#2d2e30] transition-colors">
           <HelpCircle size={18} />
-          <span>Help</span>
+          <span>{t.sidebar.help}</span>
         </button>
-        <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-full text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#2d2e30] transition-colors">
+        {/* <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-full text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#2d2e30] transition-colors">
           <Activity size={18} />
-          <span>Activity</span>
-        </button>
+          <span>{t.sidebar.activity}</span>
+        </button> */}
         <button
           onClick={onOpenSettings}
           className="w-full flex items-center gap-3 px-4 py-2.5 rounded-full text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-[#2d2e30] transition-colors"
         >
           <Settings size={18} />
-          <span>Settings</span>
+          <span>{t.common.settings}</span>
         </button>
         <div className="mt-2 px-4 py-2 text-xs text-gray-500 flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-green-500"></div>
-          <span>Shanghai, China</span>
+          <span>{t.common.location}</span>
         </div>
       </div>
     </div>

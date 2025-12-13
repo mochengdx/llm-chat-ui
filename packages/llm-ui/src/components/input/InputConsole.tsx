@@ -1,7 +1,7 @@
 import { Attachment, TriggerItem, UserSettings } from "@llm/core";
 import React, { RefObject } from "react";
+import { useTranslation } from "../../hooks/useTranslation";
 import { ActiveTags } from "./console/ActiveTags";
-import { InputAttachments } from "./console/InputAttachments";
 import { InputHeader } from "./console/InputHeader";
 import { InputSuggestions } from "./console/InputSuggestions";
 import { InputTextArea } from "./console/InputTextArea";
@@ -86,6 +86,8 @@ const InputConsole: React.FC<InputConsoleProps> = ({
   isStreaming,
   onStop
 }) => {
+  const { t } = useTranslation(settings);
+
   return (
     <div
       className={`
@@ -100,7 +102,7 @@ const InputConsole: React.FC<InputConsoleProps> = ({
       <div
         className={`pointer-events-auto mx-auto relative group flex flex-col ${isInputExpanded ? "h-full" : ""} ${settings.denseMode ? "max-w-4xl" : "max-w-3xl"}`}
       >
-        <InputHeader isExpanded={isInputExpanded} onCollapse={() => setIsInputExpanded(false)} />
+        <InputHeader isExpanded={isInputExpanded} onCollapse={() => setIsInputExpanded(false)} t={t} />
 
         {/* Active Tags Area */}
         <ActiveTags activeTags={activeTags || []} onRemove={removeTag || (() => {})} />
@@ -109,13 +111,12 @@ const InputConsole: React.FC<InputConsoleProps> = ({
           triggerType={triggerType}
           suggestions={getFilteredTriggers()}
           onSelect={handleTriggerSelect}
+          t={t}
         />
 
         <div
           className={`bg-[#f0f4f9] dark:bg-[#1e1f20] rounded-[28px] border border-gray-200 dark:border-[#3c4043] shadow-lg flex flex-col transition-colors focus-within:bg-white dark:focus-within:bg-[#252627] focus-within:border-gray-300 dark:focus-within:border-[#5e5f61] ${isInputExpanded ? "w-full flex-1" : ""}`}
         >
-          <InputAttachments attachments={attachments} onRemove={removeAttachment} />
-
           <InputTextArea
             input={input}
             onChange={handleInputChange}
@@ -125,6 +126,7 @@ const InputConsole: React.FC<InputConsoleProps> = ({
             onExpand={() => setIsInputExpanded(true)}
             denseMode={settings.denseMode}
             triggerType={triggerType}
+            t={t}
           />
 
           <InputToolbar
@@ -150,6 +152,7 @@ const InputConsole: React.FC<InputConsoleProps> = ({
             onSend={() => handleSend()}
             isStreaming={isStreaming}
             onStop={onStop}
+            t={t}
           />
         </div>
       </div>

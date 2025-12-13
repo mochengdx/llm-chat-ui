@@ -47,6 +47,7 @@ export interface UserSettings {
   safetyLevel: "low" | "medium" | "high";
   protocol: "mock" | "sse" | "websocket";
   modelId?: string;
+  language: "en" | "zh-CN";
 }
 
 export interface StreamRequest {

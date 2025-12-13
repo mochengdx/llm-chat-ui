@@ -1,15 +1,17 @@
 import type { Message } from "@llm/core";
 import { Check, Copy, Edit2, RotateCcw, Volume2 } from "lucide-react";
 import { memo, useState } from "react";
+import { Translations } from "../../../locales/en";
 
 interface MessageActionsProps {
   msg: Message;
   isEditing: boolean;
   onEditStart: () => void;
   onRegenerate: () => void;
+  t: Translations;
 }
 
-export const MessageActions = memo(({ msg, isEditing, onEditStart, onRegenerate }: MessageActionsProps) => {
+export const MessageActions = memo(({ msg, isEditing, onEditStart, onRegenerate, t }: MessageActionsProps) => {
   const [isCopied, setIsCopied] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
 
@@ -46,7 +48,7 @@ export const MessageActions = memo(({ msg, isEditing, onEditStart, onRegenerate 
         <button
           onClick={onEditStart}
           className="p-1.5 rounded-md hover:bg-gray-200 dark:hover:bg-[#3c4043] text-gray-500"
-          title="Edit"
+          title={t.common.edit}
         >
           <Edit2 size={14} />
         </button>
@@ -56,21 +58,21 @@ export const MessageActions = memo(({ msg, isEditing, onEditStart, onRegenerate 
           <button
             onClick={handleSpeak}
             className={`p-1.5 rounded-md hover:bg-gray-200 dark:hover:bg-[#3c4043] ${isSpeaking ? "text-blue-500" : "text-gray-500"}`}
-            title={isSpeaking ? "Stop Speaking" : "Speak"}
+            title={isSpeaking ? t.common.stopSpeaking : t.common.speak}
           >
             <Volume2 size={14} />
           </button>
           <button
             onClick={onRegenerate}
             className="p-1.5 rounded-md hover:bg-gray-200 dark:hover:bg-[#3c4043] text-gray-500"
-            title="Regenerate"
+            title={t.common.regenerate}
           >
             <RotateCcw size={14} />
           </button>
           <button
             onClick={handleCopy}
             className="p-1.5 rounded-md hover:bg-gray-200 dark:hover:bg-[#3c4043] text-gray-500"
-            title="Copy"
+            title={t.common.copy}
           >
             {isCopied ? <Check size={14} className="text-green-500" /> : <Copy size={14} />}
           </button>

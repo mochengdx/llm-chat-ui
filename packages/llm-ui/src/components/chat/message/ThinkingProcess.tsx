@@ -1,12 +1,14 @@
 import { Brain, ChevronDown, ChevronRight, Loader2 } from "lucide-react";
 import { memo, useEffect, useState } from "react";
+import { Translations } from "../../../locales/en";
 
 interface ThinkingProcessProps {
   thoughtProcess?: string;
   isThinking?: boolean;
+  t: Translations;
 }
 
-export const ThinkingProcess = memo(({ thoughtProcess, isThinking }: ThinkingProcessProps) => {
+export const ThinkingProcess = memo(({ thoughtProcess, isThinking, t }: ThinkingProcessProps) => {
   const [isThoughtOpen, setThoughtOpen] = useState(false);
 
   useEffect(() => {
@@ -31,11 +33,11 @@ export const ThinkingProcess = memo(({ thoughtProcess, isThinking }: ThinkingPro
             size={12}
             className={isThinking ? "text-blue-500 dark:text-blue-400 animate-pulse" : "text-gray-500"}
           />
-          <span>Thinking Process</span>
+          <span>{t.chat.thinkingProcess}</span>
         </div>
         {isThinking && (
           <span className="ml-auto flex items-center gap-1 text-[10px] text-blue-600/80 dark:text-blue-400/80 font-mono">
-            Thinking <Loader2 size={10} className="animate-spin" />
+            {t.chat.thinking} <Loader2 size={10} className="animate-spin" />
           </span>
         )}
       </button>

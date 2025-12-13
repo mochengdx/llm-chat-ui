@@ -1,6 +1,7 @@
 import { UserSettings } from "@llm/core";
 import { Monitor, Moon, Sun, ToggleLeft, ToggleRight } from "lucide-react";
 import { memo } from "react";
+import { useTranslation } from "../../../hooks/useTranslation";
 
 interface InterfaceTabProps {
   settings: UserSettings;
@@ -8,11 +9,13 @@ interface InterfaceTabProps {
 }
 
 export const InterfaceTab = memo(({ settings, updateSettings }: InterfaceTabProps) => {
+  const { t } = useTranslation(settings);
+
   return (
     <div className="space-y-6">
       <div className="space-y-4">
         <label className="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-          Theme & Layout
+          {t.settings.interfaceTab.title}
         </label>
         <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-[#28292a] rounded-xl border border-gray-200 dark:border-[#3c4043]">
           <div className="flex items-center gap-3">
@@ -22,8 +25,10 @@ export const InterfaceTab = memo(({ settings, updateSettings }: InterfaceTabProp
               <Sun size={20} className="text-yellow-500 dark:text-yellow-400" />
             )}
             <div>
-              <div className="text-sm font-medium text-gray-800 dark:text-gray-200">Dark Mode</div>
-              <div className="text-xs text-gray-500">Toggle theme</div>
+              <div className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                {t.settings.interfaceTab.theme.title}
+              </div>
+              <div className="text-xs text-gray-500">{t.settings.interfaceTab.theme.desc}</div>
             </div>
           </div>
           <button
@@ -39,8 +44,10 @@ export const InterfaceTab = memo(({ settings, updateSettings }: InterfaceTabProp
           <div className="flex items-center gap-3">
             <Monitor size={20} className="text-orange-500 dark:text-orange-400" />
             <div>
-              <div className="text-sm font-medium text-gray-800 dark:text-gray-200">Compact Density</div>
-              <div className="text-xs text-gray-500">Reduce spacing</div>
+              <div className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                {t.settings.interfaceTab.density.title}
+              </div>
+              <div className="text-xs text-gray-500">{t.settings.interfaceTab.density.desc}</div>
             </div>
           </div>
           <button

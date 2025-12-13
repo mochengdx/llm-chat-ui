@@ -1,6 +1,7 @@
 import { UserSettings } from "@llm/core";
 import { Layers, Palette, Settings, X } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "../../hooks/useTranslation";
 import { FeaturesTab } from "./tabs/FeaturesTab";
 import { GeneralTab } from "./tabs/GeneralTab";
 import { InterfaceTab } from "./tabs/InterfaceTab";
@@ -16,11 +17,12 @@ const SettingsModal = ({
   settings: UserSettings;
   updateSettings: (k: keyof UserSettings, v: any) => void;
 }) => {
+  const { t } = useTranslation(settings);
   if (!isOpen) return null;
   const tabs = [
-    { id: "general", label: "General", icon: <Settings size={16} /> },
-    { id: "features", label: "Features", icon: <Layers size={16} /> },
-    { id: "interface", label: "Interface", icon: <Palette size={16} /> }
+    { id: "general", label: t.settings.general, icon: <Settings size={16} /> },
+    { id: "features", label: t.settings.features, icon: <Layers size={16} /> },
+    { id: "interface", label: t.settings.interface, icon: <Palette size={16} /> }
   ];
   const [activeTab, setActiveTab] = useState("general");
 
@@ -28,7 +30,9 @@ const SettingsModal = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in text-gray-900 dark:text-gray-100">
       <div className="w-full max-w-2xl bg-white dark:bg-[#1e1f20] rounded-2xl shadow-2xl border border-gray-200 dark:border-[#3c4043] overflow-hidden flex flex-col md:flex-row h-[85vh] md:h-[600px]">
         <div className="w-full md:w-60 bg-gray-50 dark:bg-[#252627] border-b md:border-b-0 md:border-r border-gray-200 dark:border-[#3c4043] p-4 flex flex-col shrink-0">
-          <h2 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-4 md:mb-6 px-2">Settings</h2>
+          <h2 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-4 md:mb-6 px-2">
+            {t.common.settings}
+          </h2>
           <div className="flex md:flex-col gap-2 overflow-x-auto md:overflow-visible pb-2 md:pb-0 no-scrollbar">
             {tabs.map((tab) => (
               <button

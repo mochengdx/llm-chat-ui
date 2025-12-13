@@ -1,13 +1,15 @@
 import { Code, Play, X } from "lucide-react";
 import React from "react";
+import { Translations } from "../../locales/en";
 
 interface ArtifactPanelProps {
   isOpen: boolean;
   onClose: () => void;
   content: string;
+  t: Translations;
 }
 
-const ArtifactPanel: React.FC<ArtifactPanelProps> = ({ isOpen, onClose, content }) => {
+const ArtifactPanel: React.FC<ArtifactPanelProps> = ({ isOpen, onClose, content, t }) => {
   if (!isOpen) return null;
 
   return (
@@ -15,7 +17,7 @@ const ArtifactPanel: React.FC<ArtifactPanelProps> = ({ isOpen, onClose, content 
       <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-[#3c4043]">
         <div className="flex items-center gap-2">
           <Code size={18} className="text-blue-500" />
-          <span className="font-medium text-sm">Artifact Code</span>
+          <span className="font-medium text-sm">{t.artifact.code}</span>
         </div>
         <button
           onClick={onClose}
@@ -29,7 +31,7 @@ const ArtifactPanel: React.FC<ArtifactPanelProps> = ({ isOpen, onClose, content 
       </div>
       <div className="p-4 border-t border-gray-200 dark:border-[#3c4043] bg-white dark:bg-[#252627]">
         <button className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2">
-          <Play size={16} /> Run Code
+          <Play size={16} /> {t.artifact.run}
         </button>
       </div>
     </div>

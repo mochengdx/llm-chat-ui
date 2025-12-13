@@ -15,6 +15,8 @@ import {
 } from "lucide-react";
 import { RefObject, memo } from "react";
 
+import { Translations } from "../../../locales/en";
+
 interface InputToolbarProps {
   isPlusMenuOpen: boolean;
   setPlusMenuOpen: (val: boolean) => void;
@@ -42,6 +44,7 @@ interface InputToolbarProps {
   onSend: () => void;
   isStreaming?: boolean;
   onStop?: () => void;
+  t: Translations;
 }
 
 export const InputToolbar = memo(
@@ -67,7 +70,8 @@ export const InputToolbar = memo(
     hasAttachments,
     onSend,
     isStreaming,
-    onStop
+    onStop,
+    t
   }: InputToolbarProps) => {
     return (
       <div className="flex items-center justify-between px-4 pb-3 pt-1">
@@ -86,25 +90,25 @@ export const InputToolbar = memo(
                   <span className="text-gray-500 dark:text-gray-400">
                     <HardDrive size={18} />
                   </span>
-                  <span>Upload files</span>
+                  <span>{t.input.uploadFiles}</span>
                 </label>
                 <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-[#3c4043] text-gray-700 dark:text-gray-300 text-sm transition-colors text-left">
                   <span className="text-gray-500 dark:text-gray-400">
                     <Layout size={18} />
                   </span>
-                  <span>Add from Drive</span>
+                  <span>{t.input.addFromDrive}</span>
                 </button>
                 <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-[#3c4043] text-gray-700 dark:text-gray-300 text-sm transition-colors text-left">
                   <span className="text-gray-500 dark:text-gray-400">
                     <ImageIcon size={18} />
                   </span>
-                  <span>Photos</span>
+                  <span>{t.input.photos}</span>
                 </button>
                 <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-[#3c4043] text-gray-700 dark:text-gray-300 text-sm transition-colors text-left">
                   <span className="text-gray-500 dark:text-gray-400">
                     <FileCode size={18} />
                   </span>
-                  <span>Import code</span>
+                  <span>{t.input.importCode}</span>
                 </button>
               </div>
             )}
@@ -116,13 +120,13 @@ export const InputToolbar = memo(
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${isToolsMenuOpen ? "bg-gray-200 dark:bg-[#3c4043] text-black dark:text-white" : "bg-[#dde3ea] dark:bg-[#28292a] text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-[#3c4043] hover:text-black dark:hover:text-white"}`}
               >
                 <Wrench size={14} />
-                <span>Tools</span>
+                <span>{t.input.tools}</span>
               </button>
               {isToolsMenuOpen && (
                 <div className="absolute bottom-14 left-0 w-64 bg-white dark:bg-[#252627] border border-gray-200 dark:border-[#3c4043] rounded-2xl shadow-2xl p-2 z-50 flex flex-col gap-1 animate-scale-up">
                   {[
-                    { icon: <Globe size={16} />, label: "Deep Research" },
-                    { icon: <Video size={16} />, label: "Create videos" }
+                    { icon: <Globe size={16} />, label: t.chat.chips.deepResearch },
+                    { icon: <Video size={16} />, label: t.input.createVideos }
                   ].map((item, idx) => (
                     <button
                       key={idx}
@@ -149,7 +153,7 @@ export const InputToolbar = memo(
             </button>
             {isModelDropdownOpen && (
               <div className="absolute bottom-12 right-0 w-72 bg-white dark:bg-[#252627] border border-gray-200 dark:border-[#3c4043] rounded-2xl shadow-2xl p-2 z-50 flex flex-col gap-1 animate-scale-up origin-bottom-right">
-                <div className="px-3 py-2 text-xs font-medium text-gray-500">Choose your model</div>
+                <div className="px-3 py-2 text-xs font-medium text-gray-500">{t.input.chooseModel}</div>
                 {availableModels.map((model) => (
                   <button
                     key={model.id}
