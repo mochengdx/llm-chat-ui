@@ -52,6 +52,19 @@ You can register custom components in your application and trigger them via spec
     ::data-list[Project Status Overview]{title="Q4 Deliverables" data='[{"title": "Frontend Migration", "status": "Done", "desc": "Migrated to React 18"}, {"title": "Backend API", "status": "In Progress", "desc": "Implementing GraphQL endpoints"}]'}
     ```
 
+### Prompt DSL (Capsule/Chip UI)
+
+The chat interface supports a "Prompt DSL" feature using the `#` trigger. This allows users to quickly insert predefined prompt templates or context modifiers.
+
+- **Trigger**: Type `#` in the input box to see a list of available triggers.
+- **Capsule UI**: Selected triggers are displayed as visual "capsules" or "chips" above the input area, keeping the input text clean.
+- **Execution**: When the message is sent, the content associated with the active tags is automatically prepended to the user's message.
+
+Example Triggers:
+
+- `#gen-image`: Adds an image generation instruction.
+- `#search`: Adds a web search instruction.
+
 ## Project Structure
 
 This project is organized as a monorepo:

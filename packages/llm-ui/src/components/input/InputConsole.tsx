@@ -1,5 +1,6 @@
 import { Attachment, TriggerItem, UserSettings } from "@llm/core";
 import React, { RefObject } from "react";
+import { ActiveTags } from "./console/ActiveTags";
 import { InputAttachments } from "./console/InputAttachments";
 import { InputHeader } from "./console/InputHeader";
 import { InputSuggestions } from "./console/InputSuggestions";
@@ -13,6 +14,8 @@ interface InputConsoleProps {
   setIsInputExpanded: (val: boolean) => void;
   attachments: Attachment[];
   removeAttachment: (id: string) => void;
+  activeTags?: TriggerItem[];
+  removeTag?: (id: string) => void;
   triggerType: "@" | "#" | null;
   triggerQuery: string;
   handleTriggerSelect: (item: TriggerItem) => void;
@@ -51,6 +54,8 @@ const InputConsole: React.FC<InputConsoleProps> = ({
   setIsInputExpanded,
   attachments,
   removeAttachment,
+  activeTags,
+  removeTag,
   triggerType,
   triggerQuery,
   handleTriggerSelect,
@@ -96,6 +101,9 @@ const InputConsole: React.FC<InputConsoleProps> = ({
         className={`pointer-events-auto mx-auto relative group flex flex-col ${isInputExpanded ? "h-full" : ""} ${settings.denseMode ? "max-w-4xl" : "max-w-3xl"}`}
       >
         <InputHeader isExpanded={isInputExpanded} onCollapse={() => setIsInputExpanded(false)} />
+
+        {/* Active Tags Area */}
+        <ActiveTags activeTags={activeTags || []} onRemove={removeTag || (() => {})} />
 
         <InputSuggestions
           triggerType={triggerType}

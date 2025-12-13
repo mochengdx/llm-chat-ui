@@ -8,14 +8,12 @@ import {
   FileText,
   Globe,
   Hammer,
-  HardDrive,
   Image as ImageIcon,
   Menu,
   PenTool,
   Sparkles,
   User,
   Video,
-  Wrench,
   Zap
 } from "lucide-react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -75,11 +73,23 @@ export interface ChatHooks {
    * 允许注入用于代码块和 Markdown 指令的自定义渲染器。
    */
   extensions?: ChatExtensions;
+
+  /**
+   * Custom triggers for the chat interface.
+   * 聊天界面的自定义触发器。
+   *
+   * Allows injecting custom triggers for @ mentions and # tags.
+   * 允许注入用于 @ 提及和 # 标签的自定义触发器。
+   */
+  triggers?: {
+    mentions?: TriggerItem[];
+    tags?: TriggerItem[];
+  };
 }
 
 interface ChatMainProps extends ChatHooks {}
 
-const MENTIONS_LIST: TriggerItem[] = [
+const DEFAULT_MENTIONS_LIST: TriggerItem[] = [
   {
     id: "simple-llm-chat",
     label: "Simple LLM Chat",
@@ -96,40 +106,34 @@ const MENTIONS_LIST: TriggerItem[] = [
     id: "python",
     label: "Python",
     icon: <Code size={14} className="text-yellow-600 dark:text-yellow-500" />,
-    description: "Run code"
-  },
-  {
-    id: "drive",
-    label: "Drive",
-    icon: <HardDrive size={14} className="text-green-600 dark:text-green-500" />,
-    description: "Access files"
-  },
-  {
-    id: "user-info",
-    label: "User Info",
-    icon: <User size={14} className="text-purple-600 dark:text-purple-500" />,
     description: "Query User Profile"
   }
 ];
 
-const TAGS_LIST: TriggerItem[] = [
+const DEFAULT_TAGS_LIST: TriggerItem[] = [
   {
-    id: "react",
-    label: "React",
-    icon: <Zap size={14} className="text-cyan-500 dark:text-cyan-400" />,
-    description: "Framework"
+    id: "gen-user-profile",
+    label: "Generate User Profile",
+    icon: <User size={14} className="text-purple-500 dark:text-purple-400" />,
+    description: "Ask AI to generate a user profile",
+    prompt:
+      'Please generate a user profile for a fictional character. Return the result using the ::user-profile directive format: ::user-profile[Bio]{name="..." role="..." avatar="..."}.'
   },
   {
-    id: "summary",
-    label: "Summary",
-    icon: <FileCode size={14} className="text-orange-500 dark:text-orange-400" />,
-    description: "Summarize"
+    id: "gen-image-plus",
+    label: "Generate Image Card",
+    icon: <ImageIcon size={14} className="text-yellow-500 dark:text-yellow-400" />,
+    description: "Ask AI to generate an image card",
+    prompt:
+      'Please generate an image card for a tech concept. Return the result using the ::image-plus directive format: ::image-plus[Description]{src="..." name="..." info="..." link="..."}.'
   },
   {
-    id: "bugfix",
-    label: "BugFix",
-    icon: <Wrench size={14} className="text-red-500 dark:text-red-400" />,
-    description: "Debug"
+    id: "gen-data-list",
+    label: "Generate Data List",
+    icon: <FileCode size={14} className="text-blue-500 dark:text-blue-400" />,
+    description: "Ask AI to generate a data list",
+    prompt:
+      'Please generate a status list for a project. Return the result using the ::data-list directive format: ::data-list[Title]{data="[... ]"}.'
   }
 ];
 
@@ -147,7 +151,8 @@ const ChatMain: React.FC<ChatMainProps> = ({
   onStreamTransform,
   customAdapter,
   onFileUpload,
-  extensions
+  extensions,
+  triggers
 }) => {
   const {
     messages: rawMessages,
@@ -163,7 +168,11 @@ const ChatMain: React.FC<ChatMainProps> = ({
   const messages = useMemo(() => (Array.isArray(rawMessages) ? rawMessages : []), [rawMessages]);
   const sessions = useMemo(() => (Array.isArray(rawSessions) ? rawSessions : []), [rawSessions]);
 
+  const mentionsList = useMemo(() => [...DEFAULT_MENTIONS_LIST, ...(triggers?.mentions || [])], [triggers?.mentions]);
+  const tagsList = useMemo(() => [...DEFAULT_TAGS_LIST, ...(triggers?.tags || [])], [triggers?.tags]);
+
   const [input, setInput] = useState("");
+  const [activeTags, setActiveTags] = useState<TriggerItem[]>([]);
   // const [isGenerating, setIsGenerating] = useState(false); // Replaced by useLLMStream
   const [isSettingsOpen, setSettingsOpen] = useState(false);
   const [isSidebarOpen, setSidebarOpen] = useState(true);
@@ -242,12 +251,20 @@ const ChatMain: React.FC<ChatMainProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  /**
+   * Handles input changes to detect trigger characters (@ or #).
+   * 处理输入变化以检测触发字符（@ 或 #）。
+   */
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newVal = e.target.value;
     setInput(newVal);
     const cursorIndex = e.target.selectionStart;
     const textBeforeCursor = newVal.slice(0, cursorIndex);
-    const match = textBeforeCursor.match(/([@#])([\w\u4e00-\u9fa5]*)$/);
+
+    // Match @ or # preceded by start of line or whitespace
+    // 匹配行首或空白字符后的 @ 或 #
+    const match = textBeforeCursor.match(/(?:^|\s)([@#])([\w\u4e00-\u9fa5]*)$/);
+
     if (match) {
       setTriggerType(match[1] as "@" | "#");
       setTriggerQuery(match[2]);
@@ -257,22 +274,75 @@ const ChatMain: React.FC<ChatMainProps> = ({
     }
   };
 
+  /**
+   * Handles the selection of a trigger item (mention or tag).
+   * 处理触发项（提及或标签）的选择。
+   */
   const handleTriggerSelect = (item: TriggerItem) => {
     if (!triggerType) return;
     const cursorIndex = inputRef.current?.selectionStart || 0;
     const textBeforeCursor = input.slice(0, cursorIndex);
-    const triggerIndex = textBeforeCursor.lastIndexOf(triggerType);
-    const beforeTrigger = input.slice(0, triggerIndex);
+
+    // Find the last occurrence of the trigger that matches our current query context
+    // 查找与当前查询上下文匹配的最后一个触发器出现位置
+    const match = textBeforeCursor.match(new RegExp(`(?:^|\\s)${triggerType}${triggerQuery}$`));
+
+    if (!match) return;
+
+    // Calculate where the trigger actually starts (accounting for the potential space)
+    // 计算触发器的实际起始位置（考虑可能的空格）
+    const matchLength = match[0].length;
+    const triggerStartIndex = cursorIndex - matchLength + (match[0].startsWith(" ") ? 1 : 0);
+
+    const beforeTrigger = input.slice(0, triggerStartIndex);
     const afterTrigger = input.slice(cursorIndex);
-    const newText = `${beforeTrigger}${triggerType}${item.label} ${afterTrigger}`;
-    setInput(newText);
-    setTriggerType(null);
-    setTriggerQuery("");
-    inputRef.current?.focus();
+
+    if (triggerType === "#") {
+      // For # tags, add to activeTags list instead of inserting text (Capsule UI)
+      // 对于 # 标签，添加到 activeTags 列表而不是插入文本（胶囊 UI）
+      if (!activeTags.find((t) => t.id === item.id)) {
+        setActiveTags((prev) => [...prev, item]);
+      }
+      // Remove the trigger text from input
+      // 从输入中移除触发文本
+      const newText = `${beforeTrigger}${afterTrigger}`;
+      setInput(newText);
+      setTriggerType(null);
+      setTriggerQuery("");
+
+      // Reset cursor position
+      // 重置光标位置
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.selectionStart = triggerStartIndex;
+          inputRef.current.selectionEnd = triggerStartIndex;
+          inputRef.current.focus();
+        }
+      }, 0);
+    } else {
+      // For @ mentions, insert text as before
+      // 对于 @ 提及，像以前一样插入文本
+      const insertText = `${triggerType}${item.label} `;
+      const newText = `${beforeTrigger}${insertText}${afterTrigger}`;
+      setInput(newText);
+      setTriggerType(null);
+      setTriggerQuery("");
+
+      // Reset cursor position after the inserted text
+      // 在插入文本后重置光标位置
+      setTimeout(() => {
+        if (inputRef.current) {
+          const newCursorPos = triggerStartIndex + insertText.length;
+          inputRef.current.selectionStart = newCursorPos;
+          inputRef.current.selectionEnd = newCursorPos;
+          inputRef.current.focus();
+        }
+      }, 0);
+    }
   };
 
   const getFilteredTriggers = () => {
-    const list = triggerType === "@" ? MENTIONS_LIST : TAGS_LIST;
+    const list = triggerType === "@" ? mentionsList : tagsList;
     return list.filter((item) => item.label.toLowerCase().includes(triggerQuery.toLowerCase()));
   };
 
@@ -288,12 +358,7 @@ const ChatMain: React.FC<ChatMainProps> = ({
       const file = e.target.files[0];
 
       if (onFileUpload) {
-        try {
-          const attachment = await onFileUpload(file);
-          setAttachments((prev) => [...prev, attachment]);
-        } catch (error) {
-          console.error("File upload failed:", error);
-        }
+        onFileUpload(file);
       } else {
         const type = file.type.startsWith("image/") ? "image" : "file";
         const previewUrl = URL.createObjectURL(file);
@@ -305,6 +370,10 @@ const ChatMain: React.FC<ChatMainProps> = ({
 
   const removeAttachment = (id: string) => {
     setAttachments((prev) => prev.filter((a) => a.id !== id));
+  };
+
+  const removeTag = (id: string) => {
+    setActiveTags((prev) => prev.filter((t) => t.id !== id));
   };
 
   const handleEditMessage = (msgId: string, newContent: string) => {
@@ -332,12 +401,21 @@ const ChatMain: React.FC<ChatMainProps> = ({
     handleSend(newContent, originalMsg.attachments);
   };
 
+  /**
+   * Handles sending a message.
+   * 处理发送消息。
+   *
+   * @param txt - Optional text to send (overrides input state) / 可选的发送文本（覆盖输入状态）
+   * @param overrideAttachments - Optional attachments to send / 可选的发送附件
+   */
   const handleSend = async (txt?: string, overrideAttachments?: Attachment[]) => {
     let textToSend = txt || input;
     const currentAttachments = overrideAttachments || attachments;
 
     if ((!textToSend.trim() && currentAttachments.length === 0) || isStreaming) return;
 
+    // Execute onBeforeSend hook if available
+    // 如果存在 onBeforeSend 钩子，则执行它
     if (onBeforeSend) {
       try {
         const processed = await onBeforeSend(textToSend);
@@ -364,12 +442,15 @@ const ChatMain: React.FC<ChatMainProps> = ({
 
     // Clear attachments state only if we didn't use override (which implies a re-send/edit)
     // Actually we should always clear the input attachments state after sending
+    // 发送后清除附件和标签状态
     setAttachments([]);
+    setActiveTags([]);
     const newMessages = [...messages, userMsg];
     setMessages(newMessages);
     setInput("");
 
     // Update sessions
+    // 更新会话列表
     if (!currentSessionId) {
       const newSessionId = Date.now().toString();
       setCurrentSessionId(newSessionId);
@@ -396,12 +477,42 @@ const ChatMain: React.FC<ChatMainProps> = ({
 
     setMessages([...newMessages, aiMsg]);
 
+    // Expand # tags in the message sent to LLM
+    // 在发送给 LLM 的消息中展开 # 标签
+    let finalPrompt = textToSend;
+
+    // Prepend prompts from active tags (Capsule UI logic)
+    // 前置活动标签的提示词（胶囊 UI 逻辑）
+    if (activeTags.length > 0) {
+      const tagPrompts = activeTags
+        .map((tag) => tag.prompt)
+        .filter(Boolean)
+        .join("\n\n");
+
+      if (tagPrompts) {
+        finalPrompt = `${tagPrompts}\n\n${textToSend}`;
+      }
+    }
+
+    // Legacy support for inline #tags (optional, can be removed if we fully switch to chips)
+    // 对内联 #tags 的旧版支持（可选，如果我们完全切换到 chips 可以移除）
+    const tagMatch = textToSend.match(/#([\w-]+)\s/);
+    if (tagMatch) {
+      const tagId = tagMatch[1];
+      const tagItem = tagsList.find((t) => t.id === tagId);
+      if (tagItem && tagItem.prompt) {
+        finalPrompt = textToSend.replace(tagMatch[0], tagItem.prompt + " ");
+      }
+    }
+
     const request: StreamRequest = {
       modelId: selectedModel.name,
-      messages: [...newMessages, userMsg],
+      messages: [...newMessages.slice(0, -1), { ...userMsg, content: finalPrompt }],
       config: { useThinking: isThinkingModel }
     };
 
+    // Trigger the LLM stream
+    // 触发 LLM 流
     trigger(request, {
       onThinking: (token: string) => {
         setMessages((prev) =>
@@ -521,6 +632,8 @@ const ChatMain: React.FC<ChatMainProps> = ({
             setIsInputExpanded={setIsInputExpanded}
             attachments={attachments}
             removeAttachment={removeAttachment}
+            activeTags={activeTags}
+            removeTag={removeTag}
             triggerType={triggerType}
             triggerQuery={triggerQuery}
             handleTriggerSelect={handleTriggerSelect}

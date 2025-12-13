@@ -1,4 +1,4 @@
-import type { StreamAdapter } from "@llm/core";
+import type { Message, StreamAdapter, UserSettings } from "@llm/core";
 import { StreamClient } from "@llm/core";
 import { useLLMStore } from "@llm/store";
 import { ChevronLeft, Image as ImageIcon, Mic, MoreHorizontal, Plus, Send, Sparkles, User } from "lucide-react";
@@ -23,7 +23,7 @@ interface ChatMobileProps extends ChatHooks {
  * - Thinking process display
  * - Artifact/Canvas triggers
  */
-const MobileMessageItem = ({ msg, onOpenCanvas }: { msg: any; onOpenCanvas: (code: string) => void }) => {
+const MobileMessageItem = ({ msg, onOpenCanvas }: { msg: Message; onOpenCanvas: (code: string) => void }) => {
   const isUser = msg.role === "user";
   const [showThought, setShowThought] = useState(false);
 
@@ -184,10 +184,11 @@ const ChatMainMobileLayout: React.FC<ChatMobileProps> = ({ onBeforeSend, onStrea
         setMessages((prev) => prev.map((m) => (m.id === aiMsgId ? { ...m, isStreaming: false } : m)));
         setIsGenerating(false);
       },
-      onError: (err: any) => {
+      onError: (err: unknown) => {
+        const errorMessage = err instanceof Error ? err.message : String(err);
         setMessages((prev) =>
           prev.map((m) =>
-            m.id === aiMsgId ? { ...m, content: m.content + `\n[Error: ${err.message}]`, isStreaming: false } : m
+            m.id === aiMsgId ? { ...m, content: m.content + `\n[Error: ${errorMessage}]`, isStreaming: false } : m
           )
         );
         setIsGenerating(false);
@@ -212,7 +213,7 @@ const ChatMainMobileLayout: React.FC<ChatMobileProps> = ({ onBeforeSend, onStrea
 
       {/* Message List */}
       <main className="flex-1 overflow-y-auto p-3 scroll-smooth" style={{ WebkitOverflowScrolling: "touch" }}>
-        {messages.map((msg: any) => (
+        {messages.map((msg: Message) => (
           <MobileMessageItem
             key={msg.id}
             msg={msg}
@@ -272,7 +273,9 @@ const ChatMainMobileLayout: React.FC<ChatMobileProps> = ({ onBeforeSend, onStrea
             isOpen={isSettingsOpen}
             onClose={() => setSettingsOpen(false)}
             settings={settings}
-            updateSettings={(k: keyof typeof settings, v: any) => setSettings({ ...settings, [k]: v })}
+            updateSettings={(k: keyof UserSettings, v: UserSettings[keyof UserSettings]) =>
+              setSettings({ ...settings, [k]: v })
+            }
           />,
           document.body
         )}

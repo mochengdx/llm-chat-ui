@@ -33,19 +33,28 @@ const MarkdownRenderer = memo(
           remarkPlugins={[remarkGfm, remarkDirective, remarkDirectiveRehype]}
           components={{
             // Generic handler for custom directives from extensions
-            // @ts-ignore
             ...Object.keys(extensions?.directiveComponents || {}).reduce(
               (acc, key) => {
-                // @ts-ignore
-                acc[key] = ({ node, ...props }: any) => {
+                acc[key] = ({ node, ...props }: { node: any; [key: string]: any }) => {
                   const Component = extensions!.directiveComponents![key];
                   return <Component node={node} {...props} />;
                 };
                 return acc;
               },
-              {} as Record<string, any>
+              {} as Record<string, React.FC<any>>
             ),
-            code({ node, inline, className, children, ...props }: any) {
+            code({
+              node,
+              inline,
+              className,
+              children,
+              ...props
+            }: {
+              node?: any;
+              inline?: boolean;
+              className?: string;
+              children?: React.ReactNode;
+            } & React.HTMLAttributes<HTMLElement>) {
               const match = /language-(\w+)/.exec(className || "");
               const codeContent = String(children).replace(/\n$/, "");
               const isMultiLine = !inline && match;
@@ -101,7 +110,9 @@ const MarkdownRenderer = memo(
                   </div>
                   <div className="overflow-x-auto">
                     <SyntaxHighlighter
-                      style={vscDarkPlus}
+                      // Cast to any to satisfy differing style type definitions between
+                      // react-syntax-highlighter and the imported theme object.
+                      style={vscDarkPlus as any}
                       language={match?.[1]}
                       PreTag="div"
                       customStyle={{ margin: 0, padding: "1rem", background: "transparent" }}

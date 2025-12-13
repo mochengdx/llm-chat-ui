@@ -32,15 +32,34 @@ const App = () => {
   // Define custom extensions
   const extensions = {
     directiveComponents: {
-      "user-profile": UserProfile as any,
-      "image-plus": ImagePlus as any,
-      "data-list": DataList as any
+      "user-profile": UserProfile,
+      "image-plus": ImagePlus,
+      "data-list": DataList
     }
+  };
+
+  // Define custom triggers
+  const triggers = {
+    tags: [
+      {
+        id: "custom-directive",
+        label: "Custom Directive",
+        description: "A custom injected directive",
+        prompt: "Please use the custom directive: ::custom-directive[Content]{prop='value'}"
+      }
+    ]
   };
 
   //   自己实现的适配器实例
   //   const myAdapter = new MyCustomAdapter();
-  return <ChatMain onBeforeSend={handleBeforeSend} onStreamTransform={handleStreamTransform} extensions={extensions} />;
+  return (
+    <ChatMain
+      onBeforeSend={handleBeforeSend}
+      onStreamTransform={handleStreamTransform}
+      extensions={extensions}
+      triggers={triggers}
+    />
+  );
 };
 
 export default App;

@@ -35,6 +35,7 @@ export interface TriggerItem {
   label: string;
   icon?: any;
   description?: string;
+  prompt?: string;
 }
 
 export interface UserSettings {
