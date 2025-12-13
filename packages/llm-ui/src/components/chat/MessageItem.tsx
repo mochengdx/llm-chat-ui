@@ -16,7 +16,8 @@ const MessageItem = memo(
     onRegenerate,
     onOpenCanvas,
     extensions,
-    t
+    t,
+    onSend
   }: {
     msg: Message;
     onEdit: (id: string, newContent: string) => void;
@@ -24,6 +25,7 @@ const MessageItem = memo(
     onOpenCanvas: (code: string) => void;
     extensions?: ChatExtensions;
     t: Translations;
+    onSend?: (message: string) => void;
   }) => {
     const [isEditing, setIsEditing] = useState(false);
 
@@ -38,8 +40,8 @@ const MessageItem = memo(
 
     return (
       <div className={`group flex gap-4 animate-fade-in w-full max-w-3xl mx-auto ${isUser ? "flex-row-reverse" : ""}`}>
-        <div className="shrink-0 mt-1">
-          <MessageAvatar role={msg.role} modelUsed={msg.modelUsed} />
+        <div className="shrink-0">
+          <MessageAvatar role={msg.role} modelUsed={msg.modelUsed} isStreaming={msg.isStreaming} />
         </div>
         <div className={`flex-1 min-w-0 space-y-2 ${isUser ? "flex flex-col items-end" : ""}`}>
           <MessageHeader
@@ -65,6 +67,7 @@ const MessageItem = memo(
             isUser={isUser}
             extensions={extensions}
             t={t}
+            onSend={onSend}
           />
 
           <MessageActions

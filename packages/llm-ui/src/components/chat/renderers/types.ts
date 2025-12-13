@@ -5,6 +5,7 @@ export interface CodeBlockRendererProps {
   content: string;
   language: string;
   t?: Translations;
+  onSend?: (message: string) => void;
 }
 
 export type CodeBlockRenderer = React.FC<CodeBlockRendererProps>;
@@ -15,6 +16,7 @@ export interface RendererRegistry {
 
 export interface DirectiveComponentProps {
   node: any;
+  onSend?: (message: string) => void;
   [key: string]: any;
 }
 

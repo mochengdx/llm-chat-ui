@@ -135,6 +135,14 @@ const DEFAULT_TAGS_LIST: TriggerItem[] = [
     description: "Ask AI to generate a data list",
     prompt:
       'Please generate a status list for a project. Return the result using the ::data-list directive format: ::data-list[Title]{data="[... ]"}.'
+  },
+  {
+    id: "confirm-demo",
+    label: "Confirm Button Demo",
+    icon: <Zap size={14} className="text-red-500 dark:text-red-400" />,
+    description: "Demo of interactive confirm button",
+    prompt:
+      'Please show me a confirmation button. Return the result using the ::confirm-button directive format: ::confirm-button[Click to Confirm]{message="I have confirmed the action"}.'
   }
 ];
 
@@ -209,7 +217,12 @@ const ChatMain: React.FC<ChatMainProps> = ({
     () => new StreamClient(customAdapter || settings.protocol),
     [customAdapter, settings.protocol]
   );
-  const { isStreaming, trigger, stop } = useLLMStream({ streamClient });
+  const { isStreaming, trigger, stop: stopStream } = useLLMStream({ streamClient });
+
+  const stop = () => {
+    stopStream();
+    setMessages((prev) => prev.map((m) => (m.isStreaming ? { ...m, isStreaming: false } : m)));
+  };
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -250,6 +263,14 @@ const ChatMain: React.FC<ChatMainProps> = ({
   useEffect(() => {
     document.documentElement.classList.toggle("dark", settings.theme === "dark");
   }, [settings.theme]);
+
+  // Reset streaming status on mount (in case of page refresh during generation)
+  useEffect(() => {
+    const hasStreamingMessage = messages.some((m) => m.isStreaming);
+    if (hasStreamingMessage) {
+      setMessages((prev) => prev.map((m) => (m.isStreaming ? { ...m, isStreaming: false } : m)));
+    }
+  }, []);
 
   useEffect(() => {
     if (messages.length > 0) chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -634,6 +655,7 @@ const ChatMain: React.FC<ChatMainProps> = ({
                       }}
                       extensions={extensions}
                       t={t}
+                      onSend={(message) => handleSend(message)}
                     />
                   </div>
                 ))}

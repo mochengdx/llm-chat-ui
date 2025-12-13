@@ -48,9 +48,18 @@
     ```
 
 3.  **数据列表** (`::data-list`) 根据 JSON 数据渲染结构化列表。
+
     ```markdown
     ::data-list[项目状态概览]{title="Q4 交付物" data='[{"title": "前端迁移", "status": "已完成", "desc": "迁移至 React 18"}, {"title": "后端 API", "status": "进行中", "desc": "实现 GraphQL 端点"}]'}
     ```
+
+4.  **交互式确认按钮** (`::confirm-button`) 渲染一个可以触发向聊天发送消息动作的按钮。
+
+    ```markdown
+    ::confirm-button[点击确认]{message="我已确认该操作"}
+    ```
+
+    这展示了 **交互式组件** 的能力，自定义组件可以通过 `onSend` 回调与聊天控制器交互（例如发送消息）。
 
 ### 提示词 DSL (胶囊/标签 UI)
 

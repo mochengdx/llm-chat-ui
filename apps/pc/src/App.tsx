@@ -1,4 +1,5 @@
 import ChatMain from "@llm/ui/src/ChatMain";
+import { ConfirmButton } from "./components/ConfirmButton";
 import { DataList } from "./components/DataList";
 import { ImagePlus } from "./components/ImagePlus";
 import { UserProfile } from "./components/UserProfile";
@@ -34,7 +35,8 @@ const App = () => {
     directiveComponents: {
       "user-profile": UserProfile,
       "image-plus": ImagePlus,
-      "data-list": DataList
+      "data-list": DataList,
+      "confirm-button": ConfirmButton
     }
   };
 

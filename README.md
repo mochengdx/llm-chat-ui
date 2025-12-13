@@ -48,9 +48,18 @@ You can register custom components in your application and trigger them via spec
     ```
 
 3.  **Data List** (`::data-list`) Renders a structured list from JSON data.
+
     ```markdown
     ::data-list[Project Status Overview]{title="Q4 Deliverables" data='[{"title": "Frontend Migration", "status": "Done", "desc": "Migrated to React 18"}, {"title": "Backend API", "status": "In Progress", "desc": "Implementing GraphQL endpoints"}]'}
     ```
+
+4.  **Interactive Confirm Button** (`::confirm-button`) Renders a button that can trigger a message send action back to the chat.
+
+    ```markdown
+    ::confirm-button[Click to Confirm]{message="I have confirmed the action"}
+    ```
+
+    This demonstrates the **Interactive Component** capability, where custom components can interact with the chat controller (e.g., sending messages) via the `onSend` callback.
 
 ### Prompt DSL (Capsule/Chip UI)
 

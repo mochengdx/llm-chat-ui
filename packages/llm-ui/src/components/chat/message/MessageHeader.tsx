@@ -15,7 +15,7 @@ interface MessageHeaderProps {
 export const MessageHeader = memo(
   ({ role, modelUsed, childrenIds, currentChildIndex, isUser, t }: MessageHeaderProps) => {
     return (
-      <div className={`flex items-center gap-2 ${isUser ? "flex-row-reverse" : ""}`}>
+      <div className={`flex items-center gap-2 h-8 ${isUser ? "flex-row-reverse" : ""}`}>
         <span className="font-medium text-sm text-gray-700 dark:text-gray-300">
           {role === "model" ? t.common.modelName : t.common.you}
         </span>

@@ -1,7 +1,7 @@
 import type { Message, StreamAdapter, UserSettings } from "@llm/core";
 import { StreamClient } from "@llm/core";
 import { useLLMStore } from "@llm/store";
-import { ChevronLeft, Image as ImageIcon, Mic, Plus, Send, Settings, Sparkles, User } from "lucide-react";
+import { ChevronLeft, Image as ImageIcon, Mic, Plus, Send, Settings, Sparkles, Square, User } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import { ChatHooks } from "./ChatMain";
@@ -11,6 +11,8 @@ import SettingsModal from "./components/settings/SettingsModal";
 
 import { useTranslation } from "./hooks/useTranslation";
 import { Translations } from "./locales/en";
+
+import { ChatExtensions } from "./components/chat/renderers/types";
 
 interface ChatMobileProps extends ChatHooks {
   /** Custom stream adapter for handling different transport protocols */
@@ -29,11 +31,15 @@ interface ChatMobileProps extends ChatHooks {
 const MobileMessageItem = ({
   msg,
   onOpenCanvas,
-  t
+  t,
+  onSend,
+  extensions
 }: {
   msg: Message;
   onOpenCanvas: (code: string) => void;
   t: Translations;
+  onSend?: (message: string) => void;
+  extensions?: ChatExtensions;
 }) => {
   const isUser = msg.role === "user";
   const [showThought, setShowThought] = useState(false);
@@ -42,7 +48,7 @@ const MobileMessageItem = ({
     <div className={`flex w-full mb-4 ${isUser ? "justify-end" : "justify-start"}`}>
       {!isUser && (
         <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center mr-2 shrink-0">
-          <Sparkles size={18} className="text-blue-600" />
+          <Sparkles size={18} className={`text-blue-600 ${msg.isStreaming ? "animate-spin" : ""}`} />
         </div>
       )}
 
@@ -73,7 +79,12 @@ const MobileMessageItem = ({
           {isUser ? (
             <div className="whitespace-pre-wrap">{msg.content}</div>
           ) : (
-            <MarkdownRenderer content={msg.content || (msg.isStreaming ? "..." : "")} onCodeBlockFound={onOpenCanvas} />
+            <MarkdownRenderer
+              content={msg.content || (msg.isStreaming ? "..." : "")}
+              onCodeBlockFound={onOpenCanvas}
+              onSend={onSend}
+              extensions={extensions}
+            />
           )}
         </div>
       </div>
@@ -87,7 +98,12 @@ const MobileMessageItem = ({
   );
 };
 
-const ChatMainMobileLayout: React.FC<ChatMobileProps> = ({ onBeforeSend, onStreamTransform, customAdapter }) => {
+const ChatMainMobileLayout: React.FC<ChatMobileProps> = ({
+  onBeforeSend,
+  onStreamTransform,
+  customAdapter,
+  extensions
+}) => {
   const { messages, setMessages, settings, setSettings } = useLLMStore();
   const { t } = useTranslation(settings);
   const [input, setInput] = useState("");
@@ -110,6 +126,14 @@ const ChatMainMobileLayout: React.FC<ChatMobileProps> = ({ onBeforeSend, onStrea
     document.documentElement.classList.toggle("dark", settings.theme === "dark");
   }, [settings.theme]);
 
+  // Reset streaming status on mount (in case of page refresh during generation)
+  useEffect(() => {
+    const hasStreamingMessage = messages.some((m) => m.isStreaming);
+    if (hasStreamingMessage) {
+      setMessages((prev) => prev.map((m) => (m.isStreaming ? { ...m, isStreaming: false } : m)));
+    }
+  }, []);
+
   // Scroll on new messages
   useEffect(() => {
     scrollToBottom();
@@ -123,10 +147,24 @@ const ChatMainMobileLayout: React.FC<ChatMobileProps> = ({ onBeforeSend, onStrea
     }
   }, [input]);
 
-  const handleSend = async () => {
-    if (!input.trim() || isGenerating) return;
-    const textToSend = input;
-    setInput("");
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      streamClientRef.current?.abort();
+    };
+  }, []);
+
+  const handleStop = () => {
+    streamClientRef.current?.abort();
+    setIsGenerating(false);
+    setMessages((prev) => prev.map((m) => (m.isStreaming ? { ...m, isStreaming: false } : m)));
+  };
+
+  const handleSend = async (txt?: string) => {
+    const textToSend = txt || input;
+    if (!textToSend.trim() || isGenerating) return;
+
+    if (!txt) setInput("");
 
     // Reset height
     if (textareaRef.current) {
@@ -230,6 +268,8 @@ const ChatMainMobileLayout: React.FC<ChatMobileProps> = ({ onBeforeSend, onStrea
               setArtifactOpen(true);
             }}
             t={t}
+            onSend={(message) => handleSend(message)}
+            extensions={extensions}
           />
         ))}
         <div ref={chatEndRef} className="h-2" />
@@ -252,7 +292,14 @@ const ChatMainMobileLayout: React.FC<ChatMobileProps> = ({ onBeforeSend, onStrea
             style={{ height: "auto" }}
           />
 
-          {!input.trim() ? (
+          {isGenerating ? (
+            <button
+              onClick={handleStop}
+              className="p-2 rounded-full shrink-0 mb-0.5 transition-colors bg-red-500 text-white"
+            >
+              <Square size={18} fill="currentColor" />
+            </button>
+          ) : !input.trim() ? (
             <div className="flex items-center gap-1 shrink-0 pb-0.5">
               <button className="p-2 text-gray-500 hover:bg-gray-200 rounded-full">
                 <ImageIcon size={20} />
@@ -263,7 +310,7 @@ const ChatMainMobileLayout: React.FC<ChatMobileProps> = ({ onBeforeSend, onStrea
             </div>
           ) : (
             <button
-              onClick={handleSend}
+              onClick={() => handleSend()}
               disabled={isGenerating}
               className={`p-2 rounded-full shrink-0 mb-0.5 transition-colors ${
                 isGenerating ? "bg-gray-200 text-gray-400" : "bg-blue-600 text-white"

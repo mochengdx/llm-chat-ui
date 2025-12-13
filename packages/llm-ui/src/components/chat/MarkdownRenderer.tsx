@@ -23,12 +23,14 @@ const MarkdownRenderer = memo(
     content,
     onCodeBlockFound,
     extensions,
-    t
+    t,
+    onSend
   }: {
     content: string;
     onCodeBlockFound?: (code: string) => void;
     extensions?: ChatExtensions;
     t?: Translations;
+    onSend?: (message: string) => void;
   }) => {
     return (
       <div className="markdown-body text-[15px] md:text-[16px] leading-7 font-light text-gray-800 dark:text-gray-200">
@@ -40,7 +42,7 @@ const MarkdownRenderer = memo(
               (acc, key) => {
                 acc[key] = ({ node, ...props }: { node: any; [key: string]: any }) => {
                   const Component = extensions!.directiveComponents![key];
-                  return <Component node={node} {...props} />;
+                  return <Component node={node} {...props} onSend={onSend} />;
                 };
                 return acc;
               },
@@ -66,13 +68,13 @@ const MarkdownRenderer = memo(
               // Check for custom renderer from extensions first
               if (isMultiLine && language && extensions?.codeBlockRenderers?.[language]) {
                 const Renderer = extensions.codeBlockRenderers[language];
-                return <Renderer content={codeContent} language={language} t={t} />;
+                return <Renderer content={codeContent} language={language} t={t} onSend={onSend} />;
               }
 
               // Check for built-in custom renderer
               if (isMultiLine && language && RENDERER_REGISTRY[language]) {
                 const Renderer = RENDERER_REGISTRY[language];
-                return <Renderer content={codeContent} language={language} t={t} />;
+                return <Renderer content={codeContent} language={language} t={t} onSend={onSend} />;
               }
 
               if (!isMultiLine) {
