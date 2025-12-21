@@ -1,0 +1,225 @@
+@import "../../styles/variables.less";
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  padding: 16px;
+  animation: fadeIn 0.2s ease-in-out;
+  color: #111827; // gray-900
+
+  :global(.dark) & {
+    color: #f3f4f6; // gray-100
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal {
+  width: 100%;
+  max-width: 42rem; // max-w-2xl
+  background-color: @bg-color-light;
+  border-radius: 16px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 1px solid @border-color-light;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 85vh;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    height: 600px;
+  }
+
+  :global(.dark) & {
+    background-color: #1e1f20;
+    border-color: @border-color-dark;
+  }
+}
+
+.sidebar {
+  width: 100%;
+  background-color: #f9fafb; // gray-50
+  border-bottom: 1px solid @border-color-light;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+
+  @media (min-width: 768px) {
+    width: 240px; // w-60
+    border-bottom: none;
+    border-right: 1px solid @border-color-light;
+  }
+
+  :global(.dark) & {
+    background-color: #252627;
+    border-color: @border-color-dark;
+  }
+}
+
+.sidebarTitle {
+  font-size: 18px;
+  font-weight: 500;
+  color: #1f2937; // gray-800
+  margin-bottom: 16px;
+  padding-left: 8px;
+  padding-right: 8px;
+
+  @media (min-width: 768px) {
+    margin-bottom: 24px;
+  }
+
+  :global(.dark) & {
+    color: #e5e7eb; // gray-200
+  }
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+
+  @media (min-width: 768px) {
+    flex-direction: column;
+    overflow-x: visible;
+    padding-bottom: 0;
+  }
+}
+
+.tabButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+  border: none;
+  cursor: pointer;
+
+  @media (min-width: 768px) {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 12px;
+  }
+
+  &.active {
+    background-color: #e5e7eb; // gray-200
+    color: #111827; // gray-900
+
+    :global(.dark) & {
+      background-color: #3c4043;
+      color: #ffffff;
+    }
+  }
+
+  &.inactive {
+    background-color: transparent;
+    color: #4b5563; // gray-600
+
+    &:hover {
+      color: #111827; // gray-900
+      background-color: #f3f4f6; // gray-100
+    }
+
+    :global(.dark) & {
+      color: #9ca3af; // gray-400
+
+      &:hover {
+        color: #e5e7eb; // gray-200
+        background-color: rgba(60, 64, 67, 0.5);
+      }
+    }
+  }
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background-color: @bg-color-light;
+
+  :global(.dark) & {
+    background-color: #1e1f20;
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  border-bottom: 1px solid @border-color-light;
+
+  :global(.dark) & {
+    border-color: @border-color-dark;
+  }
+}
+
+.headerTitle {
+  font-size: 20px;
+  font-weight: 500;
+  color: #1f2937; // gray-800
+
+  :global(.dark) & {
+    color: #f3f4f6; // gray-100
+  }
+}
+
+.closeButton {
+  padding: 8px;
+  border-radius: 9999px;
+  color: #6b7280; // gray-500
+  transition: background-color 0.2s;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: #f3f4f6; // gray-100
+    color: #111827; // gray-900
+  }
+
+  :global(.dark) & {
+    color: #9ca3af; // gray-400
+
+    &:hover {
+      background-color: #3c4043;
+      color: #ffffff;
+    }
+  }
+}
+
+.body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}

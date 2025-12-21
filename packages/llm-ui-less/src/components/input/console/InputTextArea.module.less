@@ -1,0 +1,68 @@
+@import "../../../styles/variables.less";
+
+.container {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  padding-left: 16px;
+  padding-right: 16px;
+
+  &.expanded {
+    flex: 1;
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+
+  &.dense {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    min-height: 48px;
+  }
+
+  &.normal {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    min-height: 56px;
+  }
+}
+
+.textarea {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #1f2937; // gray-800
+  font-size: 16px;
+  resize: none;
+  height: 100%;
+  width: 100%;
+
+  &::placeholder {
+    color: #6b7280; // gray-500
+  }
+
+  :global(.dark) & {
+    color: #e3e3e3;
+  }
+}
+
+.expandButton {
+  margin-left: 8px;
+  margin-top: 4px;
+  padding: 4px;
+  color: #9ca3af; // gray-400
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    color: #4b5563; // gray-600
+  }
+
+  :global(.dark) &:hover {
+    color: #e5e7eb; // gray-200
+  }
+}

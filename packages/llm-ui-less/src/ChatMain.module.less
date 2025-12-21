@@ -1,0 +1,261 @@
+@import "./styles/variables.less";
+
+.chatContainer {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  font-family: sans-serif;
+  overflow: hidden;
+  background-color: @bg-color-light;
+  color: @text-color-light;
+
+  &.dense {
+    font-size: 14px;
+  }
+
+  :global(.dark) & {
+    background-color: @bg-color-dark;
+    color: @text-color-dark;
+  }
+}
+
+.mainContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  transition: all 0.3s;
+  background-color: @bg-color-light;
+
+  :global(.dark) & {
+    background-color: @bg-color-dark;
+  }
+
+  &.artifactOpen {
+    margin-right: 400px;
+    @media (min-width: 768px) {
+      margin-right: 500px;
+    }
+  }
+}
+
+.header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 16px;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(to bottom, @bg-color-light, transparent);
+  pointer-events: none;
+
+  :global(.dark) & {
+    background: linear-gradient(to bottom, @bg-color-dark, transparent);
+  }
+}
+
+.headerContent {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+}
+
+.menuButton {
+  padding: 8px;
+  border-radius: 9999px;
+  transition: background-color 0.2s;
+  color: @text-secondary-light;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+
+  &:hover {
+    background-color: @hover-bg-light;
+  }
+
+  :global(.dark) & {
+    color: @text-secondary-dark;
+    &:hover {
+      background-color: @hover-bg-dark;
+    }
+  }
+}
+
+.title {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: @text-color-light;
+  margin-left: 8px;
+  transition: opacity 0.3s;
+
+  &.hidden {
+    opacity: 0;
+  }
+
+  :global(.dark) & {
+    color: @text-color-dark;
+  }
+}
+
+.scrollArea {
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+}
+
+.messagesContainer {
+  max-width: 48rem; // max-w-3xl
+  margin: 0 auto;
+  padding-bottom: 12rem; // pb-48
+  padding-top: 6rem; // pt-24
+  padding-left: 16px;
+  padding-right: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 100%;
+
+  &.dense {
+    max-width: 56rem; // max-w-4xl
+  }
+}
+
+.messageWrapper {
+  gap: 24px;
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+
+.messageWrapperDense {
+  gap: 8px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.welcomeContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  padding: 16px;
+  padding-bottom: 8rem;
+  text-align: center;
+  color: @text-secondary-light;
+
+  :global(.dark) & {
+    color: @text-secondary-dark;
+  }
+}
+
+.welcomeIcon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+  color: @primary-color;
+  opacity: 0.8;
+}
+
+.welcomeTitle {
+  font-size: 3rem;
+  font-weight: 500;
+  background: linear-gradient(to bottom right, #3b82f6, #a855f7, #ef4444);
+  -webkit-background-clip: text;
+  color: transparent;
+  margin-bottom: 16px;
+  letter-spacing: -0.025em;
+  text-align: center;
+
+  @media (min-width: 768px) {
+    font-size: 3.75rem;
+  }
+}
+
+.welcomeSubtitle {
+  font-size: 2.25rem;
+  font-weight: 500;
+  color: #444746;
+  text-align: center;
+  margin-bottom: 32px;
+
+  :global(.dark) & {
+    color: #5e5f61;
+  }
+
+  @media (min-width: 768px) {
+    font-size: 3rem;
+  }
+}
+
+.suggestionGrid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 32px;
+  max-width: 56rem;
+}
+
+.suggestionCard {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background-color: @hover-bg-light;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: @text-color-light;
+
+  &:hover {
+    background-color: #e5e7eb;
+    border-color: #d1d5db;
+  }
+
+  :global(.dark) & {
+    background-color: @card-bg-dark;
+    color: @text-color-dark;
+    &:hover {
+      background-color: #2d2e30;
+      border-color: #4b5563;
+    }
+  }
+}
+
+.suggestionIcon {
+  padding: 4px;
+  border-radius: 9999px;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  :global(.dark) & {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+}
+
+.suggestionLabel {
+}
+
+.welcomeHeader {
+  margin-bottom: 40px; // mb-10
+  text-align: center;
+}
+
+.spacer {
+  width: 100%;
+  height: 128px; // h-32
+  pointer-events: none;
+
+  @media (min-width: 768px) {
+    height: 160px; // md:h-40
+  }
+}

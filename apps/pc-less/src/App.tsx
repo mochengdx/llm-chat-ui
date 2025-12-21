@@ -1,4 +1,4 @@
-import ChatMain from "@llm/ui/src/ChatMain";
+import { ChatMain } from "@llm/ui-less";
 import { ConfirmButton } from "./components/ConfirmButton";
 import { DataList } from "./components/DataList";
 import { ImagePlus } from "./components/ImagePlus";

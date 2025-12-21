@@ -1,0 +1,209 @@
+@import "../../styles/variables.less";
+
+.sidebar {
+  width: 0;
+  background-color: @card-bg-light;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s;
+  overflow: hidden;
+  border-right: 1px solid @border-color-light;
+  position: relative;
+  flex-shrink: 0;
+
+  &.open {
+    width: 280px;
+  }
+
+  :global(.dark) & {
+    background-color: @card-bg-dark;
+    border-color: @border-color-dark;
+  }
+}
+
+.header {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.toggleButton {
+  padding: 8px;
+  border-radius: 9999px;
+  color: @text-secondary-light;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+
+  &:hover {
+    background-color: @hover-bg-light;
+  }
+
+  :global(.dark) & {
+    color: @text-secondary-dark;
+    &:hover {
+      background-color: @hover-bg-dark;
+    }
+  }
+}
+
+.newChatContainer {
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-bottom: 16px;
+}
+
+.newChatButton {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background-color: @border-color-light;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: @text-secondary-light;
+  transition: background-color 0.2s;
+  width: 100%;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #d1d5db; // gray-300
+  }
+
+  :global(.dark) & {
+    background-color: #2d2e30;
+    color: @text-color-dark;
+    &:hover {
+      background-color: @border-color-dark;
+    }
+  }
+}
+
+.sessionList {
+  flex: 1;
+  overflow-y: auto;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.sessionListTitle {
+  padding: 8px 16px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: @text-secondary-light;
+
+  :global(.dark) & {
+    color: @text-secondary-dark;
+  }
+}
+
+.sessionItem {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  text-align: left;
+  transition: background-color 0.2s;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: @text-secondary-light;
+
+  &:hover {
+    background-color: @hover-bg-light;
+  }
+
+  &.active {
+    background-color: #dbeafe; // blue-100
+    color: @text-color-light;
+  }
+
+  :global(.dark) & {
+    color: @text-secondary-dark;
+    &:hover {
+      background-color: #2d2e30;
+    }
+
+    &.active {
+      background-color: #004a77;
+      color: @text-color-dark;
+    }
+  }
+}
+
+.sessionIcon {
+  color: @text-secondary-light;
+  &.active {
+    color: @primary-color;
+  }
+
+  :global(.dark) & {
+    &.active {
+      color: #93c5fd; // blue-300
+    }
+  }
+}
+
+.sessionTitle {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.footer {
+  padding: 8px;
+  border-top: 1px solid @border-color-light;
+
+  :global(.dark) & {
+    border-color: @border-color-dark;
+  }
+}
+
+.footerButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  color: @text-secondary-light;
+  transition: background-color 0.2s;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+
+  &:hover {
+    background-color: @hover-bg-light;
+  }
+
+  :global(.dark) & {
+    color: @text-secondary-dark;
+    &:hover {
+      background-color: #2d2e30;
+    }
+  }
+}
+
+.location {
+  margin-top: 8px;
+  padding: 8px 16px;
+  font-size: 0.75rem;
+  color: @text-secondary-light;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.locationDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #22c55e; // green-500
+}

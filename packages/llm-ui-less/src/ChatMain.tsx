@@ -1,22 +1,23 @@
+import {
+  CodeOutlined,
+  EditOutlined,
+  ExperimentOutlined,
+  FileMarkdownOutlined,
+  FileTextOutlined,
+  GlobalOutlined,
+  MenuOutlined,
+  PictureOutlined,
+  ReadOutlined,
+  ThunderboltOutlined,
+  ToolOutlined,
+  UserOutlined,
+  VideoCameraOutlined
+} from "@ant-design/icons";
 import type { Attachment, Message, StreamAdapter, StreamRequest, TriggerItem } from "@llm/core";
 import { StreamClient } from "@llm/core";
 import { useLLMStore } from "@llm/store";
-import {
-  BookOpen,
-  Code,
-  FileCode,
-  FileText,
-  Globe,
-  Hammer,
-  Image as ImageIcon,
-  Menu,
-  PenTool,
-  Sparkles,
-  User,
-  Video,
-  Zap
-} from "lucide-react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import styles from "./ChatMain.module.less";
 import ArtifactPanel from "./components/artifact/ArtifactPanel";
 import MessageItem from "./components/chat/MessageItem";
 import { ChatExtensions } from "./components/chat/renderers/types";
@@ -94,19 +95,19 @@ const DEFAULT_MENTIONS_LIST: TriggerItem[] = [
   {
     id: "simple-llm-chat",
     label: "Simple LLM Chat",
-    icon: <Sparkles size={14} className="text-blue-500 dark:text-blue-400" />,
+    icon: <ExperimentOutlined style={{ fontSize: 14, color: "#3b82f6" }} />,
     description: "Default Model"
   },
   {
     id: "docs",
     label: "Google Docs",
-    icon: <FileText size={14} className="text-blue-600 dark:text-blue-500" />,
+    icon: <FileTextOutlined style={{ fontSize: 14, color: "#2563eb" }} />,
     description: "Search documents"
   },
   {
     id: "python",
     label: "Python",
-    icon: <Code size={14} className="text-yellow-600 dark:text-yellow-500" />,
+    icon: <CodeOutlined style={{ fontSize: 14, color: "#ca8a04" }} />,
     description: "Query User Profile"
   }
 ];
@@ -115,7 +116,7 @@ const DEFAULT_TAGS_LIST: TriggerItem[] = [
   {
     id: "gen-user-profile",
     label: "Generate User Profile",
-    icon: <User size={14} className="text-purple-500 dark:text-purple-400" />,
+    icon: <UserOutlined style={{ fontSize: 14, color: "#a855f7" }} />,
     description: "Ask AI to generate a user profile",
     prompt:
       'Please generate a user profile for a fictional character. Return the result using the ::user-profile directive format: ::user-profile[Bio]{name="..." role="..." avatar="..."}.'
@@ -123,7 +124,7 @@ const DEFAULT_TAGS_LIST: TriggerItem[] = [
   {
     id: "gen-image-plus",
     label: "Generate Image Card",
-    icon: <ImageIcon size={14} className="text-yellow-500 dark:text-yellow-400" />,
+    icon: <PictureOutlined style={{ fontSize: 14, color: "#eab308" }} />,
     description: "Ask AI to generate an image card",
     prompt:
       'Please generate an image card for a tech concept. Return the result using the ::image-plus directive format: ::image-plus[Description]{src="..." name="..." info="..." link="..."}.'
@@ -131,7 +132,7 @@ const DEFAULT_TAGS_LIST: TriggerItem[] = [
   {
     id: "gen-data-list",
     label: "Generate Data List",
-    icon: <FileCode size={14} className="text-blue-500 dark:text-blue-400" />,
+    icon: <FileMarkdownOutlined style={{ fontSize: 14, color: "#3b82f6" }} />,
     description: "Ask AI to generate a data list",
     prompt:
       'Please generate a status list for a project. Return the result using the ::data-list directive format: ::data-list[Title]{data="[... ]"}.'
@@ -139,7 +140,7 @@ const DEFAULT_TAGS_LIST: TriggerItem[] = [
   {
     id: "confirm-demo",
     label: "Confirm Button Demo",
-    icon: <Zap size={14} className="text-red-500 dark:text-red-400" />,
+    icon: <ThunderboltOutlined style={{ fontSize: 14, color: "#ef4444" }} />,
     description: "Demo of interactive confirm button",
     prompt:
       'Please show me a confirmation button. Return the result using the ::confirm-button directive format: ::confirm-button[Click to Confirm]{message="I have confirmed the action"}.'
@@ -173,22 +174,34 @@ const ChatMain: React.FC<ChatMainProps> = ({
   const SUGGESTION_CHIPS = [
     {
       label: t.chat.chips?.createImage || "Create Image",
-      icon: <ImageIcon size={16} className="text-yellow-500" />,
+      icon: <PictureOutlined style={{ fontSize: 16, color: "#eab308" }} />,
       action: "image"
     },
-    { label: t.chat.chips?.write || "Write", icon: <PenTool size={16} className="text-purple-500" />, action: "write" },
-    { label: t.chat.chips?.build || "Build", icon: <Hammer size={16} className="text-blue-500" />, action: "code" },
+    {
+      label: t.chat.chips?.write || "Write",
+      icon: <EditOutlined style={{ fontSize: 16, color: "#a855f7" }} />,
+      action: "write"
+    },
+    {
+      label: t.chat.chips?.build || "Build",
+      icon: <ToolOutlined style={{ fontSize: 16, color: "#3b82f6" }} />,
+      action: "code"
+    },
     {
       label: t.chat.chips?.deepResearch || "Deep Research",
-      icon: <Globe size={16} className="text-green-500" />,
+      icon: <GlobalOutlined style={{ fontSize: 16, color: "#22c55e" }} />,
       action: "research"
     },
     {
       label: t.chat.chips?.createVideo || "Create Video",
-      icon: <Video size={16} className="text-red-500" />,
+      icon: <VideoCameraOutlined style={{ fontSize: 16, color: "#ef4444" }} />,
       action: "video"
     },
-    { label: t.chat.chips?.learn || "Learn", icon: <BookOpen size={16} className="text-orange-500" />, action: "learn" }
+    {
+      label: t.chat.chips?.learn || "Learn",
+      icon: <ReadOutlined style={{ fontSize: 16, color: "#f97316" }} />,
+      action: "learn"
+    }
   ];
 
   const mentionsList = useMemo(() => [...DEFAULT_MENTIONS_LIST, ...(triggers?.mentions || [])], [triggers?.mentions]);
@@ -238,7 +251,7 @@ const ChatMain: React.FC<ChatMainProps> = ({
         id: "fast",
         name: "Fast",
         description: "Answers quickly",
-        icon: <Zap size={16} className="text-yellow-500 dark:text-yellow-400" />
+        icon: <ThunderboltOutlined style={{ fontSize: 16, color: "#eab308" }} />
       }
     ];
     if (settings.enableThinking) {
@@ -246,7 +259,7 @@ const ChatMain: React.FC<ChatMainProps> = ({
         id: "thinking",
         name: "Thinking with 3 Pro",
         description: "Deep reasoning capabilities",
-        icon: <Sparkles size={16} className="text-blue-500 dark:text-blue-400" />
+        icon: <ExperimentOutlined style={{ fontSize: 16, color: "#3b82f6" }} />
       });
     }
     return base;
@@ -579,9 +592,7 @@ const ChatMain: React.FC<ChatMainProps> = ({
   };
 
   return (
-    <div
-      className={`flex h-screen w-full font-sans overflow-hidden bg-white dark:bg-[#131314] text-gray-900 dark:text-gray-100 selection:bg-blue-500/30 ${settings.denseMode ? "text-sm" : ""}`}
-    >
+    <div className={`${styles.chatContainer} ${settings.denseMode ? styles.dense : ""}`}>
       <SidebarMain
         isOpen={isSidebarOpen}
         sessions={sessions}
@@ -598,57 +609,40 @@ const ChatMain: React.FC<ChatMainProps> = ({
         settings={settings}
       />
 
-      <div className="flex-1 flex h-full relative overflow-hidden transition-all duration-300">
-        <main
-          className={`flex-1 flex flex-col h-full relative transition-all duration-300 ${artifactOpen ? "mr-[400px] md:mr-[500px]" : ""} bg-white dark:bg-[#131314]`}
-        >
-          <header className="absolute top-0 left-0 w-full p-4 z-20 flex justify-between items-center bg-gradient-to-b from-white dark:from-[#131314] to-transparent pointer-events-none">
-            <div className="pointer-events-auto flex items-center">
+      <div className={styles.mainContent}>
+        <main className={`${styles.mainContent} ${artifactOpen ? styles.artifactOpen : ""}`}>
+          <header className={styles.header}>
+            <div className={styles.headerContent}>
               {!isSidebarOpen && (
-                <button
-                  onClick={() => setSidebarOpen(true)}
-                  className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-[#28292a] text-gray-500 dark:text-gray-400 transition-colors"
-                >
-                  <Menu size={20} />
+                <button onClick={() => setSidebarOpen(true)} className={styles.menuButton}>
+                  <MenuOutlined style={{ fontSize: 20 }} />
                 </button>
               )}
-              <span
-                className={`text-lg font-medium text-gray-700 dark:text-gray-200 ml-2 ${isSidebarOpen ? "opacity-0" : "opacity-100 transition-opacity"}`}
-              >
-                Simple LLM Chat
-              </span>
+              <span className={`${styles.title} ${isSidebarOpen ? styles.hidden : ""}`}>Simple LLM Chat</span>
             </div>
           </header>
 
-          <div className="flex-1 overflow-y-auto custom-scrollbar relative">
+          <div className={`${styles.scrollArea} custom-scrollbar`}>
             {isHome ? (
-              <div className="flex flex-col items-center justify-center h-full px-4 pb-32 animate-fade-in">
-                <div className="mb-10 text-center">
-                  <h1 className="text-5xl md:text-6xl font-medium text-transparent bg-clip-text bg-gradient-to-br from-blue-500 via-purple-500 to-red-500 mb-4 tracking-tight">
-                    {t.chat.hello}
-                  </h1>
-                  <h2 className="text-4xl md:text-5xl font-medium text-[#444746] dark:text-[#5e5f61]">
-                    {t.chat.howCanIHelp}
-                  </h2>
+              <div className={styles.welcomeContainer}>
+                <div className={styles.welcomeHeader}>
+                  <h1 className={styles.welcomeTitle}>{t.chat.hello}</h1>
+                  <h2 className={styles.welcomeSubtitle}>{t.chat.howCanIHelp}</h2>
                 </div>
-                <div className="w-full h-32 md:h-40 pointer-events-none"></div>
-                <div className="flex flex-wrap justify-center gap-3 mt-8 max-w-4xl">
+                <div className={styles.spacer}></div>
+                <div className={styles.suggestionGrid}>
                   {SUGGESTION_CHIPS.map((chip, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setInput(chip.label)}
-                      className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 dark:bg-[#1e1f20] hover:bg-gray-200 dark:hover:bg-[#2d2e30] rounded-xl text-sm font-medium text-gray-700 dark:text-gray-300 transition-all border border-transparent hover:border-gray-300 dark:hover:border-gray-600"
-                    >
-                      <span className="p-1 rounded-full bg-white dark:bg-black/20">{chip.icon}</span>
-                      <span>{chip.label}</span>
+                    <button key={idx} onClick={() => setInput(chip.label)} className={styles.suggestionCard}>
+                      <span className={styles.suggestionIcon}>{chip.icon}</span>
+                      <span className={styles.suggestionLabel}>{chip.label}</span>
                     </button>
                   ))}
                 </div>
               </div>
             ) : (
-              <div className="flex flex-col px-4 pt-20 pb-40 min-h-full justify-end">
+              <div className={`${styles.messagesContainer} ${settings.denseMode ? styles.dense : ""}`}>
                 {messages.map((msg) => (
-                  <div key={msg.id} className={settings.denseMode ? "gap-2 py-2" : "gap-6 py-6"}>
+                  <div key={msg.id} className={settings.denseMode ? styles.messageWrapperDense : styles.messageWrapper}>
                     <MessageItem
                       msg={msg}
                       onEdit={handleEditMessage}

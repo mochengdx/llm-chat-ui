@@ -1,0 +1,73 @@
+@import "../../../styles/variables.less";
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding-left: 4px;
+  padding-right: 4px;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background-color: #eff6ff; // blue-50
+  color: #2563eb; // blue-600
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid #dbeafe; // blue-100
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+
+  :global(.dark) & {
+    background-color: rgba(30, 58, 138, 0.2); // blue-900/20
+    color: #93c5fd; // blue-300
+    border-color: rgba(30, 58, 138, 0.5); // blue-800/50
+  }
+}
+
+.icon {
+  width: 12px;
+  height: 12px;
+  opacity: 0.7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.removeButton {
+  margin-left: 2px;
+  padding: 2px;
+  border-radius: 9999px;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: inherit;
+
+  &:hover {
+    background-color: #dbeafe; // blue-100
+  }
+
+  :global(.dark) &:hover {
+    background-color: #1e3a8a; // blue-800
+  }
+}

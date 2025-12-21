@@ -1,0 +1,60 @@
+@import "../../../styles/variables.less";
+
+.avatarContainer {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modelAvatar {
+  // No background for model avatar in original, just icon
+}
+
+.userAvatar {
+  background-color: @border-color-light;
+  :global(.dark) & {
+    background-color: @border-color-dark;
+  }
+}
+
+.icon {
+  font-size: 20px;
+}
+
+.userIcon {
+  font-size: 16px;
+  color: @text-secondary-light;
+  :global(.dark) & {
+    color: @text-secondary-dark;
+  }
+}
+
+.thinking {
+  color: @primary-color;
+  :global(.dark) & {
+    color: #60a5fa; // blue-400
+  }
+}
+
+.defaultModel {
+  color: #ef4444; // red-500
+  :global(.dark) & {
+    color: #f87171; // red-400
+  }
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

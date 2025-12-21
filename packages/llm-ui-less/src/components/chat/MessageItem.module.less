@@ -1,0 +1,42 @@
+@import "../../styles/variables.less";
+
+.container {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+  max-width: 48rem; // max-w-3xl
+  margin-left: auto;
+  margin-right: auto;
+  animation: fadeIn 0.2s ease-in-out;
+
+  &.user {
+    flex-direction: row-reverse;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.avatarWrapper {
+  flex-shrink: 0;
+}
+
+.contentWrapper {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &.user {
+    align-items: flex-end;
+  }
+}
