@@ -1,16 +1,19 @@
+@import "./styles/variables.less";
+
 .container {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: #f3f4f6;
+  background-color: @bg-body;
   position: relative;
   overflow: hidden;
+  color: @text-primary;
 }
 
 .header {
   height: 56px;
-  background-color: #f3f4f6;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  background-color: @bg-card;
+  border-bottom: 1px solid @border-default;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -23,22 +26,23 @@
 .headerTitle {
   font-size: 17px;
   font-weight: 600;
-  color: #1f2937;
+  color: @text-primary;
 }
 
 .headerButton {
   padding: 8px;
   border-radius: 50%;
-  color: #4b5563;
+  color: @text-secondary;
   background: none;
   border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background-color 0.2s;
 
   &:active {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: @bg-card-hover;
   }
 }
 
@@ -49,17 +53,21 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  background-color: @bg-body;
   -webkit-overflow-scrolling: touch;
 }
 
 .inputArea {
-  background-color: #f3f4f6;
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  background-color: @bg-card;
+  border-top: 1px solid @border-default;
   padding: 8px 12px;
   padding-bottom: max(8px, env(safe-area-inset-bottom));
   display: flex;
   align-items: flex-end;
   gap: 8px;
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
 }
 
 .inputButton {
@@ -69,20 +77,20 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #4b5563;
-  background: none;
-  border: 1px solid #d1d5db;
+  color: @text-secondary;
+  background: @bg-card;
+  border: 1px solid @border-default;
   cursor: pointer;
   flex-shrink: 0;
 
   &:active {
-    background-color: #e5e7eb;
+    background-color: @bg-card-hover;
   }
 }
 
 .inputWrapper {
   flex: 1;
-  background-color: #ffffff;
+  background-color: @bg-body;
   border-radius: 20px;
   padding: 8px 12px;
   min-height: 36px;
@@ -101,6 +109,11 @@
   resize: none;
   padding: 0;
   margin: 0;
+  color: @text-primary;
+
+  &::placeholder {
+    color: @text-secondary;
+  }
 }
 
 .sendButton {
@@ -111,19 +124,19 @@
   align-items: center;
   justify-content: center;
   color: #ffffff;
-  background-color: #3b82f6;
+  background-color: @primary-color;
   border: none;
   cursor: pointer;
   flex-shrink: 0;
   transition: background-color 0.2s;
 
   &:disabled {
-    background-color: #d1d5db;
+    background-color: @border-default;
     cursor: not-allowed;
   }
 
   &:not(:disabled):active {
-    background-color: #2563eb;
+    background-color: darken(@primary-color, 10%);
   }
 }
 
@@ -163,22 +176,24 @@
 .avatar {
   width: 36px;
   height: 36px;
-  border-radius: 50%;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 
   &.model {
-    background-color: #dbeafe;
+    background-color: @bg-card;
     margin-right: 8px;
-    color: #2563eb;
+    color: @primary-color;
+    border: 1px solid @border-default;
   }
 
   &.user {
-    background-color: #e5e7eb;
+    background-color: @bg-card;
     margin-left: 8px;
-    color: #4b5563;
+    color: @text-secondary;
+    border: 1px solid @border-default;
   }
 }
 
@@ -210,22 +225,33 @@
     background-color: #95ec69;
     color: #000000;
     border-top-right-radius: 0;
+
+    :global(.dark) & {
+      background-color: #2b7c38;
+      color: #e5e7eb;
+    }
+
+    :global(.sepia) & {
+      background-color: #a8d898;
+      color: #2b2b2b;
+    }
   }
 
   &.model {
-    background-color: #ffffff;
-    color: #1f2937;
+    background-color: @bg-card;
+    color: @text-primary;
     border-top-left-radius: 0;
+    border: 1px solid @border-default;
   }
 }
 
 .thoughtToggle {
   font-size: 12px;
-  color: #6b7280;
+  color: @text-secondary;
   display: flex;
   align-items: center;
   gap: 4px;
-  background-color: #f3f4f6;
+  background-color: @bg-card;
   padding: 4px 8px;
   border-radius: 4px;
   margin-bottom: 4px;
@@ -234,12 +260,12 @@
 }
 
 .thoughtContent {
-  background-color: #f9fafb;
+  background-color: @bg-body;
   padding: 8px;
   border-radius: 4px;
   font-size: 12px;
-  color: #4b5563;
-  border: 1px solid #f3f4f6;
+  color: @text-secondary;
+  border: 1px solid @border-default;
   margin-bottom: 4px;
   white-space: pre-wrap;
   word-break: break-word;

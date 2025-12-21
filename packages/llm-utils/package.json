@@ -1,6 +1,14 @@
 {
   "name": "@llm/utils",
   "version": "0.1.0",
+  "description": "Common utility functions and helpers for the LLM Chat application.",
+  "author": "Daoxing.Huang",
+  "homepage": "https://github.com/mochengdx/llm-chat-ui/tree/main/packages/llm-utils",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mochengdx/llm-chat-ui.git",
+    "directory": "packages/llm-utils"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/index.js",
@@ -16,6 +24,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc --build",
+    "test": "vitest run",
     "clean": "rimraf dist",
     "lint": "echo linting..."
   },
@@ -26,5 +35,8 @@
     "tool",
     "helper"
   ],
-  "readme": "# @llm/utils\n\n通用工具函数与类型辅助。"
+  "readme": "# @llm/utils\n\n通用工具函数与类型辅助。",
+  "devDependencies": {
+    "vitest": "^0.32.4"
+  }
 }

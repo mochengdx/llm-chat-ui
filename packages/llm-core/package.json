@@ -1,6 +1,14 @@
 {
   "name": "@llm/core",
   "version": "0.1.0",
+  "description": "Core types, protocols, and stream adapters for LLM Chat.",
+  "author": "Daoxing.Huang",
+  "homepage": "https://github.com/mochengdx/llm-chat-ui/tree/main/packages/llm-core",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mochengdx/llm-chat-ui.git",
+    "directory": "packages/llm-core"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/index.js",

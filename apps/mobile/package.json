@@ -1,6 +1,14 @@
 {
   "name": "@llm/mobile-app",
   "version": "0.1.0",
+  "description": "The Mobile Web application for the LLM Chat interface.",
+  "author": "Daoxing.Huang",
+  "homepage": "https://github.com/mochengdx/llm-chat-ui/tree/main/apps/mobile",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mochengdx/llm-chat-ui.git",
+    "directory": "apps/mobile"
+  },
   "private": true,
   "scripts": {
     "dev": "vite",

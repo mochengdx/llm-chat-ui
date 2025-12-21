@@ -248,7 +248,7 @@ const ChatMainMobileLayout: React.FC<ChatMobileProps> = ({
       {/* Header */}
       <header className={styles.header}>
         <div style={{ width: 32, display: "flex", alignItems: "center" }}>
-          <LeftOutlined style={{ fontSize: 24, color: "#000" }} />
+          <LeftOutlined style={{ fontSize: 24 }} />
         </div>
         <h1 className={styles.headerTitle}>Simple LLM Chat</h1>
         <button
@@ -256,7 +256,7 @@ const ChatMainMobileLayout: React.FC<ChatMobileProps> = ({
           className={styles.headerButton}
           style={{ width: 32, justifyContent: "flex-end" }}
         >
-          <SettingOutlined style={{ fontSize: 20, color: "#000" }} />
+          <SettingOutlined style={{ fontSize: 20 }} />
         </button>
       </header>
 

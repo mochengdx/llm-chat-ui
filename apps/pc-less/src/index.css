@@ -1,4 +1,6 @@
 /* Standard CSS */
+@import "../../../packages/llm-ui-less/src/styles/theme.less";
+
 @keyframes wave {
   0%,
   100% {

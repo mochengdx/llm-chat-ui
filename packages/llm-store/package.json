@@ -1,6 +1,14 @@
 {
   "name": "@llm/store",
   "version": "0.1.0",
+  "description": "State management and persistence layer for LLM Chat using Zustand.",
+  "author": "Daoxing.Huang",
+  "homepage": "https://github.com/mochengdx/llm-chat-ui/tree/main/packages/llm-store",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mochengdx/llm-chat-ui.git",
+    "directory": "packages/llm-store"
+  },
   "main": "src/index.ts",
   "types": "src/index.ts",
   "module": "src/index.ts",
@@ -29,6 +37,7 @@
   ],
   "readme": "# @llm/store\n\nzustand 状态管理与持久化。",
   "dependencies": {
-    "idb-keyval": "^6.2.2"
+    "idb-keyval": "^6.2.2",
+    "zustand": "^4.5.7"
   }
 }

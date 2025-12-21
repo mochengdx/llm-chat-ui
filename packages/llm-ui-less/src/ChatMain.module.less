@@ -46,7 +46,7 @@
   left: 0;
   width: 100%;
   padding: 16px;
-  z-index: 20;
+  z-index: 30;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -250,12 +250,13 @@
   text-align: center;
 }
 
-.spacer {
+.homeInputWrapper {
   width: 100%;
-  height: 128px; // h-32
-  pointer-events: none;
+  max-width: 48rem;
+  margin-bottom: 32px;
+  z-index: 10;
+}
 
-  @media (min-width: 768px) {
-    height: 160px; // md:h-40
-  }
+.spacer {
+  display: none;
 }

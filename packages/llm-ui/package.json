@@ -1,6 +1,14 @@
 {
   "name": "@llm/ui",
   "version": "0.1.0",
+  "description": "A comprehensive React UI component library for building LLM chat interfaces.",
+  "author": "Daoxing.Huang",
+  "homepage": "https://github.com/mochengdx/llm-chat-ui/tree/main/packages/llm-ui",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mochengdx/llm-chat-ui.git",
+    "directory": "packages/llm-ui"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "module": "dist/index.js",
@@ -14,13 +22,15 @@
   "dependencies": {
     "@llm/core": "workspace:*",
     "@llm/store": "workspace:*",
-    "@types/react-syntax-highlighter": "^15.5.13",
     "lucide-react": "^0.559.0",
     "react-markdown": "^10.1.0",
     "react-syntax-highlighter": "^16.1.0",
     "remark-directive": "^4.0.0",
     "remark-gfm": "^4.0.1",
     "unist-util-visit": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/react-syntax-highlighter": "^15.5.13"
   },
   "type": "module",
   "files": [

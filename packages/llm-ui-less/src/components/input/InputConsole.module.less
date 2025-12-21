@@ -18,18 +18,19 @@
   }
 
   &.collapsed {
-    position: absolute;
-    left: 0;
     width: 100%;
     padding-left: 16px;
     padding-right: 16px;
 
     &.home {
-      top: 50%;
-      transform: translateY(-50%);
+      // Handled by parent layout
+      position: relative;
+      padding: 0;
     }
 
     &.bottom {
+      position: absolute;
+      left: 0;
       bottom: 0;
       padding-bottom: 24px;
       padding-top: 40px;
@@ -51,6 +52,7 @@
   display: flex;
   flex-direction: column;
   max-width: 48rem; // max-w-3xl
+  width: 100%;
 
   &.expanded {
     height: 100%;

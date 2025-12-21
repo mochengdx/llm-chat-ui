@@ -629,7 +629,50 @@ const ChatMain: React.FC<ChatMainProps> = ({
                   <h1 className={styles.welcomeTitle}>{t.chat.hello}</h1>
                   <h2 className={styles.welcomeSubtitle}>{t.chat.howCanIHelp}</h2>
                 </div>
-                <div className={styles.spacer}></div>
+
+                {/* Input Console in Home Mode */}
+                <div className={styles.homeInputWrapper}>
+                  <InputConsole
+                    input={input}
+                    setInput={setInput}
+                    isInputExpanded={isInputExpanded}
+                    setIsInputExpanded={setIsInputExpanded}
+                    attachments={attachments}
+                    removeAttachment={removeAttachment}
+                    activeTags={activeTags}
+                    removeTag={removeTag}
+                    triggerType={triggerType}
+                    triggerQuery={triggerQuery}
+                    handleTriggerSelect={handleTriggerSelect}
+                    getFilteredTriggers={getFilteredTriggers}
+                    isPlusMenuOpen={isPlusMenuOpen}
+                    setPlusMenuOpen={setPlusMenuOpen}
+                    isToolsMenuOpen={isToolsMenuOpen}
+                    setToolsMenuOpen={setToolsMenuOpen}
+                    isModelDropdownOpen={isModelDropdownOpen}
+                    setModelDropdownOpen={setModelDropdownOpen}
+                    selectedModel={selectedModel}
+                    setSelectedModel={setSelectedModel}
+                    availableModels={availableModels}
+                    isListening={isListening}
+                    setIsListening={setIsListening}
+                    handleInputChange={handleInputChange}
+                    handleSend={handleSend}
+                    handleFileUpload={handleFileUpload}
+                    settings={settings}
+                    inputRef={inputRef}
+                    fileInputRef={fileInputRef}
+                    plusMenuRef={plusMenuRef}
+                    toolsMenuRef={toolsMenuRef}
+                    dropdownRef={dropdownRef}
+                    isHome={isHome}
+                    showCanvasBadge={showCanvasBadge}
+                    setShowCanvasBadge={setShowCanvasBadge}
+                    isStreaming={isStreaming}
+                    onStop={stop}
+                  />
+                </div>
+
                 <div className={styles.suggestionGrid}>
                   {SUGGESTION_CHIPS.map((chip, idx) => (
                     <button key={idx} onClick={() => setInput(chip.label)} className={styles.suggestionCard}>
@@ -662,45 +705,47 @@ const ChatMain: React.FC<ChatMainProps> = ({
             )}
           </div>
 
-          <InputConsole
-            input={input}
-            setInput={setInput}
-            isInputExpanded={isInputExpanded}
-            setIsInputExpanded={setIsInputExpanded}
-            attachments={attachments}
-            removeAttachment={removeAttachment}
-            activeTags={activeTags}
-            removeTag={removeTag}
-            triggerType={triggerType}
-            triggerQuery={triggerQuery}
-            handleTriggerSelect={handleTriggerSelect}
-            getFilteredTriggers={getFilteredTriggers}
-            isPlusMenuOpen={isPlusMenuOpen}
-            setPlusMenuOpen={setPlusMenuOpen}
-            isToolsMenuOpen={isToolsMenuOpen}
-            setToolsMenuOpen={setToolsMenuOpen}
-            isModelDropdownOpen={isModelDropdownOpen}
-            setModelDropdownOpen={setModelDropdownOpen}
-            selectedModel={selectedModel}
-            setSelectedModel={setSelectedModel}
-            availableModels={availableModels}
-            isListening={isListening}
-            setIsListening={setIsListening}
-            handleInputChange={handleInputChange}
-            handleSend={handleSend}
-            handleFileUpload={handleFileUpload}
-            settings={settings}
-            inputRef={inputRef}
-            fileInputRef={fileInputRef}
-            plusMenuRef={plusMenuRef}
-            toolsMenuRef={toolsMenuRef}
-            dropdownRef={dropdownRef}
-            isHome={isHome}
-            showCanvasBadge={showCanvasBadge}
-            setShowCanvasBadge={setShowCanvasBadge}
-            isStreaming={isStreaming}
-            onStop={stop}
-          />
+          {!isHome && (
+            <InputConsole
+              input={input}
+              setInput={setInput}
+              isInputExpanded={isInputExpanded}
+              setIsInputExpanded={setIsInputExpanded}
+              attachments={attachments}
+              removeAttachment={removeAttachment}
+              activeTags={activeTags}
+              removeTag={removeTag}
+              triggerType={triggerType}
+              triggerQuery={triggerQuery}
+              handleTriggerSelect={handleTriggerSelect}
+              getFilteredTriggers={getFilteredTriggers}
+              isPlusMenuOpen={isPlusMenuOpen}
+              setPlusMenuOpen={setPlusMenuOpen}
+              isToolsMenuOpen={isToolsMenuOpen}
+              setToolsMenuOpen={setToolsMenuOpen}
+              isModelDropdownOpen={isModelDropdownOpen}
+              setModelDropdownOpen={setModelDropdownOpen}
+              selectedModel={selectedModel}
+              setSelectedModel={setSelectedModel}
+              availableModels={availableModels}
+              isListening={isListening}
+              setIsListening={setIsListening}
+              handleInputChange={handleInputChange}
+              handleSend={handleSend}
+              handleFileUpload={handleFileUpload}
+              settings={settings}
+              inputRef={inputRef}
+              fileInputRef={fileInputRef}
+              plusMenuRef={plusMenuRef}
+              toolsMenuRef={toolsMenuRef}
+              dropdownRef={dropdownRef}
+              isHome={isHome}
+              showCanvasBadge={showCanvasBadge}
+              setShowCanvasBadge={setShowCanvasBadge}
+              isStreaming={isStreaming}
+              onStop={stop}
+            />
+          )}
         </main>
 
         <ArtifactPanel isOpen={artifactOpen} onClose={() => setArtifactOpen(false)} content={artifactContent} t={t} />

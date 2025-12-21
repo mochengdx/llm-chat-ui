@@ -47,8 +47,8 @@ const MobileMessageItem = ({
   return (
     <div className={`flex w-full mb-4 ${isUser ? "justify-end" : "justify-start"}`}>
       {!isUser && (
-        <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center mr-2 shrink-0">
-          <Sparkles size={18} className={`text-blue-600 ${msg.isStreaming ? "animate-spin" : ""}`} />
+        <div className="w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center mr-2 shrink-0">
+          <Sparkles size={18} className={`text-blue-600 dark:text-blue-300 ${msg.isStreaming ? "animate-spin" : ""}`} />
         </div>
       )}
 
@@ -58,12 +58,12 @@ const MobileMessageItem = ({
           <div className="mb-2 w-full">
             <button
               onClick={() => setShowThought(!showThought)}
-              className="text-xs text-gray-500 flex items-center gap-1 bg-gray-100 px-2 py-1 rounded mb-1"
+              className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded mb-1"
             >
               {showThought ? t.chat.hideThought : t.chat.showThought}
             </button>
             {showThought && (
-              <div className="bg-gray-50 p-2 rounded text-xs text-gray-600 border border-gray-100 mb-1 break-words whitespace-pre-wrap">
+              <div className="bg-gray-50 dark:bg-gray-800 p-2 rounded text-xs text-gray-600 dark:text-gray-300 border border-gray-100 dark:border-gray-700 mb-1 break-words whitespace-pre-wrap">
                 {msg.thoughtProcess}
               </div>
             )}
@@ -72,7 +72,9 @@ const MobileMessageItem = ({
 
         <div
           className={`px-3 py-2 rounded-lg text-[15px] leading-relaxed shadow-sm break-words ${
-            isUser ? "bg-[#95ec69] text-black rounded-tr-none" : "bg-white text-gray-800 rounded-tl-none"
+            isUser
+              ? "bg-[#95ec69] dark:bg-[#2b7c38] text-black dark:text-gray-100 rounded-tr-none"
+              : "bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 rounded-tl-none"
           }`}
           style={{ minHeight: "40px", minWidth: "40px" }}
         >
@@ -90,8 +92,8 @@ const MobileMessageItem = ({
       </div>
 
       {isUser && (
-        <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center ml-2 shrink-0">
-          <User size={18} className="text-gray-600" />
+        <div className="w-9 h-9 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center ml-2 shrink-0">
+          <User size={18} className="text-gray-600 dark:text-gray-300" />
         </div>
       )}
     </div>
@@ -245,15 +247,15 @@ const ChatMainMobileLayout: React.FC<ChatMobileProps> = ({
   };
 
   return (
-    <div className="flex flex-col h-[100dvh] bg-[#ededed] relative overflow-hidden">
+    <div className="flex flex-col h-[100dvh] bg-[#ededed] dark:bg-gray-900 relative overflow-hidden">
       {/* Header */}
-      <header className="h-[44px] px-4 flex justify-between items-center bg-[#ededed] border-b border-gray-300 shrink-0 z-20">
+      <header className="h-[44px] px-4 flex justify-between items-center bg-[#ededed] dark:bg-gray-900 border-b border-gray-300 dark:border-gray-700 shrink-0 z-20">
         <div className="w-8 flex items-center">
-          <ChevronLeft size={24} className="text-black" />
+          <ChevronLeft size={24} className="text-black dark:text-white" />
         </div>
-        <h1 className="text-[17px] font-medium text-black">Simple LLM Chat</h1>
+        <h1 className="text-[17px] font-medium text-black dark:text-white">Simple LLM Chat</h1>
         <button onClick={() => setSettingsOpen(true)} className="w-8 flex items-center justify-end">
-          <Settings size={20} className="text-black" />
+          <Settings size={20} className="text-black dark:text-white" />
         </button>
       </header>
 
@@ -276,15 +278,15 @@ const ChatMainMobileLayout: React.FC<ChatMobileProps> = ({
       </main>
 
       {/* Input Area */}
-      <footer className="bg-white border-t border-gray-100 p-3 pb-[max(12px,env(safe-area-inset-bottom))] shrink-0 z-20">
-        <div className="bg-[#f0f4f9] rounded-[28px] flex items-end px-2 py-2 gap-2 transition-colors focus-within:bg-white focus-within:shadow-md border border-transparent focus-within:border-gray-200">
-          <button className="p-2 text-gray-500 hover:bg-gray-200 rounded-full shrink-0">
+      <footer className="bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 p-3 pb-[max(12px,env(safe-area-inset-bottom))] shrink-0 z-20">
+        <div className="bg-[#f0f4f9] dark:bg-gray-700 rounded-[28px] flex items-end px-2 py-2 gap-2 transition-colors focus-within:bg-white dark:focus-within:bg-gray-800 focus-within:shadow-md border border-transparent focus-within:border-gray-200 dark:focus-within:border-gray-600">
+          <button className="p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full shrink-0">
             <Plus size={20} />
           </button>
 
           <textarea
             ref={textareaRef}
-            className="flex-1 bg-transparent border-none outline-none text-[16px] resize-none max-h-[120px] leading-6 py-1.5 text-gray-800 placeholder-gray-500"
+            className="flex-1 bg-transparent border-none outline-none text-[16px] resize-none max-h-[120px] leading-6 py-1.5 text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
             rows={1}
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -301,10 +303,10 @@ const ChatMainMobileLayout: React.FC<ChatMobileProps> = ({
             </button>
           ) : !input.trim() ? (
             <div className="flex items-center gap-1 shrink-0 pb-0.5">
-              <button className="p-2 text-gray-500 hover:bg-gray-200 rounded-full">
+              <button className="p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full">
                 <ImageIcon size={20} />
               </button>
-              <button className="p-2 text-gray-500 hover:bg-gray-200 rounded-full">
+              <button className="p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full">
                 <Mic size={20} />
               </button>
             </div>

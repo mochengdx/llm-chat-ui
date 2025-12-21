@@ -1,6 +1,14 @@
 {
   "name": "@llm/pc-app",
   "version": "0.1.0",
+  "description": "The PC Web application for the LLM Chat interface.",
+  "author": "Daoxing.Huang",
+  "homepage": "https://github.com/mochengdx/llm-chat-ui/tree/main/apps/pc",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mochengdx/llm-chat-ui.git",
+    "directory": "apps/pc"
+  },
   "type": "module",
   "private": true,
   "scripts": {
