@@ -1,6 +1,6 @@
 import { Box, Cuboid, Maximize, RotateCw, ZoomIn } from "lucide-react";
 import React, { useState } from "react";
-import { CodeBlockRendererProps } from "./types";
+import type { CodeBlockRendererProps } from "./types";
 
 export const BoothViewer: React.FC<CodeBlockRendererProps> = ({ content, t }) => {
   // Assume content is a URL or a JSON config. For simplicity, let's treat it as a URL if it starts with http

@@ -1,5 +1,5 @@
 import { AppstoreOutlined, BgColorsOutlined, CloseOutlined, SettingOutlined } from "@ant-design/icons";
-import { UserSettings } from "@llm/core";
+import type { UserSettings } from "@llm/core";
 import { useState } from "react";
 import { useTranslation } from "../../hooks/useTranslation";
 import styles from "./SettingsModal.module.less";
@@ -19,13 +19,14 @@ const SettingsModal = ({
   updateSettings: (k: keyof UserSettings, v: any) => void;
 }) => {
   const { t } = useTranslation(settings);
-  if (!isOpen) return null;
   const tabs = [
     { id: "general", label: t.settings.general, icon: <SettingOutlined style={{ fontSize: 16 }} /> },
     { id: "features", label: t.settings.features, icon: <AppstoreOutlined style={{ fontSize: 16 }} /> },
     { id: "interface", label: t.settings.interface, icon: <BgColorsOutlined style={{ fontSize: 16 }} /> }
   ];
   const [activeTab, setActiveTab] = useState("general");
+
+  if (!isOpen) return null;
 
   return (
     <div className={styles.overlay}>

@@ -1,7 +1,7 @@
 import { TagOutlined, UserOutlined } from "@ant-design/icons";
 import type { TriggerItem } from "@llm/core";
 import { memo } from "react";
-import { Translations } from "../../../locales/en";
+import type { Translations } from "../../../locales/en";
 import styles from "./InputSuggestions.module.less";
 
 interface InputSuggestionsProps {

@@ -1,6 +1,6 @@
 import { CloseOutlined, CodeOutlined, PlayCircleOutlined } from "@ant-design/icons";
 import React from "react";
-import { Translations } from "../../locales/en";
+import type { Translations } from "../../locales/en";
 import styles from "./ArtifactPanel.module.less";
 
 interface ArtifactPanelProps {

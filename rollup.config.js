@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 import fs from "fs";
 import path from "path";
 
 // const fs = require("fs");
 
-import rollupBase from './rollup.config.base.js';
+import rollupBase from "./rollup.config.base.js";
 // import dts from "rollup-plugin-dts";
 // import pkg from "./package.json";
 const extensions = [".ts", ".tsx", ".js", ".jsx"];
@@ -19,8 +20,7 @@ const external = [
   // Add any other external dependencies here
 ];
 
-const dontCompiles = [
-];
+const dontCompiles = [];
 
 const pkgsRoot = path.join(__dirname, "packages");
 const pkgs = fs
@@ -35,33 +35,32 @@ const pkgs = fs
     };
   });
 
-  function makeRollupConfigForPkg(pkg) {
-    return rollupBase({
-      input: path.resolve(pkg.location, "src/index.ts"),
-      output: [
-        {
-          // dir:  path.resolve(pkg.location, "dist"),
-          file: path.resolve(pkg.location, "dist/index.esm.js"),
-          format: "esm",
-          sourcemap: true
-        },
-        {
-          //  dir:  path.resolve(pkg.location, "dist"),
-          file: path.resolve(pkg.location, "dist/index.cjs.js"),
-          format: "cjs",
-          sourcemap: true
-        }
-      ],
-      tsconfig: path.resolve(pkg.location, "tsconfig.json"),
-      external,
-      extensions,
-      // declarationDir: path.resolve(pkg.location, "types")
-    });
-  }
+function makeRollupConfigForPkg(pkg) {
+  return rollupBase({
+    input: path.resolve(pkg.location, "src/index.ts"),
+    output: [
+      {
+        // dir:  path.resolve(pkg.location, "dist"),
+        file: path.resolve(pkg.location, "dist/index.esm.js"),
+        format: "esm",
+        sourcemap: true
+      },
+      {
+        //  dir:  path.resolve(pkg.location, "dist"),
+        file: path.resolve(pkg.location, "dist/index.cjs.js"),
+        format: "cjs",
+        sourcemap: true
+      }
+    ],
+    tsconfig: path.resolve(pkg.location, "tsconfig.json"),
+    external,
+    extensions
+    // declarationDir: path.resolve(pkg.location, "types")
+  });
+}
 
-  if(process.env.NODE_ENV !== 'production'){
-    console.log("Building packages:", pkgs.map(p => p.pkgJson.name).join(", "));
-  }
+if (process.env.NODE_ENV !== "production") {
+  console.log("Building packages:", pkgs.map((p) => p.pkgJson.name).join(", "));
+}
 
 export default pkgs.map((pkg) => makeRollupConfigForPkg(pkg));
-

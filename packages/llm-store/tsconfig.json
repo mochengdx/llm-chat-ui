@@ -8,5 +8,5 @@
     "composite": false,
     "jsx": "react-jsx"
   },
-  "include": ["src", "index.ts"]
+  "include": ["src", "index.ts", "test"]
 }

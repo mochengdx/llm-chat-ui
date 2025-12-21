@@ -5,10 +5,10 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import remarkDirective from "remark-directive";
 import remarkGfm from "remark-gfm";
-import { Translations } from "../../locales/en";
+import type { Translations } from "../../locales/en";
 import remarkDirectiveRehype from "./plugins/remarkDirectiveRehype";
 import { RENDERER_REGISTRY } from "./renderers";
-import { ChatExtensions } from "./renderers/types";
+import type { ChatExtensions } from "./renderers/types";
 
 /**
  * MarkdownRenderer Component
@@ -40,16 +40,16 @@ const MarkdownRenderer = memo(
             // Generic handler for custom directives from extensions
             ...Object.keys(extensions?.directiveComponents || {}).reduce(
               (acc, key) => {
-                acc[key] = ({ node, ...props }: { node: any; [key: string]: any }) => {
+                acc[key] = ({ node: _node, ...props }: { node: any; [key: string]: any }) => {
                   const Component = extensions!.directiveComponents![key];
-                  return <Component node={node} {...props} onSend={onSend} />;
+                  return <Component node={_node} {...props} onSend={onSend} />;
                 };
                 return acc;
               },
               {} as Record<string, React.FC<any>>
             ),
             code({
-              node,
+              node: _node,
               inline,
               className,
               children,
@@ -131,12 +131,12 @@ const MarkdownRenderer = memo(
             },
             // Custom rendering for images to ensure they are responsive
             // 自定义图片渲染以确保响应式
-            img({ node, ...props }) {
+            img({ node: _node, ...props }) {
               return <img {...props} className="max-w-full h-auto rounded-lg my-2 shadow-sm" />;
             },
             // Custom rendering for links to open in new tab
             // 自定义链接渲染以在新标签页打开
-            a({ node, ...props }) {
+            a({ node: _node, ...props }) {
               return (
                 <a
                   {...props}
@@ -148,7 +148,7 @@ const MarkdownRenderer = memo(
             },
             // Custom rendering for tables
             // 自定义表格渲染
-            table({ node, ...props }) {
+            table({ node: _node, ...props }) {
               return (
                 <div className="overflow-x-auto my-4">
                   <table
@@ -158,7 +158,7 @@ const MarkdownRenderer = memo(
                 </div>
               );
             },
-            th({ node, ...props }) {
+            th({ node: _node, ...props }) {
               return (
                 <th
                   className="px-3 py-2 bg-gray-50 dark:bg-[#2d2e30] text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
@@ -166,7 +166,7 @@ const MarkdownRenderer = memo(
                 />
               );
             },
-            td({ node, ...props }) {
+            td({ node: _node, ...props }) {
               return (
                 <td
                   className="px-3 py-2 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700"

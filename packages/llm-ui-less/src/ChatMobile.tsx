@@ -14,16 +14,16 @@ import { StreamClient } from "@llm/core";
 import { useLLMStore } from "@llm/store";
 import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
-import { ChatHooks } from "./ChatMain";
+import type { ChatHooks } from "./ChatMain";
 import styles from "./ChatMobile.module.less";
 import ArtifactPanel from "./components/artifact/ArtifactPanel";
 import MarkdownRenderer from "./components/chat/MarkdownRenderer";
 import SettingsModal from "./components/settings/SettingsModal";
 
 import { useTranslation } from "./hooks/useTranslation";
-import { Translations } from "./locales/en";
+import type { Translations } from "./locales/en";
 
-import { ChatExtensions } from "./components/chat/renderers/types";
+import type { ChatExtensions } from "./components/chat/renderers/types";
 
 interface ChatMobileProps extends ChatHooks {
   /** Custom stream adapter for handling different transport protocols */
@@ -131,6 +131,7 @@ const ChatMainMobileLayout: React.FC<ChatMobileProps> = ({
     if (hasStreamingMessage) {
       setMessages((prev) => prev.map((m) => (m.isStreaming ? { ...m, isStreaming: false } : m)));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Scroll on new messages

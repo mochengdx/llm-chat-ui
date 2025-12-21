@@ -1,6 +1,6 @@
 import { CompressOutlined } from "@ant-design/icons";
 import { memo } from "react";
-import { Translations } from "../../../locales/en";
+import type { Translations } from "../../../locales/en";
 import styles from "./InputHeader.module.less";
 
 interface InputHeaderProps {

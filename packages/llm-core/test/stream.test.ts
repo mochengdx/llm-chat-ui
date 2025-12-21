@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { MockStreamAdapter } from "../src/stream";
-import { StreamCallbacks, StreamRequest } from "../src/types";
+import type { StreamCallbacks, StreamRequest } from "../src/types";
 
 describe("MockStreamAdapter", () => {
   it("should simulate streaming response", async () => {
@@ -10,7 +10,7 @@ describe("MockStreamAdapter", () => {
       onContent: vi.fn(),
       onThinking: vi.fn(),
       onEnd: vi.fn(),
-      onError: vi.fn(),
+      onError: vi.fn()
     };
 
     const request: StreamRequest = {
@@ -18,9 +18,9 @@ describe("MockStreamAdapter", () => {
       config: {
         modelId: "gpt-4",
         temperature: 0.7,
-        useThinking: false,
+        useThinking: false
       },
-      modelId: "gpt-4",
+      modelId: "gpt-4"
     };
 
     adapter.connect(request, callbacks);
@@ -40,7 +40,7 @@ describe("MockStreamAdapter", () => {
       onContent: vi.fn(),
       onThinking: vi.fn(),
       onEnd: vi.fn(),
-      onError: vi.fn(),
+      onError: vi.fn()
     };
 
     const request: StreamRequest = {
@@ -48,9 +48,9 @@ describe("MockStreamAdapter", () => {
       config: {
         modelId: "gpt-4",
         temperature: 0.7,
-        useThinking: true,
+        useThinking: true
       },
-      modelId: "gpt-4",
+      modelId: "gpt-4"
     };
 
     adapter.connect(request, callbacks);
@@ -69,7 +69,7 @@ describe("MockStreamAdapter", () => {
     const callbacks: StreamCallbacks = {
       onStart: vi.fn(),
       onContent: vi.fn(),
-      onEnd: vi.fn(),
+      onEnd: vi.fn()
     };
 
     const request: StreamRequest = {
@@ -77,13 +77,13 @@ describe("MockStreamAdapter", () => {
       config: {
         modelId: "gpt-4",
         temperature: 0.7,
-        useThinking: false,
+        useThinking: false
       },
-      modelId: "gpt-4",
+      modelId: "gpt-4"
     };
 
     adapter.connect(request, callbacks);
-    
+
     // Disconnect immediately
     adapter.disconnect();
 

@@ -1,7 +1,7 @@
 import type { TriggerItem } from "@llm/core";
 import { AtSign, Hash } from "lucide-react";
 import { memo } from "react";
-import { Translations } from "../../../locales/en";
+import type { Translations } from "../../../locales/en";
 
 interface InputSuggestionsProps {
   triggerType: "@" | "#" | null;

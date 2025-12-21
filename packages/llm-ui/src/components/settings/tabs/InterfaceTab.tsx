@@ -1,4 +1,4 @@
-import { UserSettings } from "@llm/core";
+import type { UserSettings } from "@llm/core";
 import { Monitor, Moon, Sun, ToggleLeft, ToggleRight } from "lucide-react";
 import { memo } from "react";
 import { useTranslation } from "../../../hooks/useTranslation";

@@ -1,4 +1,4 @@
-import { UserSettings } from "@llm/core";
+import type { UserSettings } from "@llm/core";
 import { en } from "../locales/en";
 import { zhCN } from "../locales/zh-CN";
 

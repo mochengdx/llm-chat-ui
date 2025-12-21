@@ -5,7 +5,7 @@ import {
   QuestionCircleOutlined,
   SettingOutlined
 } from "@ant-design/icons";
-import { UserSettings } from "@llm/core";
+import type { UserSettings } from "@llm/core";
 import React from "react";
 import { useTranslation } from "../../hooks/useTranslation";
 import styles from "./Sidebar.module.less";

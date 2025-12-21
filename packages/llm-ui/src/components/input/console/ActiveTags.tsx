@@ -1,4 +1,4 @@
-import { TriggerItem } from "@llm/core";
+import type { TriggerItem } from "@llm/core";
 import { X } from "lucide-react";
 import React from "react";
 

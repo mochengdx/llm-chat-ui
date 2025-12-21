@@ -1,7 +1,7 @@
 import { CheckOutlined, CopyOutlined, EditOutlined, ReloadOutlined, SoundOutlined } from "@ant-design/icons";
 import type { Message } from "@llm/core";
 import { memo, useState } from "react";
-import { Translations } from "../../../locales/en";
+import type { Translations } from "../../../locales/en";
 import styles from "./MessageActions.module.less";
 
 interface MessageActionsProps {

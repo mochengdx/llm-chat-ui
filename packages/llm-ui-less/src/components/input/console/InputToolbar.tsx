@@ -13,9 +13,10 @@ import {
   ToolOutlined,
   VideoCameraOutlined
 } from "@ant-design/icons";
-import { RefObject, memo } from "react";
+import type { RefObject } from "react";
+import { memo } from "react";
 
-import { Translations } from "../../../locales/en";
+import type { Translations } from "../../../locales/en";
 import styles from "./InputToolbar.module.less";
 
 interface InputToolbarProps {

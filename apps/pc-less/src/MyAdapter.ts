@@ -1,4 +1,5 @@
-import { StreamAdapter, StreamCallbacks, StreamRequest } from "@llm/core";
+import type { StreamCallbacks, StreamRequest } from "@llm/core";
+import { StreamAdapter } from "@llm/core";
 
 export default class MyCustomAdapter extends StreamAdapter {
   connect(request: StreamRequest, callbacks: StreamCallbacks) {

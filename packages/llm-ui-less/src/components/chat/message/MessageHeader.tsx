@@ -1,7 +1,7 @@
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import type { Message } from "@llm/core";
 import { memo } from "react";
-import { Translations } from "../../../locales/en";
+import type { Translations } from "../../../locales/en";
 import styles from "./MessageHeader.module.less";
 
 interface MessageHeaderProps {

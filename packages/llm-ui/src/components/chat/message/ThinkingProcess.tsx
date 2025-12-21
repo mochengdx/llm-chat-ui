@@ -1,6 +1,6 @@
 import { Brain, ChevronDown, ChevronRight, Loader2 } from "lucide-react";
 import { memo, useEffect, useState } from "react";
-import { Translations } from "../../../locales/en";
+import type { Translations } from "../../../locales/en";
 
 interface ThinkingProcessProps {
   thoughtProcess?: string;
@@ -12,6 +12,7 @@ export const ThinkingProcess = memo(({ thoughtProcess, isThinking, t }: Thinking
   const [isThoughtOpen, setThoughtOpen] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (isThinking) setThoughtOpen(true);
   }, [isThinking]);
 

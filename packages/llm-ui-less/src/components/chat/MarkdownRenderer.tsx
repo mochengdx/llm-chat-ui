@@ -5,11 +5,11 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import remarkDirective from "remark-directive";
 import remarkGfm from "remark-gfm";
-import { Translations } from "../../locales/en";
+import type { Translations } from "../../locales/en";
 import styles from "./MarkdownRenderer.module.less";
 import remarkDirectiveRehype from "./plugins/remarkDirectiveRehype";
 import { RENDERER_REGISTRY } from "./renderers";
-import { ChatExtensions } from "./renderers/types";
+import type { ChatExtensions } from "./renderers/types";
 
 /**
  * MarkdownRenderer Component
@@ -40,16 +40,16 @@ const MarkdownRenderer = memo(
         // Generic handler for custom directives from extensions
         ...Object.keys(directiveComponents).reduce(
           (acc, key) => {
-            acc[key] = ({ node, ...props }: { node: any; [key: string]: any }) => {
+            acc[key] = ({ node: _node, ...props }: { node: any; [key: string]: any }) => {
               const Component = directiveComponents[key];
-              return <Component node={node} {...props} onSend={onSend} />;
+              return <Component node={_node} {...props} onSend={onSend} />;
             };
             return acc;
           },
           {} as Record<string, React.FC<any>>
         ),
         code({
-          node,
+          node: _node,
           inline,
           className,
           children,
@@ -128,27 +128,27 @@ const MarkdownRenderer = memo(
         },
         // Custom rendering for images to ensure they are responsive
         // 自定义图片渲染以确保响应式
-        img({ node, ...props }: any) {
+        img({ node: _node, ...props }: any) {
           return <img {...props} className={styles.image} />;
         },
         // Custom rendering for links to open in new tab
         // 自定义链接渲染以在新标签页打开
-        a({ node, ...props }: any) {
+        a({ node: _node, ...props }: any) {
           return <a {...props} target="_blank" rel="noopener noreferrer" className={styles.link} />;
         },
         // Custom rendering for tables
         // 自定义表格渲染
-        table({ node, ...props }: any) {
+        table({ node: _node, ...props }: any) {
           return (
             <div className={styles.tableWrapper}>
               <table className={styles.table} {...props} />
             </div>
           );
         },
-        th({ node, ...props }: any) {
+        th({ node: _node, ...props }: any) {
           return <th className={styles.th} {...props} />;
         },
-        td({ node, ...props }: any) {
+        td({ node: _node, ...props }: any) {
           return <td className={styles.td} {...props} />;
         }
       };

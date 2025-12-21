@@ -1,5 +1,5 @@
-import React from "react";
-import { Translations } from "../../../locales/en";
+import type React from "react";
+import type { Translations } from "../../../locales/en";
 
 export interface CodeBlockRendererProps {
   content: string;

@@ -137,6 +137,7 @@ export class SSEStreamAdapter extends StreamAdapter {
       const decoder = new TextDecoder();
       let buffer = "";
 
+      // eslint-disable-next-line no-constant-condition
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
@@ -206,12 +207,12 @@ export class WebSocketStreamAdapter extends StreamAdapter {
           callbacks.onEnd?.();
           this.ws?.close();
         }
-      } catch (e) {
+      } catch (_e) {
         callbacks.onError?.(new Error("WS Parse Error"));
       }
     };
 
-    this.ws.onerror = (e) => callbacks.onError?.(new Error("WebSocket Error"));
+    this.ws.onerror = (_e) => callbacks.onError?.(new Error("WebSocket Error"));
     this.ws.onclose = () => {
       /* handle close */
     };

@@ -1,4 +1,4 @@
-import { UserSettings } from "@llm/core";
+import type { UserSettings } from "@llm/core";
 import { memo } from "react";
 import { useTranslation } from "../../../hooks/useTranslation";
 import styles from "./GeneralTab.module.less";

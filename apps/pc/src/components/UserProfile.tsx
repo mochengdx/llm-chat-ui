@@ -14,7 +14,7 @@ interface UserProfileProps {
   [key: string]: any;
 }
 
-export const UserProfile: React.FC<UserProfileProps> = ({ name, role, avatar, bio, children, ...rest }) => {
+export const UserProfile: React.FC<UserProfileProps> = ({ name, role, avatar, bio, children }) => {
   return (
     <div className="p-4 border rounded-lg shadow-sm bg-white dark:bg-gray-800 my-2 max-w-md">
       <div className="flex items-center gap-4">

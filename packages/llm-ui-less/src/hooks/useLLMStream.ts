@@ -1,4 +1,4 @@
-import { StreamCallbacks, StreamClient, StreamRequest } from "@llm/core";
+import type { StreamCallbacks, StreamClient, StreamRequest } from "@llm/core";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 interface UseLLMStreamParams {

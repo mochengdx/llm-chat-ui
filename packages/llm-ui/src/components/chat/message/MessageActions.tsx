@@ -1,7 +1,7 @@
 import type { Message } from "@llm/core";
 import { Check, Copy, Edit2, RotateCcw, Volume2 } from "lucide-react";
 import { memo, useState } from "react";
-import { Translations } from "../../../locales/en";
+import type { Translations } from "../../../locales/en";
 
 interface MessageActionsProps {
   msg: Message;

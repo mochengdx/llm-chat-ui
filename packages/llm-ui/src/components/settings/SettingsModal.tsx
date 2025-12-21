@@ -1,4 +1,4 @@
-import { UserSettings } from "@llm/core";
+import type { UserSettings } from "@llm/core";
 import { Layers, Palette, Settings, X } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "../../hooks/useTranslation";
@@ -18,13 +18,14 @@ const SettingsModal = ({
   updateSettings: (k: keyof UserSettings, v: any) => void;
 }) => {
   const { t } = useTranslation(settings);
-  if (!isOpen) return null;
   const tabs = [
     { id: "general", label: t.settings.general, icon: <Settings size={16} /> },
     { id: "features", label: t.settings.features, icon: <Layers size={16} /> },
     { id: "interface", label: t.settings.interface, icon: <Palette size={16} /> }
   ];
   const [activeTab, setActiveTab] = useState("general");
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in text-gray-900 dark:text-gray-100">

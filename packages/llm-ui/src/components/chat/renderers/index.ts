@@ -1,5 +1,5 @@
 import { BoothViewer } from "./BoothViewer";
-import { RendererRegistry } from "./types";
+import type { RendererRegistry } from "./types";
 
 /**
  * Registry of custom code block renderers.

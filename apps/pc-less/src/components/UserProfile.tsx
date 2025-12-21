@@ -15,7 +15,7 @@ interface UserProfileProps {
   [key: string]: any;
 }
 
-export const UserProfile: React.FC<UserProfileProps> = ({ name, role, avatar, bio, children, ...rest }) => {
+export const UserProfile: React.FC<UserProfileProps> = ({ name, role, avatar, bio, children }) => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>

@@ -1,4 +1,4 @@
-import { UserSettings } from "@llm/core";
+import type { UserSettings } from "@llm/core";
 import { HelpCircle, Menu, MessageSquare, Plus, Settings } from "lucide-react";
 import React from "react";
 import { useTranslation } from "../../hooks/useTranslation";

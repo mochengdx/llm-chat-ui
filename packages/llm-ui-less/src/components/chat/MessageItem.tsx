@@ -1,6 +1,6 @@
 import type { Message } from "@llm/core";
 import { memo, useState } from "react";
-import { Translations } from "../../locales/en";
+import type { Translations } from "../../locales/en";
 import { MessageActions } from "./message/MessageActions";
 import { MessageAttachments } from "./message/MessageAttachments";
 import { MessageAvatar } from "./message/MessageAvatar";
@@ -8,7 +8,7 @@ import { MessageContent } from "./message/MessageContent";
 import { MessageHeader } from "./message/MessageHeader";
 import { ThinkingProcess } from "./message/ThinkingProcess";
 import styles from "./MessageItem.module.less";
-import { ChatExtensions } from "./renderers/types";
+import type { ChatExtensions } from "./renderers/types";
 
 const MessageItem = memo(
   ({

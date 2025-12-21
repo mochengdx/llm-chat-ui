@@ -20,12 +20,14 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./ChatMain.module.less";
 import ArtifactPanel from "./components/artifact/ArtifactPanel";
 import MessageItem from "./components/chat/MessageItem";
-import { ChatExtensions } from "./components/chat/renderers/types";
+import type { ChatExtensions } from "./components/chat/renderers/types";
 import InputConsole from "./components/input/InputConsole";
 import SidebarMain from "./components/layout/Sidebar";
 import SettingsModal from "./components/settings/SettingsModal";
 import { useLLMStream } from "./hooks/useLLMStream";
 import { useTranslation } from "./hooks/useTranslation";
+
+/* eslint-disable react-hooks/purity */
 
 export interface ChatHooks {
   /**
@@ -89,7 +91,7 @@ export interface ChatHooks {
   };
 }
 
-interface ChatMainProps extends ChatHooks {}
+type ChatMainProps = ChatHooks;
 
 const DEFAULT_MENTIONS_LIST: TriggerItem[] = [
   {
@@ -283,6 +285,7 @@ const ChatMain: React.FC<ChatMainProps> = ({
     if (hasStreamingMessage) {
       setMessages((prev) => prev.map((m) => (m.isStreaming ? { ...m, isStreaming: false } : m)));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 import { Code, Play, X } from "lucide-react";
 import React from "react";
-import { Translations } from "../../locales/en";
+import type { Translations } from "../../locales/en";
 
 interface ArtifactPanelProps {
   isOpen: boolean;

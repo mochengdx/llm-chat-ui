@@ -1,5 +1,5 @@
 import { CheckCircleFilled, CloseCircleFilled, DesktopOutlined, MoonOutlined, SunOutlined } from "@ant-design/icons";
-import { UserSettings } from "@llm/core";
+import type { UserSettings } from "@llm/core";
 import { memo } from "react";
 import { useTranslation } from "../../../hooks/useTranslation";
 import styles from "./InterfaceTab.module.less";

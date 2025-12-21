@@ -1,7 +1,8 @@
 import type { ChatSession, Message, UserSettings } from "@llm/core";
 import { del, get, set } from "idb-keyval";
 import { create } from "zustand";
-import { createJSONStorage, persist, StateStorage } from "zustand/middleware";
+import type { StateStorage } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 interface StoreState {
   sessions: ChatSession[];
@@ -46,16 +47,16 @@ class StorageFactory {
         };
       case "server":
         return {
-          getItem: async (name: string): Promise<string | null> => {
+          getItem: async (_name: string): Promise<string | null> => {
             console.warn("Server storage not implemented yet");
             // TODO: Implement server-side storage fetch
             return null;
           },
-          setItem: async (name: string, value: string): Promise<void> => {
+          setItem: async (_name: string, _value: string): Promise<void> => {
             console.warn("Server storage not implemented yet");
             // TODO: Implement server-side storage save
           },
-          removeItem: async (name: string): Promise<void> => {
+          removeItem: async (_name: string): Promise<void> => {
             console.warn("Server storage not implemented yet");
             // TODO: Implement server-side storage delete
           }
@@ -79,16 +80,16 @@ export const useLLMStore = create<StoreState>()(
       settings: DEFAULT_SETTINGS,
       setSessions: (sessions) =>
         set((state) => ({
-          sessions: typeof sessions === "function" ? (sessions as Function)(state.sessions) : sessions
+          sessions: typeof sessions === "function" ? (sessions as (...args: any[]) => any)(state.sessions) : sessions
         })),
       setCurrentSessionId: (id) => set({ currentSessionId: id }),
       setMessages: (messages) =>
         set((state) => ({
-          messages: typeof messages === "function" ? (messages as Function)(state.messages) : messages
+          messages: typeof messages === "function" ? (messages as (...args: any[]) => any)(state.messages) : messages
         })),
       setSettings: (settings) =>
         set((state) => ({
-          settings: typeof settings === "function" ? (settings as Function)(state.settings) : settings
+          settings: typeof settings === "function" ? (settings as (...args: any[]) => any)(state.settings) : settings
         }))
     }),
     {

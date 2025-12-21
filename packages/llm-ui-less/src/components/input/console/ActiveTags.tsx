@@ -1,5 +1,5 @@
 import { CloseOutlined } from "@ant-design/icons";
-import { TriggerItem } from "@llm/core";
+import type { TriggerItem } from "@llm/core";
 import React from "react";
 import styles from "./ActiveTags.module.less";
 

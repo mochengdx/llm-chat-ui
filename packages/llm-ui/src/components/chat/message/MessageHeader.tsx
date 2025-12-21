@@ -1,7 +1,7 @@
 import type { Message } from "@llm/core";
 import { ChevronDown } from "lucide-react";
 import { memo } from "react";
-import { Translations } from "../../../locales/en";
+import type { Translations } from "../../../locales/en";
 
 interface MessageHeaderProps {
   role: Message["role"];

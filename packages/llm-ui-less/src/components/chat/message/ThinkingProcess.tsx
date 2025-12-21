@@ -1,6 +1,6 @@
 import { BulbOutlined, DownOutlined, LoadingOutlined, RightOutlined } from "@ant-design/icons";
 import { memo, useEffect, useState } from "react";
-import { Translations } from "../../../locales/en";
+import type { Translations } from "../../../locales/en";
 import styles from "./ThinkingProcess.module.less";
 
 interface ThinkingProcessProps {
@@ -13,6 +13,7 @@ export const ThinkingProcess = memo(({ thoughtProcess, isThinking, t }: Thinking
   const [isThoughtOpen, setThoughtOpen] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (isThinking) setThoughtOpen(true);
   }, [isThinking]);
 

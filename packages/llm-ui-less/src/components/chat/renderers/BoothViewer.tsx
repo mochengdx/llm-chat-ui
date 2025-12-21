@@ -1,7 +1,7 @@
 import { CodeSandboxOutlined, FullscreenOutlined, ReloadOutlined, ZoomInOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
 import styles from "./BoothViewer.module.less";
-import { CodeBlockRendererProps } from "./types";
+import type { CodeBlockRendererProps } from "./types";
 
 export const BoothViewer: React.FC<CodeBlockRendererProps> = ({ content, t }) => {
   // Assume content is a URL or a JSON config. For simplicity, let's treat it as a URL if it starts with http

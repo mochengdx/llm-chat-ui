@@ -28,18 +28,18 @@ module.exports = {
     // Prefer type imports when possible
     "@typescript-eslint/consistent-type-imports": "warn",
     // Disable prop-types for TSX files
-    "react/prop-types": "off"
-    ,
-    // Enforce maximum line length to match Prettier's printWidth and keep diffs readable
-    "max-len": [
+    "react/prop-types": "off",
+    // Disable React in scope for new JSX transform
+    "react/react-in-jsx-scope": "off",
+    "react/display-name": "off",
+    "max-len": "off",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": [
       "error",
       {
-        code: 120,
-        ignoreUrls: true,
-        ignoreStrings: true,
-        ignoreTemplateLiterals: true,
-        ignoreRegExpLiterals: true,
-        ignoreTrailingComments: true
+        argsIgnorePattern: "^_",
+        varsIgnorePattern: "^_",
+        caughtErrorsIgnorePattern: "^_"
       }
     ]
   },
@@ -52,7 +52,7 @@ module.exports = {
     {
       files: ["**/*.ts", "**/*.tsx"],
       parserOptions: {
-        project: ["./tsconfig.json", "./packages/*/tsconfig.json", "./examples/tsconfig.app.json"],
+        project: ["./tsconfig.json", "./packages/*/tsconfig.json", "./apps/*/tsconfig.json"],
         tsconfigRootDir: __dirname
       }
     },

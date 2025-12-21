@@ -1,8 +1,8 @@
 import type { Message } from "@llm/core";
 import { memo, useState } from "react";
-import { Translations } from "../../../locales/en";
+import type { Translations } from "../../../locales/en";
 import MarkdownRenderer from "../MarkdownRenderer";
-import { ChatExtensions } from "../renderers/types";
+import type { ChatExtensions } from "../renderers/types";
 
 interface MessageContentProps {
   msg: Message;

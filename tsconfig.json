@@ -1,4 +1,14 @@
 {
   // Visit https://aka.ms/tsconfig to read more about this file
-  "extends": "./tsconfig.base.json"
+  "extends": "./tsconfig.base.json",
+  "include": [
+    "vitest.workspace.ts",
+    "rollup.config.js",
+    "rollup.config.base.js",
+    "postcss.config.js",
+    "tailwind.config.js",
+    "prettier.config.js",
+    ".eslintrc.js",
+    "types/**/*.d.ts"
+  ]
 }

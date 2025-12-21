@@ -1,6 +1,6 @@
 import { Minimize2 } from "lucide-react";
 import { memo } from "react";
-import { Translations } from "../../../locales/en";
+import type { Translations } from "../../../locales/en";
 
 interface InputHeaderProps {
   isExpanded: boolean;

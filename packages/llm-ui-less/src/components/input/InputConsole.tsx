@@ -1,5 +1,6 @@
-import { Attachment, TriggerItem, UserSettings } from "@llm/core";
-import React, { RefObject } from "react";
+import type { Attachment, TriggerItem, UserSettings } from "@llm/core";
+import type { RefObject } from "react";
+import React from "react";
 import { useTranslation } from "../../hooks/useTranslation";
 import { ActiveTags } from "./console/ActiveTags";
 import { InputAttachments } from "./console/InputAttachments";
@@ -51,15 +52,15 @@ interface InputConsoleProps {
 
 const InputConsole: React.FC<InputConsoleProps> = ({
   input,
-  setInput,
+  setInput: _setInput,
   isInputExpanded,
   setIsInputExpanded,
   attachments,
-  removeAttachment,
+  removeAttachment: _removeAttachment,
   activeTags,
   removeTag,
   triggerType,
-  triggerQuery,
+  triggerQuery: _triggerQuery,
   handleTriggerSelect,
   getFilteredTriggers,
   isPlusMenuOpen,
@@ -83,8 +84,8 @@ const InputConsole: React.FC<InputConsoleProps> = ({
   toolsMenuRef,
   dropdownRef,
   isHome,
-  showCanvasBadge,
-  setShowCanvasBadge,
+  showCanvasBadge: _showCanvasBadge,
+  setShowCanvasBadge: _setShowCanvasBadge,
   isStreaming,
   onStop
 }) => {
