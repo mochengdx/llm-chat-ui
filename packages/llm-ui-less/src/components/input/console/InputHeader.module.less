@@ -1,0 +1,33 @@
+@import "../../../styles/variables.less";
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.collapseButton {
+  padding: 8px;
+  border-radius: 9999px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: #e5e7eb; // gray-200
+  }
+
+  :global(.dark) &:hover {
+    background-color: #3c4043;
+  }
+}

@@ -1,0 +1,94 @@
+@import "../../styles/variables.less";
+
+.container {
+  transition: all 0.5s ease-in-out;
+  z-index: 20;
+
+  &.expanded {
+    position: absolute;
+    inset: 0;
+    background-color: @bg-color-light;
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+
+    :global(.dark) & {
+      background-color: @bg-color-dark;
+    }
+  }
+
+  &.collapsed {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    padding-left: 16px;
+    padding-right: 16px;
+
+    &.home {
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    &.bottom {
+      bottom: 0;
+      padding-bottom: 24px;
+      padding-top: 40px;
+      background: linear-gradient(to top, @bg-color-light, @bg-color-light, transparent);
+      pointer-events: none;
+
+      :global(.dark) & {
+        background: linear-gradient(to top, @bg-color-dark, @bg-color-dark, transparent);
+      }
+    }
+  }
+}
+
+.innerContainer {
+  pointer-events: auto;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-width: 48rem; // max-w-3xl
+
+  &.expanded {
+    height: 100%;
+  }
+
+  &.dense {
+    max-width: 56rem; // max-w-4xl
+  }
+}
+
+.inputBox {
+  background-color: #f0f4f9;
+  border-radius: 28px;
+  border: 1px solid @border-color-light;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  transition:
+    background-color 0.2s,
+    border-color 0.2s;
+
+  &:focus-within {
+    background-color: @bg-color-light;
+    border-color: #d1d5db; // gray-300
+  }
+
+  &.expanded {
+    width: 100%;
+    flex: 1;
+  }
+
+  :global(.dark) & {
+    background-color: #1e1f20;
+    border-color: @border-color-dark;
+
+    &:focus-within {
+      background-color: #252627;
+      border-color: #5e5f61;
+    }
+  }
+}

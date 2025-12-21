@@ -1,0 +1,130 @@
+@import "../../styles/variables.less";
+
+.panel {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background-color: @card-bg-light;
+  border-left: 1px solid @border-color-light;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  animation: slideLeft 0.3s ease-out;
+
+  @media (min-width: 768px) {
+    width: 500px;
+  }
+
+  :global(.dark) & {
+    background-color: @card-bg-dark;
+    border-color: @border-color-dark;
+  }
+}
+
+@keyframes slideLeft {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid @border-color-light;
+
+  :global(.dark) & {
+    border-color: @border-color-dark;
+  }
+}
+
+.headerTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.headerIcon {
+  color: @primary-color;
+}
+
+.headerText {
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.closeButton {
+  padding: 8px;
+  border-radius: 9999px;
+  color: @text-secondary-light;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+
+  &:hover {
+    background-color: @border-color-light;
+  }
+
+  :global(.dark) & {
+    color: @text-secondary-dark;
+    &:hover {
+      background-color: @border-color-dark;
+    }
+  }
+}
+
+.content {
+  flex: 1;
+  overflow: auto;
+  padding: 16px;
+}
+
+.codeBlock {
+  font-size: 0.75rem;
+  font-family: monospace;
+  color: @text-color-light;
+  white-space: pre-wrap;
+
+  :global(.dark) & {
+    color: @text-secondary-dark;
+  }
+}
+
+.footer {
+  padding: 16px;
+  border-top: 1px solid @border-color-light;
+  background-color: @bg-color-light;
+
+  :global(.dark) & {
+    border-color: @border-color-dark;
+    background-color: #252627;
+  }
+}
+
+.runButton {
+  width: 100%;
+  padding: 8px;
+  background-color: #2563eb; // blue-600
+  color: white;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #1d4ed8; // blue-700
+  }
+}

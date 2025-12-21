@@ -1,0 +1,40 @@
+@import "../../../styles/variables.less";
+
+.container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  opacity: 0;
+  transition: opacity 0.2s;
+
+  :global(.group:hover) & {
+    opacity: 1;
+  }
+}
+
+.actionButton {
+  padding: 6px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #6b7280; // gray-500
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: #e5e7eb; // gray-200
+  }
+
+  :global(.dark) & {
+    &:hover {
+      background-color: #3c4043;
+    }
+  }
+
+  &.active {
+    color: #3b82f6; // blue-500
+  }
+}

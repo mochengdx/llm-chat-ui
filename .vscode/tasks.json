@@ -1,0 +1,75 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "build:pc-less",
+			"type": "shell",
+			"command": "pnpm build:pc-less",
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "build:mobile-less",
+			"type": "shell",
+			"command": "pnpm build:mobile-less",
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "build:ui-less",
+			"type": "shell",
+			"command": "pnpm build:ui-less",
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "build:ui-less",
+			"type": "shell",
+			"command": "pnpm build:ui-less",
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "build:pc-less",
+			"type": "shell",
+			"command": "pnpm build:pc-less",
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "build:pc-less",
+			"type": "shell",
+			"command": "pnpm build:pc-less",
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "build:ui-less",
+			"type": "shell",
+			"command": "pnpm build:ui-less",
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "build:pc-less",
+			"type": "shell",
+			"command": "pnpm build:pc-less",
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "build:mobile-less",
+			"type": "shell",
+			"command": "pnpm build:mobile-less",
+			"isBackground": false,
+			"group": "build"
+		},
+		{
+			"label": "build:all-less",
+			"type": "shell",
+			"command": "pnpm build:ui-less && pnpm build:pc-less && pnpm build:mobile-less",
+			"isBackground": false,
+			"group": "build"
+		}
+	]
+}

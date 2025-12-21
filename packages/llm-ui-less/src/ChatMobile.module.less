@@ -1,0 +1,259 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f3f4f6;
+  position: relative;
+  overflow: hidden;
+}
+
+.header {
+  height: 56px;
+  background-color: #f3f4f6;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.headerTitle {
+  font-size: 17px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.headerButton {
+  padding: 8px;
+  border-radius: 50%;
+  color: #4b5563;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:active {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+}
+
+.messageList {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.inputArea {
+  background-color: #f3f4f6;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 8px 12px;
+  padding-bottom: max(8px, env(safe-area-inset-bottom));
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.inputButton {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4b5563;
+  background: none;
+  border: 1px solid #d1d5db;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  &:active {
+    background-color: #e5e7eb;
+  }
+}
+
+.inputWrapper {
+  flex: 1;
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 8px 12px;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 16px;
+  line-height: 20px;
+  max-height: 100px;
+  resize: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sendButton {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  background-color: #3b82f6;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color 0.2s;
+
+  &:disabled {
+    background-color: #d1d5db;
+    cursor: not-allowed;
+  }
+
+  &:not(:disabled):active {
+    background-color: #2563eb;
+  }
+}
+
+.stopButton {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ef4444;
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid #ef4444;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  &:active {
+    background-color: rgba(239, 68, 68, 0.2);
+  }
+}
+
+/* Message Item Styles */
+.messageRow {
+  display: flex;
+  width: 100%;
+  margin-bottom: 16px;
+
+  &.user {
+    justify-content: flex-end;
+  }
+
+  &.model {
+    justify-content: flex-start;
+  }
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  &.model {
+    background-color: #dbeafe;
+    margin-right: 8px;
+    color: #2563eb;
+  }
+
+  &.user {
+    background-color: #e5e7eb;
+    margin-left: 8px;
+    color: #4b5563;
+  }
+}
+
+.messageContentWrapper {
+  display: flex;
+  flex-direction: column;
+  max-width: 85%;
+
+  &.user {
+    align-items: flex-end;
+  }
+
+  &.model {
+    align-items: flex-start;
+  }
+}
+
+.messageBubble {
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 15px;
+  line-height: 1.5;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  word-break: break-word;
+  min-height: 40px;
+  min-width: 40px;
+
+  &.user {
+    background-color: #95ec69;
+    color: #000000;
+    border-top-right-radius: 0;
+  }
+
+  &.model {
+    background-color: #ffffff;
+    color: #1f2937;
+    border-top-left-radius: 0;
+  }
+}
+
+.thoughtToggle {
+  font-size: 12px;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #f3f4f6;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-bottom: 4px;
+  border: none;
+  cursor: pointer;
+}
+
+.thoughtContent {
+  background-color: #f9fafb;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #4b5563;
+  border: 1px solid #f3f4f6;
+  margin-bottom: 4px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

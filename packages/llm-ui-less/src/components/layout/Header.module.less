@@ -1,0 +1,34 @@
+@import "../../styles/variables.less";
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.settingsButton {
+  padding: 4px 12px;
+  border-radius: 4px;
+  background-color: #e5e7eb; // gray-200
+  border: none;
+  cursor: pointer;
+  color: inherit;
+
+  &:hover {
+    background-color: #d1d5db; // gray-300
+  }
+
+  :global(.dark) & {
+    background-color: #3c4043;
+
+    &:hover {
+      background-color: #4a4d50;
+    }
+  }
+}

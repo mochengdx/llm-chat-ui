@@ -1,0 +1,44 @@
+{
+  "name": "@llm/ui-less",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "dependencies": {
+    "@ant-design/icons": "^6.1.0",
+    "@llm/core": "workspace:*",
+    "@llm/store": "workspace:*",
+    "@types/react-syntax-highlighter": "^15.5.13",
+    "lucide-react": "^0.559.0",
+    "react-markdown": "^10.1.0",
+    "react-syntax-highlighter": "^16.1.0",
+    "remark-directive": "^4.0.0",
+    "remark-gfm": "^4.0.1",
+    "unist-util-visit": "^5.0.0"
+  },
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "rimraf dist",
+    "lint": "echo linting..."
+  },
+  "keywords": [
+    "llm",
+    "ui",
+    "chat",
+    "react",
+    "component"
+  ],
+  "readme": "# @llm/ui\n\n通用 LLM 聊天 UI 组件库。"
+}
