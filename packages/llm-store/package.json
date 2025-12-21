@@ -25,6 +25,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc --build",
+    "test": "vitest run",
     "clean": "rimraf dist",
     "lint": "echo linting..."
   },
@@ -36,8 +37,7 @@
     "state"
   ],
   "readme": "# @llm/store\n\nzustand 状态管理与持久化。",
-  "dependencies": {
-    "idb-keyval": "^6.2.2",
-    "zustand": "^4.5.7"
+  "devDependencies": {
+    "vitest": "^0.32.4"
   }
 }

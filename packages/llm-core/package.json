@@ -26,6 +26,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc --build",
+    "test": "vitest run",
     "clean": "rimraf dist",
     "lint": "echo linting..."
   },
@@ -36,5 +37,7 @@
     "ai",
     "stream"
   ],
-  "readme": "# @llm/core\n\n核心类型、协议与流式服务适配器。"
+  "devDependencies": {
+    "vitest": "^0.32.4"
+  }
 }

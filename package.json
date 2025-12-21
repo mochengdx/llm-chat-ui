@@ -2,7 +2,7 @@
   "name": "@origami/monorepo",
   "private": true,
   "scripts": {
-    "build": "pnpm -r build",
+    "build": "pnpm -r test && pnpm -r build",
     "build:core": "pnpm --filter @llm/core build",
     "build:store": "pnpm --filter @llm/store build",
     "build:ui": "pnpm --filter @llm/ui build",
