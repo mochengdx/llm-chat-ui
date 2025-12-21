@@ -333,9 +333,13 @@ const ChatMain: React.FC<ChatMainProps> = ({
     const beforeTrigger = input.slice(0, triggerStartIndex);
     const afterTrigger = input.slice(cursorIndex);
 
-    if (triggerType === "#") {
-      // For # tags, add to activeTags list instead of inserting text (Capsule UI)
-      // 对于 # 标签，添加到 activeTags 列表而不是插入文本（胶囊 UI）
+    // Treat as tag if it's a # tag OR if it's a mention that has a prompt (Capability)
+    // 如果是 # 标签或者是有 prompt 的提及（能力），则作为标签处理
+    const isTagBehavior = triggerType === "#" || !!item.prompt;
+
+    if (isTagBehavior) {
+      // For tags/capabilities, add to activeTags list instead of inserting text (Capsule UI)
+      // 对于标签/能力，添加到 activeTags 列表而不是插入文本（胶囊 UI）
       if (!activeTags.find((t) => t.id === item.id)) {
         setActiveTags((prev) => [...prev, item]);
       }

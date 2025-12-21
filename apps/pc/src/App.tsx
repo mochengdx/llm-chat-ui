@@ -42,6 +42,23 @@ const App = () => {
 
   // Define custom triggers
   const triggers = {
+    mentions: [
+      {
+        id: "support",
+        label: "Support Team",
+        description: "Mention the support team"
+        // No prompt -> Standard mention behavior (inserts text)
+        // 无 prompt -> 标准提及行为（插入文本）
+      },
+      {
+        id: "translator",
+        label: "Translator",
+        description: "Activate translation mode",
+        // Has prompt -> Capability behavior (adds chip)
+        // 有 prompt -> 能力行为（添加胶囊）
+        prompt: "You are a professional translator. Please translate the following text into elegant Chinese."
+      }
+    ],
     tags: [
       {
         id: "custom-directive",
