@@ -25,7 +25,7 @@
   ],
   "license": "MIT",
   "scripts": {
-    "build": "tsc --build",
+    "build": "rollup -c",
     "test": "vitest run",
     "clean": "rimraf dist",
     "lint": "echo linting..."

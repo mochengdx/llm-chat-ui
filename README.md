@@ -1,4 +1,4 @@
-# Simple LLM Chat
+# LLM Chat
 
 A modern, responsive, and feature-rich LLM chat interface built with React, Tailwind CSS, and TypeScript. This monorepo project provides both PC and Mobile applications with a unified core and UI library.
 

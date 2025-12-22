@@ -7,7 +7,17 @@ export interface Attachment {
   file?: File;
   previewUrl: string;
   type: "image" | "file";
+  status?: "uploading" | "uploaded" | "error";
 }
+
+export interface SendContext {
+  input: string;
+  attachments: Attachment[];
+  isStreaming: boolean;
+  [key: string]: any;
+}
+
+export type SendValidator = (context: SendContext) => boolean;
 
 export interface Message {
   id: string;

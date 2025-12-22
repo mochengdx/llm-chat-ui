@@ -1,6 +1,7 @@
-import type { Attachment, TriggerItem, UserSettings } from "@llm/core";
+import type { Attachment, SendValidator, TriggerItem, UserSettings } from "@llm/core";
+import { validateSend } from "@llm/utils";
 import type { RefObject } from "react";
-import React from "react";
+import React, { useMemo } from "react";
 import { useTranslation } from "../../hooks/useTranslation";
 import { ActiveTags } from "./console/ActiveTags";
 import { InputAttachments } from "./console/InputAttachments";
@@ -48,6 +49,7 @@ interface InputConsoleProps {
   setShowCanvasBadge: (val: boolean) => void;
   isStreaming?: boolean;
   onStop?: () => void;
+  additionalSendValidators?: SendValidator[];
 }
 
 const InputConsole: React.FC<InputConsoleProps> = ({
@@ -56,7 +58,7 @@ const InputConsole: React.FC<InputConsoleProps> = ({
   isInputExpanded,
   setIsInputExpanded,
   attachments,
-  removeAttachment: _removeAttachment,
+  removeAttachment,
   activeTags,
   removeTag,
   triggerType,
@@ -87,9 +89,21 @@ const InputConsole: React.FC<InputConsoleProps> = ({
   showCanvasBadge: _showCanvasBadge,
   setShowCanvasBadge: _setShowCanvasBadge,
   isStreaming,
-  onStop
+  onStop,
+  additionalSendValidators
 }) => {
   const { t } = useTranslation(settings);
+
+  const canSend = useMemo(() => {
+    return validateSend(
+      {
+        input,
+        attachments,
+        isStreaming: !!isStreaming
+      },
+      additionalSendValidators
+    );
+  }, [input, attachments, isStreaming, additionalSendValidators]);
 
   return (
     <div
@@ -149,6 +163,7 @@ const InputConsole: React.FC<InputConsoleProps> = ({
             setIsListening={setIsListening}
             input={input}
             hasAttachments={attachments.length > 0}
+            canSend={canSend}
             onSend={() => handleSend()}
             isStreaming={isStreaming}
             onStop={onStop}

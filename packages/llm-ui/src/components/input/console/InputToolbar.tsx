@@ -42,6 +42,7 @@ interface InputToolbarProps {
 
   input: string;
   hasAttachments: boolean;
+  canSend: boolean;
   onSend: () => void;
   isStreaming?: boolean;
   onStop?: () => void;
@@ -69,6 +70,7 @@ export const InputToolbar = memo(
     setIsListening,
     input,
     hasAttachments,
+    canSend,
     onSend,
     isStreaming,
     onStop,
@@ -205,10 +207,11 @@ export const InputToolbar = memo(
                 onSend();
               }
             }}
+            disabled={!isStreaming && !canSend}
             className={`p-2 rounded-full transition-colors ${
               isStreaming
                 ? "bg-gray-200 dark:bg-[#3c4043] text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-[#4a4d50]"
-                : input.trim() || hasAttachments
+                : canSend
                   ? "bg-blue-600 dark:bg-[#a8c7fa] text-white dark:text-[#0b1219] hover:bg-blue-700 dark:hover:bg-white"
                   : "bg-[#dde3ea] dark:bg-[#3c4043] text-gray-400 dark:text-gray-500 cursor-not-allowed"
             }`}

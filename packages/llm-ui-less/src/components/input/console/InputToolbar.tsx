@@ -43,6 +43,7 @@ interface InputToolbarProps {
 
   input: string;
   hasAttachments: boolean;
+  canSend: boolean;
   onSend: () => void;
   isStreaming?: boolean;
   onStop?: () => void;
@@ -70,6 +71,7 @@ export const InputToolbar = memo(
     setIsListening,
     input,
     hasAttachments,
+    canSend,
     onSend,
     isStreaming,
     onStop,
@@ -198,8 +200,9 @@ export const InputToolbar = memo(
                 onSend();
               }
             }}
+            disabled={!isStreaming && !canSend}
             className={`${styles.sendButton} ${
-              isStreaming ? styles.streaming : input.trim() || hasAttachments ? styles.active : styles.disabled
+              isStreaming ? styles.streaming : canSend ? styles.active : styles.disabled
             }`}
           >
             {isStreaming ? (

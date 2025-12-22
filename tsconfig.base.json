@@ -8,7 +8,7 @@
     "lib": ["esnext", "dom"],
     "jsx": "react-jsx",
     // Module resolution strategy (Node-style resolution).
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     // Allow importing JSON modules.
     "resolveJsonModule": true,
     // Emit declaration (.d.ts) files for consumers of your packages.

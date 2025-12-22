@@ -1,4 +1,4 @@
-# Simple LLM Chat (简体中文)
+# LLM Chat (简体中文)
 
 一个基于 React、Tailwind CSS 和 TypeScript 构建的现代化、响应式且功能丰富的 LLM 聊天界面。本项目采用 Monorepo 架构，提供统一的核心库和 UI 组件库，同时支持 PC 端和移动端应用。
 

@@ -4,6 +4,7 @@ import json from "@rollup/plugin-json";
 import resolve from "@rollup/plugin-node-resolve";
 import terser from "@rollup/plugin-terser";
 import typescript from "@rollup/plugin-typescript";
+import postcss from "rollup-plugin-postcss";
 
 const DEFAULT_EXTENSIONS = [".ts", ".tsx", ".js", ".jsx"];
 
@@ -32,6 +33,17 @@ export default function createBaseConfig({
       json(),
       resolve({ extensions, browser: true }),
       commonjs(),
+      postcss({
+        extensions: [".css", ".less"],
+        use: [["less", { javascriptEnabled: true }]],
+        extract: false,
+        modules: {
+          generateScopedName: "[name]__[local]___[hash:base64:5]"
+        },
+        autoModules: true,
+        minimize: true,
+        inject: true
+      }),
       typescript({
         tsconfig,
         exclude: ["node_modules/**", "dist/**", "examples/**", "tests/**", "**/*.test.ts", "**/*.spec.ts"]
