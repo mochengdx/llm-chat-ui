@@ -20,6 +20,8 @@ const extensions = [".ts", ".tsx", ".js", ".jsx"];
 const external = [
   "react",
   "react-dom",
+  "react/jsx-runtime",
+  "react-dom/client",
   "three",
   "@babel/core",
   "@rollup/plugin-node-resolve"
@@ -42,6 +44,11 @@ const pkgs = fs
   });
 
 function makeRollupConfigForPkg(pkg) {
+  const pkgDeps = Object.keys(pkg.pkgJson.dependencies || {});
+  const pkgPeerDeps = Object.keys(pkg.pkgJson.peerDependencies || {});
+  // Combine global externals with package-specific dependencies
+  const allExternals = [...new Set([...external, ...pkgDeps, ...pkgPeerDeps])];
+
   return rollupBase({
     input: path.resolve(pkg.location, "src/index.ts"),
     output: [
@@ -59,7 +66,8 @@ function makeRollupConfigForPkg(pkg) {
       }
     ],
     tsconfig: path.resolve(pkg.location, "tsconfig.json"),
-    external,
+    // Use a function to match package names and their subpaths
+    external: (id) => allExternals.some((dep) => id === dep || id.startsWith(`${dep}/`)),
     extensions
     // declarationDir: path.resolve(pkg.location, "types")
   });

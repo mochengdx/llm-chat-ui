@@ -6,6 +6,8 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
+      react: path.resolve(__dirname, "./node_modules/react"),
+      "react-dom": path.resolve(__dirname, "./node_modules/react-dom"),
       "@llm/core": path.resolve(__dirname, "../../packages/llm-core"),
       "@llm/store": path.resolve(__dirname, "../../packages/llm-store"),
       "@llm/ui": path.resolve(__dirname, "../../packages/llm-ui")

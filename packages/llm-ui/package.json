@@ -19,6 +19,10 @@
       "types": "./dist/index.d.ts"
     }
   },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
   "dependencies": {
     "@llm/core": "workspace:*",
     "@llm/store": "workspace:*",
