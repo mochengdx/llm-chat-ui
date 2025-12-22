@@ -96,7 +96,7 @@ type ChatMainProps = ChatHooks;
 const DEFAULT_MENTIONS_LIST: TriggerItem[] = [
   {
     id: "simple-llm-chat",
-    label: "Simple LLM Chat",
+    label: "Smart LLM Chat",
     icon: <ExperimentOutlined style={{ fontSize: 14, color: "#3b82f6" }} />,
     description: "Default Model"
   },
@@ -621,7 +621,7 @@ const ChatMain: React.FC<ChatMainProps> = ({
                   <MenuOutlined style={{ fontSize: 20 }} />
                 </button>
               )}
-              <span className={`${styles.title} ${isSidebarOpen ? styles.hidden : ""}`}>Simple LLM Chat</span>
+              <span className={`${styles.title} ${isSidebarOpen ? styles.hidden : ""}`}>Smart LLM Chat</span>
             </div>
           </header>
 

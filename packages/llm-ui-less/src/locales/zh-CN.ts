@@ -15,7 +15,7 @@ export const zhCN: Translations = {
     location: "中国，上海",
     update: "更新",
     you: "你",
-    modelName: "Simple LLM Chat",
+    modelName: "Smart LLM Chat",
     editMessage: "编辑消息",
     mention: "提及",
     tag: "标签",
@@ -29,7 +29,7 @@ export const zhCN: Translations = {
     activity: "活动"
   },
   input: {
-    placeholder: "向 Simple LLM Chat 提问...",
+    placeholder: "向 Smart LLM Chat 提问...",
     fullScreen: "全屏编辑",
     uploadFiles: "上传文件",
     addFromDrive: "从云端硬盘添加",

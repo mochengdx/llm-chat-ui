@@ -13,7 +13,7 @@ export const en = {
     location: "Shanghai, China", // Or generic "Location"
     update: "Update",
     you: "You",
-    modelName: "Simple LLM Chat",
+    modelName: "Smart LLM Chat",
     editMessage: "Edit Message",
     mention: "Mention",
     tag: "Tag",
@@ -27,7 +27,7 @@ export const en = {
     activity: "Activity"
   },
   input: {
-    placeholder: "Ask Simple LLM Chat...",
+    placeholder: "Ask Smart LLM Chat...",
     fullScreen: "Full screen edit",
     uploadFiles: "Upload files",
     addFromDrive: "Add from Drive",
