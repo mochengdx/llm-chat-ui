@@ -251,7 +251,7 @@ const ChatMainMobileLayout: React.FC<ChatMobileProps> = ({
         <div style={{ width: 32, display: "flex", alignItems: "center" }}>
           <LeftOutlined style={{ fontSize: 24 }} />
         </div>
-        <h1 className={styles.headerTitle}>Simple LLM Chat</h1>
+        <h1 className={styles.headerTitle}>Smart LLM Chat</h1>
         <button
           onClick={() => setSettingsOpen(true)}
           className={styles.headerButton}
