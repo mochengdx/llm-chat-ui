@@ -117,7 +117,7 @@ const MarkdownRenderer = memo(
                   style={vscDarkPlus as any}
                   language={match?.[1]}
                   PreTag="div"
-                  customStyle={{ margin: 0, padding: "1rem", background: "transparent" }}
+                  customStyle={{ margin: 0, padding: "16px", background: "transparent" }}
                   {...props}
                 >
                   {codeContent}
