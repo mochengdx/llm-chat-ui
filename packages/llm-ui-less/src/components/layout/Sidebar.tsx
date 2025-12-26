@@ -1,4 +1,5 @@
 import {
+  DeleteOutlined,
   MenuOutlined,
   MessageOutlined,
   PlusOutlined,
@@ -16,10 +17,11 @@ const SidebarMain: React.FC<{
   currentSessionId: string | null;
   onNewChat: () => void;
   onSelect: (id: string) => void;
+  onDelete: (id: string) => void;
   onToggle: () => void;
   onOpenSettings: () => void;
   settings: UserSettings;
-}> = ({ isOpen, sessions, currentSessionId, onNewChat, onSelect, onToggle, onOpenSettings, settings }) => {
+}> = ({ isOpen, sessions, currentSessionId, onNewChat, onSelect, onDelete, onToggle, onOpenSettings, settings }) => {
   const { t } = useTranslation(settings);
 
   return (
@@ -49,6 +51,20 @@ const SidebarMain: React.FC<{
               className={`${styles.sessionIcon} ${currentSessionId === session.id ? styles.active : ""}`}
             />
             <span className={styles.sessionTitle}>{session.title}</span>
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onDelete(session.id);
+              }}
+              className={styles.sessionDelete}
+              aria-label="Delete session"
+              title="Delete"
+            >
+              <DeleteOutlined style={{ fontSize: 14 }} />
+            </button>
           </button>
         ))}
       </div>

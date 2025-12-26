@@ -1,5 +1,5 @@
 import type { UserSettings } from "@llm/core";
-import { HelpCircle, Menu, MessageSquare, Plus, Settings } from "lucide-react";
+import { HelpCircle, Menu, MessageSquare, Plus, Settings, Trash2 } from "lucide-react";
 import React from "react";
 import { useTranslation } from "../../hooks/useTranslation";
 
@@ -9,10 +9,11 @@ const SidebarMain: React.FC<{
   currentSessionId: string | null;
   onNewChat: () => void;
   onSelect: (id: string) => void;
+  onDelete: (id: string) => void;
   onToggle: () => void;
   onOpenSettings: () => void;
   settings: UserSettings;
-}> = ({ isOpen, sessions, currentSessionId, onNewChat, onSelect, onToggle, onOpenSettings, settings }) => {
+}> = ({ isOpen, sessions, currentSessionId, onNewChat, onSelect, onDelete, onToggle, onOpenSettings, settings }) => {
   const { t } = useTranslation(settings);
 
   return (
@@ -56,6 +57,20 @@ const SidebarMain: React.FC<{
               className={currentSessionId === session.id ? "text-blue-600 dark:text-blue-300" : "text-gray-500"}
             />
             <span className="truncate">{session.title}</span>
+
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onDelete(session.id);
+              }}
+              aria-label="Delete session"
+              title="Delete"
+              className="ml-auto p-1.5 rounded-full opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto hover:bg-gray-200 dark:hover:bg-[#3c4043] text-gray-500 dark:text-gray-300"
+            >
+              <Trash2 size={16} />
+            </button>
           </button>
         ))}
       </div>

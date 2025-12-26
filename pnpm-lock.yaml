@@ -238,13 +238,13 @@ importers:
       idb-keyval:
         specifier: ^6.2.1
         version: 6.2.2
-      react:
-        specifier: '>=18.0.0'
-        version: 18.3.1
       zustand:
         specifier: ^4.5.0
         version: 4.5.7(@types/react@18.3.27)(react@18.3.1)
     devDependencies:
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
       vitest:
         specifier: ^0.32.4
         version: 0.32.4(jsdom@27.3.0(postcss@8.5.6))(less@4.5.1)(lightningcss@1.30.2)(terser@5.44.1)
@@ -263,12 +263,6 @@ importers:
       lucide-react:
         specifier: ^0.559.0
         version: 0.559.0(react@18.3.1)
-      react:
-        specifier: '>=18.0.0'
-        version: 18.3.1
-      react-dom:
-        specifier: '>=18.0.0'
-        version: 18.3.1(react@18.3.1)
       react-markdown:
         specifier: ^10.1.0
         version: 10.1.0(@types/react@18.3.27)(react@18.3.1)
@@ -288,6 +282,12 @@ importers:
       '@types/react-syntax-highlighter':
         specifier: ^15.5.13
         version: 15.5.13
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
 
   packages/llm-ui-less:
     dependencies:
@@ -303,12 +303,6 @@ importers:
       '@llm/utils':
         specifier: workspace:*
         version: link:../llm-utils
-      react:
-        specifier: '>=18.0.0'
-        version: 18.3.1
-      react-dom:
-        specifier: '>=18.0.0'
-        version: 18.3.1(react@18.3.1)
       react-markdown:
         specifier: ^10.1.0
         version: 10.1.0(@types/react@18.3.27)(react@18.3.1)
@@ -328,6 +322,12 @@ importers:
       '@types/react-syntax-highlighter':
         specifier: ^15.5.13
         version: 15.5.13
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
 
   packages/llm-utils:
     devDependencies:

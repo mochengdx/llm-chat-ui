@@ -114,6 +114,7 @@
   background: transparent;
   cursor: pointer;
   color: @text-secondary-light;
+  position: relative;
 
   &:hover {
     background-color: @hover-bg-light;
@@ -135,6 +136,40 @@
       color: @text-color-dark;
     }
   }
+}
+
+.sessionDelete {
+  margin-left: auto;
+  padding: 6px;
+  border-radius: 9999px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: @text-secondary-light;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.2s,
+    background-color 0.2s,
+    color 0.2s;
+
+  &:hover {
+    background-color: @hover-bg-light;
+    color: @text-color-light;
+  }
+
+  :global(.dark) & {
+    color: @text-secondary-dark;
+    &:hover {
+      background-color: #2d2e30;
+      color: @text-color-dark;
+    }
+  }
+}
+
+.sessionItem:hover .sessionDelete {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .sessionIcon {
