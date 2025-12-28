@@ -231,7 +231,20 @@ importers:
         version: 0.32.4(jsdom@27.3.0(postcss@8.5.6))(less@4.5.1)(lightningcss@1.30.2)(terser@5.44.1)
 
   packages/llm-store:
+    dependencies:
+      '@llm/core':
+        specifier: workspace:*
+        version: link:../llm-core
+      idb-keyval:
+        specifier: ^6.2.1
+        version: 6.2.2
+      zustand:
+        specifier: ^4.5.0
+        version: 4.5.7(@types/react@18.3.27)(react@18.3.1)
     devDependencies:
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
       vitest:
         specifier: ^0.32.4
         version: 0.32.4(jsdom@27.3.0(postcss@8.5.6))(less@4.5.1)(lightningcss@1.30.2)(terser@5.44.1)
@@ -269,6 +282,12 @@ importers:
       '@types/react-syntax-highlighter':
         specifier: ^15.5.13
         version: 15.5.13
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
 
   packages/llm-ui-less:
     dependencies:
@@ -303,6 +322,12 @@ importers:
       '@types/react-syntax-highlighter':
         specifier: ^15.5.13
         version: 15.5.13
+      react:
+        specifier: ^18.3.1
+        version: 18.3.1
+      react-dom:
+        specifier: ^18.3.1
+        version: 18.3.1(react@18.3.1)
 
   packages/llm-utils:
     devDependencies:
@@ -2357,6 +2382,9 @@ packages:
     engines: {node: ^10 || ^12 || >= 14}
     peerDependencies:
       postcss: ^8.1.0
+
+  idb-keyval@6.2.2:
+    resolution: {integrity: sha512-yjD9nARJ/jb1g+CvD0tlhUHOrJ9Sy0P8T9MF3YaLlHnSRpwPfpTX0XIvpmw3gAJUmEu3FiICLBDPXVwyEvrleg==}
 
   ignore@5.3.2:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
@@ -6610,6 +6638,8 @@ snapshots:
   icss-utils@5.1.0(postcss@8.5.6):
     dependencies:
       postcss: 8.5.6
+
+  idb-keyval@6.2.2: {}
 
   ignore@5.3.2: {}
 

@@ -16,7 +16,7 @@ import {
   Video,
   Zap
 } from "lucide-react";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ArtifactPanel from "./components/artifact/ArtifactPanel";
 import MessageItem from "./components/chat/MessageItem";
 import type { ChatExtensions } from "./components/chat/renderers/types";
@@ -91,6 +91,82 @@ export interface ChatHooks {
 }
 
 type ChatMainProps = ChatHooks;
+
+interface HistoryMessagesProps {
+  messages: Message[];
+  denseMode: boolean;
+  onEdit: (msgId: string, newContent: string) => void;
+  onRegenerate: (modelMsgId: string) => void;
+  onOpenCanvas: (code: string) => void;
+  extensions?: ChatExtensions;
+  t: any;
+  onSendFromDirective?: (message: string) => void;
+}
+
+const HistoryMessages = memo(
+  ({
+    messages,
+    denseMode,
+    onEdit,
+    onRegenerate,
+    onOpenCanvas,
+    extensions,
+    t,
+    onSendFromDirective
+  }: HistoryMessagesProps) => {
+    return (
+      <>
+        {messages.map((msg) => (
+          <div key={msg.id} className={denseMode ? "gap-2 py-2" : "gap-6 py-6"}>
+            <MessageItem
+              msg={msg}
+              onEdit={onEdit}
+              onRegenerate={() => onRegenerate(msg.id)}
+              onOpenCanvas={onOpenCanvas}
+              extensions={extensions}
+              t={t}
+              onSend={onSendFromDirective}
+            />
+          </div>
+        ))}
+      </>
+    );
+  }
+);
+
+HistoryMessages.displayName = "HistoryMessages";
+
+interface ActiveMessageProps {
+  msg: Message | null;
+  denseMode: boolean;
+  onEdit: (msgId: string, newContent: string) => void;
+  onRegenerate: (modelMsgId: string) => void;
+  onOpenCanvas: (code: string) => void;
+  extensions?: ChatExtensions;
+  t: any;
+  onSendFromDirective?: (message: string) => void;
+}
+
+const ActiveMessage = memo(
+  ({ msg, denseMode, onEdit, onRegenerate, onOpenCanvas, extensions, t, onSendFromDirective }: ActiveMessageProps) => {
+    if (!msg) return null;
+    return (
+      <div key={msg.id} className={denseMode ? "gap-2 py-2" : "gap-6 py-6"}>
+        <MessageItem
+          msg={msg}
+          onEdit={onEdit}
+          onRegenerate={() => onRegenerate(msg.id)}
+          onOpenCanvas={onOpenCanvas}
+          extensions={extensions}
+          t={t}
+          onSend={onSendFromDirective}
+        />
+      </div>
+    );
+  }
+);
+
+ActiveMessage.displayName = "ActiveMessage";
 
 const DEFAULT_MENTIONS_LIST: TriggerItem[] = [
   {
@@ -212,6 +288,19 @@ const ChatMain: React.FC<ChatMainProps> = ({
   const [isListening, setIsListening] = useState(false);
   const [artifactOpen, setArtifactOpen] = useState(false);
   const [artifactContent, setArtifactContent] = useState<string>("");
+  const [activeMessage, setActiveMessage] = useState<Message | null>(null);
+
+  const pendingActiveContentRef = useRef<string[]>([]);
+  const pendingActiveReasoningRef = useRef<string[]>([]);
+  const activeFlushRafRef = useRef<number | null>(null);
+  const activeFlushScheduledRef = useRef(false);
+  const activeMsgIdRef = useRef<string | null>(null);
+  const activeStopThinkingRef = useRef(false);
+  const messagesRef = useRef<Message[]>(messages);
+
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
   // const streamClientRef = useRef<StreamClient | null>(null); // Replaced by useLLMStream
@@ -221,10 +310,81 @@ const ChatMain: React.FC<ChatMainProps> = ({
   );
   const { isStreaming, trigger, stop: stopStream } = useLLMStream({ streamClient });
 
-  const stop = () => {
+  const cancelActiveFlush = useCallback(() => {
+    if (activeFlushRafRef.current != null) {
+      cancelAnimationFrame(activeFlushRafRef.current);
+      activeFlushRafRef.current = null;
+    }
+    activeFlushScheduledRef.current = false;
+  }, []);
+
+  const flushActiveSync = useCallback(() => {
+    cancelActiveFlush();
+
+    if (pendingActiveContentRef.current.length === 0 && pendingActiveReasoningRef.current.length === 0) return;
+
+    const contentDelta = pendingActiveContentRef.current.join("");
+    const reasoningDelta = pendingActiveReasoningRef.current.join("");
+    pendingActiveContentRef.current = [];
+    pendingActiveReasoningRef.current = [];
+
+    setActiveMessage((prev) => {
+      if (!prev) return prev;
+      if (activeMsgIdRef.current && prev.id !== activeMsgIdRef.current) return prev;
+      return {
+        ...prev,
+        content: contentDelta ? prev.content + contentDelta : prev.content,
+        thoughtProcess: reasoningDelta ? (prev.thoughtProcess || "") + reasoningDelta : prev.thoughtProcess,
+        isThinking: activeStopThinkingRef.current ? false : prev.isThinking
+      };
+    });
+
+    activeStopThinkingRef.current = false;
+  }, [cancelActiveFlush]);
+
+  const scheduleActiveFlush = useCallback(() => {
+    if (activeFlushScheduledRef.current) return;
+    activeFlushScheduledRef.current = true;
+    activeFlushRafRef.current = requestAnimationFrame(() => {
+      activeFlushScheduledRef.current = false;
+      activeFlushRafRef.current = null;
+      flushActiveSync();
+    });
+  }, [flushActiveSync]);
+
+  const finalizeActiveToHistory = useCallback(
+    (finalPatch?: Partial<Message>) => {
+      flushActiveSync();
+      setActiveMessage((prev) => {
+        if (!prev) return null;
+
+        const finalMsg: Message = {
+          ...prev,
+          ...finalPatch,
+          isStreaming: false
+        };
+
+        setMessages((history) => {
+          const nextHistory = [...history, finalMsg];
+
+          if (currentSessionId) {
+            setSessions((ss) => ss.map((s) => (s.id === currentSessionId ? { ...s, messages: nextHistory } : s)));
+          }
+
+          return nextHistory;
+        });
+
+        activeMsgIdRef.current = null;
+        return null;
+      });
+    },
+    [flushActiveSync, setMessages, setSessions, currentSessionId]
+  );
+
+  const stop = useCallback(() => {
     stopStream();
-    setMessages((prev) => prev.map((m) => (m.isStreaming ? { ...m, isStreaming: false } : m)));
-  };
+    finalizeActiveToHistory({ isThinking: false });
+  }, [stopStream, finalizeActiveToHistory]);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -276,8 +436,22 @@ const ChatMain: React.FC<ChatMainProps> = ({
   }, []);
 
   useEffect(() => {
-    if (messages.length > 0) chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages.length, isStreaming]);
+    if (messages.length > 0 || activeMessage) chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages.length, isStreaming, activeMessage?.content]);
+
+  const handleDeleteSession = useCallback(
+    (id: string) => {
+      if (currentSessionId === id) {
+        stopStream();
+        setCurrentSessionId(null);
+        setMessages([]);
+        setActiveMessage(null);
+        setInput("");
+      }
+      setSessions((prev) => prev.filter((s) => s.id !== id));
+    },
+    [currentSessionId, setSessions, setMessages, setCurrentSessionId, stopStream]
+  );
 
   // Handle outside clicks
   useEffect(() => {
@@ -419,30 +593,10 @@ const ChatMain: React.FC<ChatMainProps> = ({
     setActiveTags((prev) => prev.filter((t) => t.id !== id));
   };
 
-  const handleEditMessage = (msgId: string, newContent: string) => {
-    const msgIndex = messages.findIndex((m) => m.id === msgId);
-    if (msgIndex === -1) return;
-
-    // Get the original message to preserve attachments
-    const originalMsg = messages[msgIndex];
-
-    // Keep messages up to the edited one (exclusive)
-    const updatedMessages = messages.slice(0, msgIndex);
-    setMessages(updatedMessages);
-
-    // Restore attachments from the original message if any
-    if (originalMsg.attachments && originalMsg.attachments.length > 0) {
-      setAttachments(originalMsg.attachments);
-    }
-
-    setInput(newContent);
-    // We need to defer the send slightly to ensure state updates or pass attachments directly
-    // But handleSend uses the 'attachments' state.
-    // Since setState is async, we should pass attachments explicitly to handleSend if possible,
-    // OR modify handleSend to accept attachments as an argument.
-    // For now, let's modify handleSend to accept optional attachments override.
-    handleSend(newContent, originalMsg.attachments);
-  };
+  const handleOpenCanvas = useCallback((code: string) => {
+    setArtifactContent(code);
+    setArtifactOpen(true);
+  }, []);
 
   /**
    * Handles sending a message.
@@ -518,7 +672,13 @@ const ChatMain: React.FC<ChatMainProps> = ({
       modelUsed: selectedModel.name
     };
 
-    setMessages([...newMessages, aiMsg]);
+    // Keep active streaming message out of history to avoid rerendering all MessageItems.
+    activeMsgIdRef.current = aiMsgId;
+    pendingActiveContentRef.current = [];
+    pendingActiveReasoningRef.current = [];
+    activeStopThinkingRef.current = false;
+    cancelActiveFlush();
+    setActiveMessage(aiMsg);
 
     // Expand # tags in the message sent to LLM
     // 在发送给 LLM 的消息中展开 # 标签
@@ -558,28 +718,67 @@ const ChatMain: React.FC<ChatMainProps> = ({
     // 触发 LLM 流
     trigger(request, {
       onThinking: (token: string) => {
-        setMessages((prev) =>
-          prev.map((m) => (m.id === aiMsgId ? { ...m, thoughtProcess: (m.thoughtProcess || "") + token } : m))
-        );
+        pendingActiveReasoningRef.current.push(token);
+        scheduleActiveFlush();
       },
       onContent: (token: string) => {
         const processedToken = onStreamTransform ? onStreamTransform(token) : token;
-        setMessages((prev) =>
-          prev.map((m) => (m.id === aiMsgId ? { ...m, content: m.content + processedToken, isThinking: false } : m))
-        );
+        pendingActiveContentRef.current.push(processedToken);
+        activeStopThinkingRef.current = true;
+        scheduleActiveFlush();
       },
       onEnd: () => {
-        setMessages((prev) => prev.map((m) => (m.id === aiMsgId ? { ...m, isStreaming: false } : m)));
+        finalizeActiveToHistory({ isThinking: false });
       },
       onError: (err: Error) => {
-        setMessages((prev) =>
-          prev.map((m) =>
-            m.id === aiMsgId ? { ...m, content: m.content + `\n[Error: ${err.message}]`, isStreaming: false } : m
-          )
-        );
+        pendingActiveContentRef.current.push(`\n[Error: ${err.message}]`);
+        finalizeActiveToHistory({ isThinking: false });
       }
     });
   };
+
+  // Stable callbacks for message list rendering (avoid rerenders while typing/streaming)
+  const handleSendRef = useRef<typeof handleSend>();
+  useEffect(() => {
+    handleSendRef.current = handleSend;
+  }, [handleSend]);
+
+  const onSendFromDirective = useCallback((message: string) => {
+    void handleSendRef.current?.(message);
+  }, []);
+
+  const handleEditMessageStable = useCallback(
+    (msgId: string, newContent: string) => {
+      const currentMessages = messagesRef.current;
+      const msgIndex = currentMessages.findIndex((m) => m.id === msgId);
+      if (msgIndex === -1) return;
+
+      const originalMsg = currentMessages[msgIndex];
+      const updatedMessages = currentMessages.slice(0, msgIndex);
+      setMessages(updatedMessages);
+
+      if (originalMsg.attachments && originalMsg.attachments.length > 0) {
+        setAttachments(originalMsg.attachments);
+      }
+
+      setInput(newContent);
+      void handleSendRef.current?.(newContent, originalMsg.attachments);
+    },
+    [setMessages]
+  );
+
+  const handleRegenerateStable = useCallback((modelMsgId: string) => {
+    const currentMessages = messagesRef.current;
+    const idx = currentMessages.findIndex((m) => m.id === modelMsgId);
+    const sliceEnd = idx === -1 ? currentMessages.length : idx;
+    for (let i = sliceEnd - 1; i >= 0; i--) {
+      const m = currentMessages[i];
+      if (m.role === "user") {
+        void handleSendRef.current?.(m.content, m.attachments);
+        return;
+      }
+    }
+  }, []);
 
   return (
     <div
@@ -594,8 +793,10 @@ const ChatMain: React.FC<ChatMainProps> = ({
           setCurrentSessionId(id);
           const session = sessions.find((s) => s.id === id);
           if (session) setMessages(session.messages);
+          setActiveMessage(null);
           if (window.innerWidth < 768) setSidebarOpen(false);
         }}
+        onDelete={handleDeleteSession}
         onToggle={() => setSidebarOpen(!isSidebarOpen)}
         onOpenSettings={() => setSettingsOpen(true)}
         settings={settings}
@@ -650,22 +851,26 @@ const ChatMain: React.FC<ChatMainProps> = ({
               </div>
             ) : (
               <div className="flex flex-col px-4 pt-20 pb-40 min-h-full justify-end">
-                {messages.map((msg) => (
-                  <div key={msg.id} className={settings.denseMode ? "gap-2 py-2" : "gap-6 py-6"}>
-                    <MessageItem
-                      msg={msg}
-                      onEdit={handleEditMessage}
-                      onRegenerate={() => handleSend(messages[messages.length - 2]?.content)}
-                      onOpenCanvas={(code) => {
-                        setArtifactContent(code);
-                        setArtifactOpen(true);
-                      }}
-                      extensions={extensions}
-                      t={t}
-                      onSend={(message) => handleSend(message)}
-                    />
-                  </div>
-                ))}
+                <HistoryMessages
+                  messages={messages}
+                  denseMode={settings.denseMode}
+                  onEdit={handleEditMessageStable}
+                  onRegenerate={handleRegenerateStable}
+                  onOpenCanvas={handleOpenCanvas}
+                  extensions={extensions}
+                  t={t}
+                  onSendFromDirective={onSendFromDirective}
+                />
+                <ActiveMessage
+                  msg={activeMessage}
+                  denseMode={settings.denseMode}
+                  onEdit={handleEditMessageStable}
+                  onRegenerate={handleRegenerateStable}
+                  onOpenCanvas={handleOpenCanvas}
+                  extensions={extensions}
+                  t={t}
+                  onSendFromDirective={onSendFromDirective}
+                />
                 <div ref={chatEndRef} />
               </div>
             )}
